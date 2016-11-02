@@ -1,0 +1,14 @@
+<?php include "header.phtml" ?>
+        <h1>User</h1>
+        <p>Data of a user</p>
+
+        <div class="user">
+            <h2><?= $u->getFirstName(); ?> <?= $u->getLastName(); ?></h2>
+            <p><?= $u->getEmail(); ?></p>
+        </div>
+
+        <div class="account">
+            <h2><?= $u->getAccount()->getName(); ?></h2>
+            <p>ID: <?= $u->getAccount()->getId(); ?></p>
+        </div>
+<?php include "footer.phtml" ?>

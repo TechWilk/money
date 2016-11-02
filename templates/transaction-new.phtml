@@ -1,0 +1,61 @@
+<?php include "header.phtml" ?>
+        <h1>New Transaction</h1>
+        <p>Data of a transaction</p>
+
+        <form class="transaction" action="<?= $t ? $router->pathFor('transaction-post', ['id' => $t->getId()]) : $router->pathFor('transaction-post') ?>" method="post">
+            <div>
+                <p onclick="today()">Today</p>
+                <label for="date">Date:</label>
+                <input type="text" name="date" id="date" value="<?= $t ? $t->getDate("Y-m-d") : "" ?>">
+            </div>
+
+            <div class="toggle">
+                <input type="radio" name="direction" value="outgoings" id="outgoings" <?= ($t && ($t->getValue() < 0)) || !isset($t) ? 'checked="checked"' : '' ?>><label for="outgoings">Outgoings</label>
+                <input type="radio" name="direction" value="income" id="income" <?= ($t && ($t->getValue() > 0)) ? 'checked="checked"' : ''?>><label for="income">Income</label>
+            </div>
+            <label for="value">Value (£):</label>
+            <input type="number" step="0.01" min="0" name="value" id="value" value="<?= $t ? abs($t->getValue()) : '' ?>">
+
+            <?php /*
+            <label for="category">Category:</label>
+            <select name="category" id="category">
+                <?php foreach($categories as $c): ?>
+                <option value="<?= $c->getId() ?>" <?= ($t && ($t->getCategoryId() == $c->getId())) ? 'selected="selected"' : ''?>><?= $c->getName() ?></option>
+                <?php endforeach; ?>
+            </select>
+            */ ?>
+
+            <label for="account">Account:</label>
+            <select name="account" id="account">
+                <?php foreach($accounts as $a): ?>
+                <option value="<?= $a->getId() ?>" <?= ($t && ($t->getAccountId() == $a->getId())) ? 'selected="selected"' : ''?>><?= $a->getName() ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="description">Description:</label>
+            <input type="text" name="description" id="description" value="<?= $t ? $t->getDescription() : '' ?>">
+
+            <button type="submit">Save</button>
+        </form>
+
+        <script>
+            function today()
+            {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+
+                if(dd<10) {
+                    dd='0'+dd
+                } 
+
+                if(mm<10) {
+                    mm='0'+mm
+                } 
+
+                today = yyyy+'-'+mm+'-'+dd;
+                document.getElementById("date").value = today;
+            }
+        </script>
+<?php include "footer.phtml" ?>

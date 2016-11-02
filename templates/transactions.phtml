@@ -1,0 +1,45 @@
+<?php
+$incomings = 0;
+$outgoings = 0;
+foreach ($transactions as $t)
+{
+    if ($t->getValue() > 0)
+    {
+        $incomings += $t->getValue();
+    }
+    else
+    {
+        $outgoings += abs($t->getValue());
+    }
+}
+$net = $incomings - $outgoings;
+?>
+<?php include "header.phtml" ?>
+        <h1>
+            All Transaction
+            <?= $account ? 'for '.$account->getName() : '' ?>
+            <?= $tagName ? 'with #'.$tagName : '' ?>
+        </h1>
+        <div class="summary">
+            <p>In: <span>£<?= $incomings ?></span></p>
+            <p>Out: <span>£<?= $outgoings ?></span></p>
+            <p>Net: <span class="<?= $net < 0 ? 'negative' : '' ?>">£<?= $net ?></span></p>
+        </div>
+        <p>Listed with the newest first</p>
+
+        <?php foreach($transactions as $t): ?>
+        <div class="transaction">
+            <a href="<?= $router->pathFor('transaction', [ 'id' => $t->getId() ]) ?>">
+                <h3>£<?= $t->getValue(); ?></h3>
+            </a>
+            <p>
+                <a href="<?= $router->pathFor('transactions', [ 'account' => $t->getAccount()->getName() ]) ?>">
+                    <?= $t->getAccount()->getName(); ?>:
+                </a>
+                <?= $t->getDate('j F Y (D)') ?> - <?= preg_replace('/#(\w+)/', ' <a href="'.$router->pathFor('tag', [ 'tag' => '$1']).'">#$1</a>', $t->getDescription()) ?>
+                (<a href="<?= $router->pathFor('transaction-edit', [ 'id' => $t->getId() ]) ?>">edit</a>)
+            </p>
+        </div>
+        <?php endforeach; ?>
+
+<?php include "footer.phtml" ?>

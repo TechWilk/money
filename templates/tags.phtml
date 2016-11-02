@@ -1,0 +1,12 @@
+<?php include "header.phtml" ?>
+        <h1>All Hashtags</h1>
+
+        <?php foreach($tags as $tag): ?>
+        <div class="tag">
+            <a href="<?= $router->pathFor('tag', [ 'tag' => $tag->getTag() ]) ?>">
+                <h3>#<?= $tag->getTag() ?></h3>
+            </a>
+        </div>
+        <?php endforeach; ?>
+
+<?php include "footer.phtml" ?>

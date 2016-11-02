@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="money" defaultIdMethod="native">
+
+  <table name="transaction" phpName="Transaction">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+    <column name="date" type="date" required="true" />
+    <column name="value" type="float" required="true" />
+    <column name="description" type="varchar" size="100" />
+    <column name="account_id" type="integer" required="true"/>
+    
+    <foreign-key foreignTable="account">
+      <reference local="account_id" foreign="id" />
+    </foreign-key>
+  </table>
+
+
+  <table name="breakdown" phpName="Breakdown">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+    <column name="transaction_id" type="integer" required="true"/>
+    <column name="description" type="varchar" size="50" required="true" />
+    <column name="value" type="float" required="true"/>
+    <column name="category_id" type="integer" required="true"/>
+    
+    <foreign-key foreignTable="transaction">
+      <reference local="transaction_id" foreign="id" />
+    </foreign-key>
+    <foreign-key foreignTable="category">
+      <reference local="category_id" foreign="id" />
+    </foreign-key>
+  </table>
+
+
+  <table name="category" phpName="Category">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+    <column name="name" type="varchar" size="50" required="true" />
+    <column name="account_id" type="integer" required="true"/>
+    
+    <foreign-key foreignTable="account">
+      <reference local="account_id" foreign="id" />
+    </foreign-key>
+  </table>
+
+
+  <table name="hashtag" phpName="Hashtag">
+    <column name="tag" type="varchar" size="50" primaryKey="true" required="true" />
+    <column name="transaction_id" type="integer" primaryKey="true" required="true"/>
+    
+    <foreign-key foreignTable="transaction">
+      <reference local="transaction_id" foreign="id" />
+    </foreign-key>
+  </table>
+
+
+  <table name="user" phpName="User">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+    <column name="account_id" type="integer" required="true"/>
+    <column name="first_name" type="varchar" size="50" required="true" />
+    <column name="last_name" type="varchar" size="50" required="true" />
+    <column name="email" type="varchar" size="50" required="true" />
+    <column name="password_hash" type="varchar" size="80" required="true" />
+    <column name="password_expire" type="timestamp" />
+    <column name="enable" type="boolean" required="true" defaultValue="1" />
+
+    <foreign-key foreignTable="account">
+      <reference local="account_id" foreign="id" />
+    </foreign-key>
+  </table>
+
+
+  <table name="account" phpName="Account">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+    <column name="name" type="varchar" size="50" required="true" />
+  </table>
+
+</database>

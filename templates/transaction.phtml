@@ -1,0 +1,11 @@
+<?php include "header.phtml" ?>
+        <h1>Transaction</h1>
+        <p>Data of a transaction</p>
+
+        <div class="transaction">
+            <h2 class="value"><?= $t->getAccount()->getName(); ?>: £<?= $t->getValue(); ?></h2>
+            <p><?= $t->getDate('j F Y (D)'); ?></p>
+            <p><?= preg_replace('/#(\w+)/', ' <a href="'.$router->pathFor('tag', [ 'tag' => '$1']).'">#$1</a>', $t->getDescription()) ?></p>
+            <p><a href="<?= $router->pathFor('transaction-edit', [ 'id' => $t->getId() ]) ?>">edit</a></p>
+        </div>
+<?php include "footer.phtml" ?>

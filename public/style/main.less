@@ -1,0 +1,397 @@
+// techwilk
+@import 'https://fonts.googleapis.com/css?family=Lato:400,700';
+
+@primaryColor: #eee;
+@secondaryColor: #eab;
+@hyperlinkColor: #77e; //#98CDFF;
+
+@headerTypeface: 'Lato', Calibri, Airel, sans-serif;
+@bodyTypeface: 'Lato', Calibri, Airel, sans-serif;
+@hyperlinkTypeface: @bodyTypeface;
+
+@headerBarBackground: #282828;
+@headerBarText: #000;
+
+@headerBackground: #333;
+@headerText: #000;
+
+@mainBackground: #333;
+@mainText: #000;
+@mainDividers: @primaryColor;
+@mainFontSize: 1.5rem;
+
+@footerBackground: #282828;
+@footerText: #000;
+
+
+*
+{
+  margin: 0;
+  padding: 0;
+  font-size:62.5%;
+}
+
+body
+{
+  font-family: @bodyTypeface;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+{
+  padding-top: 2rem;
+  span
+  {
+    color: lighten(@headerText, 50%);
+    display: block;
+  }
+}
+
+
+h1,
+h2
+{
+  font-family: @headerTypeface;
+  font-weight: normal;
+  font-size:4.5em;
+  font-size:4.5rem;
+}
+
+h2
+{
+  font-weight: normal;
+  font-size: 3.8em;
+  font-size: 3.8rem;
+}
+
+h3,
+h4,
+h5,
+h6
+{
+  font-weight: normal;
+  font-weight: book;
+  font-family: @headerTypeface;
+  font-size: 1.8rem;
+}
+
+h3
+{
+  font-size: 2.4em;
+  font-size: 2.4rem;
+}
+
+h4
+{
+  font-size:2em;
+	font-size:2rem;
+}
+
+img
+{
+  max-width: 100%;
+  height: 100%;
+}
+
+a,
+.link
+{
+  text-decoration: none;
+  transition: all 0.15s ease-out;
+  color: @hyperlinkColor;
+
+  &.no-link
+  {
+    color: inherit;
+    transition: inherit;
+  }
+
+  &:hover.alt
+  {
+    text-decoration: underline;
+  }
+}
+
+li ul li
+{
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+p,
+small,
+li
+{
+
+  line-height: 2.2rem;
+}
+
+p,
+small,
+a,
+li,
+blockquote,
+cite
+{
+  font-family: @bodyTypeface;
+  font-size: 1em;
+  font-size: @mainFontSize;
+}
+
+blockquote
+{
+  padding: 2rem;
+  background-color: @primaryColor;
+  margin-top: 1rem;
+
+  cite
+  {
+    display: inline-block;
+    margin-top: 1rem;
+  }
+}
+
+
+label,
+input,
+textarea,
+button,
+select,
+option
+{
+  font-family: @bodyTypeface;
+  font-size: 1em;
+  font-size: @mainFontSize;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+label
+{
+  display: block;
+}
+
+input,
+textarea,
+button,
+select,
+option
+{
+  border: 2px @primaryColor solid;
+  outline: none;
+  margin-bottom: 1rem;
+
+  &:focus
+  {
+    box-shadow: 0 0 2rem @secondaryColor;
+  }
+}
+
+select
+{
+  background: transparent;
+  border: 2px @primaryColor solid;
+  height: 4rem;
+  text-indent: 1rem;
+  cursor: pointer;
+}
+
+input[submit],
+button
+{
+  background: transparent;
+  border: 5px @secondaryColor solid;
+  width: auto;
+  padding: 1rem 2rem;
+  transition: all 0.15s ease-out;
+  cursor: pointer;
+
+  &:hover
+  {
+    background-color: @secondaryColor;
+    color: #fff;
+  }
+}
+
+.toggle
+{
+  input
+  {
+    display: none;
+  }
+
+  label
+  {
+    cursor: pointer;
+    display:inline-block;
+    padding: 1rem 2rem;
+    width: auto;
+    color: @hyperlinkColor;
+    border-top: solid 0.5rem @primaryColor;
+    border-bottom: solid 0.5rem @primaryColor;
+  }
+
+  input:checked + label
+  {
+    cursor: default;
+    padding: 1rem 1.5rem;
+    border: solid 0.5rem @secondaryColor;
+    color: @mainText;
+  }
+}
+
+span
+{
+  font-size: 1em;
+
+  &.newline
+  {
+    display: block;
+  }
+}
+
+hr
+{
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+form
+{
+  max-width: 45rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+textarea
+{
+  height: 20rem;
+}
+
+small
+{
+  color: #b2b2b2;
+}
+
+pre,
+strong,
+em
+{
+  font-size: 1.4em;
+  font-size: @mainFontSize;
+}
+
+.btn,
+{
+  display: inline-block;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  padding: 1rem 2rem;
+  color: @mainText;
+
+  &-nosides
+  {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  &:first-child *
+  {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  &-outline
+  {
+    border: 1px #fff solid;
+
+    &:hover
+    {
+      background-color: #fff;
+      color: #000;
+    }
+  }
+}
+
+.center
+{
+  text-align: center;
+}
+
+.right-align
+{
+  text-align: right !important;
+}
+
+audio
+{
+  width: 100%;
+  padding-top: 2rem;
+}
+
+
+
+
+
+
+
+main, header, footer
+{
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+footer
+{
+  padding: 3rem 0;
+}
+
+.transaction
+{
+  padding: 2rem;
+  border: solid 2px #eee;
+  margin-bottom: 1rem;
+
+  h2,
+  h3
+  {
+    padding-top: 0;
+  }
+
+  .value
+  {
+    font-size: 3rem;
+  }
+}
+
+.tag
+{
+  padding: 2rem;
+  border: solid 2px #eee;
+  margin-bottom: 1rem;
+
+  h3
+  {
+    padding-top: 0;
+  }
+}
+
+.summary
+{
+  p
+  {
+    display: inline-block;
+    padding-right: 2rem;
+  }
+
+  .negative
+  {
+    color: #f55;
+  }
+}

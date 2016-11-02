@@ -34,12 +34,13 @@ class Transaction extends BaseTransaction
       // find and store new hashtags
       $hashtagsAdded;
       preg_match_all("/#(\\w+)/", $v, $hashtags);
-      foreach ($hashtags[1] as $tag)
+      $hashtags = array_map('strtolower', $hashtags[1]);
+      foreach ($hashtags as $tag)
       {
-        if (HashtagQuery::create()->filterByTag(strtolower($tag))->filterByTransactionId($this->getId())->count() == 0) // todo: IF hashtag is NOT already set
+        if (HashtagQuery::create()->filterByTag($tag)->filterByTransactionId($this->getId())->count() == 0) // todo: IF hashtag is NOT already set
         {
           $h = new Hashtag();
-          $h->setTag(strtolower($tag));
+          $h->setTag($tag);
           $h->setTransaction($this);
           $h->save();
         }
@@ -49,7 +50,7 @@ class Transaction extends BaseTransaction
       $hashtagsInTransaction = HashtagQuery::create()->filterByTransactionId($this->getId())->find();
       foreach ($hashtagsInTransaction as $tag)
       {
-        if (!in_array($tag->getTag(), $hashtags[1]))
+        if (!in_array($tag->getTag(), $hashtags))
         {
           $tag->delete();
         }

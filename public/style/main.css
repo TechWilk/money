@@ -252,6 +252,9 @@ footer {
 .transaction .value {
   font-size: 3rem;
 }
+.transaction.income {
+  background-color: #eee;
+}
 .tag {
   padding: 2rem;
   border: solid 2px #eee;

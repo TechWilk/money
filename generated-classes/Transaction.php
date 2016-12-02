@@ -28,7 +28,7 @@ class Transaction extends BaseTransaction
     }
 
     if ($this->description !== $v) {
-      $this->description = $v;
+      $this->description = trim($v);
       $this->modifiedColumns[TransactionTableMap::COL_DESCRIPTION] = true;
 
       // find and store new hashtags

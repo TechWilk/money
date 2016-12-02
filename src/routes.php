@@ -53,6 +53,52 @@ $app->get('/tags', function ($request, $response, $args) {
 })->setName('tags');
 
 
+$app->get('/tags.json', function ($request, $response, $args) {
+
+    $this->logger->info("Fetch tags GET '/tags'");
+
+    $query = $request->getQueryParams('q');
+    //$query = strtolower($query['q']);
+
+    $tags = HashtagQuery::create()->distinct()->orderByTag()->find();
+
+    // if (isset($query))
+    // {
+    //     $tags = HashtagQuery::create()->distinct()->where('Hashtag.Tag LIKE ?', '%'.$query.'%')->orderByTag()->toString();
+    // }
+
+    $tagNamesArray = [];
+
+    $lastTag = new Hashtag;
+    foreach($tags as $key => $tag)
+    {
+        if ($tag->getTag() == $lastTag->getTag())
+        {
+            unset($tags[$key]);
+        }
+        else
+        {
+            $tagNamesArray[$tag->getTag()] = $tag->getTag();
+        }
+        $lastTag = $tag;
+        
+    }
+
+    if (isset($query['q']))
+    {
+        foreach($tagNamesArray as $key => $tag)
+        {
+            if (! (strpos($tag, strtolower($query['q'])) !== false) )
+            {
+                unset($tagNamesArray[$key]);
+            }
+        }
+    }
+
+    return $response->withJson($tagNamesArray);
+})->setName('tags-json');
+
+
 $app->get('/transactions/tag/{tag}', function ($request, $response, $args) {
 
     $this->logger->info("Fetch tag GET '/tag/".$args['tag']."'");

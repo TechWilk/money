@@ -38,6 +38,8 @@
             <button type="submit">Save</button>
         </form>
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="<?= $router->pathFor('home') ?>script/jquery.textcomplete.min.js"></script>
         <script>
             function today()
             {
@@ -57,5 +59,57 @@
                 today = yyyy+'-'+mm+'-'+dd;
                 document.getElementById("date").value = today;
             }
+
+            $('#description').textcomplete([
+            { // hashtag strategy
+                match: /(^|\s|#)(\w*)$/, // or use /(^|\s)#(\w*)$/ to force #
+                search: function (term, callback) {
+                    term = term.toLowerCase();
+                    //callback(cache[term], true);
+                    $.getJSON('/money/public/tags.json', { q: term })
+                        .done(function (resp) { callback(resp); })
+                        .fail(function ()     { callback([]);   });
+                },
+                replace: function (value) {
+                    return '$1#' + value + ' ';
+                }//,
+                //cache: true
+            }
+        ]);
         </script>
+        <style>
+            .textcomplete-dropdown {
+                border: 1px solid #ddd;
+                background-color: white;
+            }
+
+            .textcomplete-dropdown li {
+                border-top: 1px solid #ddd;
+                padding: 2px 5px;
+            }
+
+            .textcomplete-dropdown li:first-child {
+                border-top: none;
+            }
+
+            .textcomplete-dropdown li:hover,
+            .textcomplete-dropdown .active {
+                background-color: rgb(110, 183, 219);
+            }
+
+            .textcomplete-dropdown li:hover a,
+            .textcomplete-dropdown .active a {
+                color: #fff;
+            }
+
+            .textcomplete-dropdown {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .textcomplete-dropdown a:hover {
+                cursor: pointer;
+            }
+        </style>
 <?php include "footer.phtml" ?>

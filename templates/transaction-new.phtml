@@ -14,7 +14,7 @@
                 <input type="radio" name="direction" value="income" id="income" <?= ($t && ($t->getValue() > 0)) ? 'checked="checked"' : ''?>><label for="income">Income</label>
             </div>
             <label for="value">Value (£):</label>
-            <input type="number" step="0.01" min="0" name="value" id="value" value="<?= $t ? abs($t->getValue()) : '' ?>">
+            <input type="text" name="value" id="value" value="<?= $t ? abs($t->getValue()) : '' ?>">
 
             <?php /*
             <label for="category">Category:</label>
@@ -33,7 +33,7 @@
             </select>
 
             <label for="description">Description: (use #hashtags)</label>
-            <input type="text" name="description" id="description" value="<?= $t ? $t->getDescription() : '' ?>">
+            <input type="text" name="description" id="description" value="<?= $t ? $t->getDescription() : '' ?>" data-url="<?= $router->pathFor('tags-json') ?>">
 
             <button type="submit">Save</button>
         </form>
@@ -66,7 +66,7 @@
                 search: function (term, callback) {
                     term = term.toLowerCase();
                     //callback(cache[term], true);
-                    $.getJSON('/money/public/tags.json', { q: term })
+                    $.getJSON($('#description').data("url"), { q: term })
                         .done(function (resp) { callback(resp); })
                         .fail(function ()     { callback([]);   });
                 },

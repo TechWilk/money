@@ -244,6 +244,7 @@ footer {
   padding: 2rem;
   border: solid 2px #eee;
   margin-bottom: 1rem;
+  position: relative;
 }
 .transaction h2,
 .transaction h3 {
@@ -252,7 +253,17 @@ footer {
 .transaction .value {
   font-size: 3rem;
 }
-.transaction.income {
+.transaction.income:before {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  width: 1rem;
+  height: 100%;
+  background: #5f5;
+}
+.transaction.bank {
   background-color: #eee;
 }
 .tag {
@@ -269,4 +280,10 @@ footer {
 }
 .summary .negative {
   color: #f55;
+}
+.quick-links.letters li {
+  display: inline-block;
+}
+.quick-links.letters li a {
+  padding: 0.7rem;
 }

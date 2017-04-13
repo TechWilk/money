@@ -28,7 +28,7 @@ $net = $incomings - $outgoings;
         <p>Listed with the newest first</p>
 
         <?php foreach($transactions as $t): ?>
-        <div class="transaction <?= $t->getValue() > 0 ? 'income' : 'outgoings' ?>">
+        <div class="transaction <?= $t->getValue() > 0 ? 'income' : 'outgoings' ?> <?= strtolower($t->getAccount()->getName()) ?>">
             <a href="<?= $router->pathFor('transaction', [ 'id' => $t->getId() ]) ?>">
                 <h3>£<?= $t->getValue(); ?></h3>
             </a>

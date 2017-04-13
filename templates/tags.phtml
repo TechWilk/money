@@ -1,11 +1,37 @@
+<?php
+// organise tags by first letter
+$letter = "";
+$organisedTags = [];
+foreach($tags as $tag) {
+    if ($letter != substr($tag->getTag(), 0, 1)):
+    $letter = substr($tag->getTag(), 0, 1);
+    endif;
+    $organisedTags[$letter][] = $tag;
+}
+?>
+
 <?php include "header.phtml" ?>
         <h1>All Hashtags</h1>
 
-        <?php foreach($tags as $tag): ?>
-        <div class="tag">
-            <a href="<?= $router->pathFor('tag', [ 'tag' => $tag->getTag() ]) ?>">
-                <h3>#<?= $tag->getTag() ?></h3>
-            </a>
+        <p>Jump to:</p>
+        <ul class="quick-links letters">
+            <?php foreach($organisedTags as $letter => $letterTags): ?>
+            <li>
+                <a href="#<?= $letter ?>"><?= $letter ?></a>
+            </li>
+            <?php endforeach ?>
+        </ul>
+
+        <?php foreach($organisedTags as $letter => $letterTags): ?>
+        <div class="letter <?= $letter ?>" id="<?= $letter ?>">
+            <p><?= $letter ?></p>
+            <?php foreach($letterTags as $tag): ?>
+            <div class="tag">
+                <a href="<?= $router->pathFor('tag', [ 'tag' => $tag->getTag() ]) ?>">
+                    <h3>#<?= $tag->getTag() ?></h3>
+                </a>
+            </div>
+            <?php endforeach; ?>
         </div>
         <?php endforeach; ?>
 

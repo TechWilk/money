@@ -113,11 +113,17 @@ $app->get('/transactions/tag/{tag}', function ($request, $response, $args) {
 $app->post('/transaction[/{id}]', function ($request, $response, $args) {
     // Sample log message
     $this->logger->info("Create transaction POST '/transaction'");
-
+    
     $data = $request->getParsedBody();
+
+    $mathString = trim($data['value']);     // trim white spaces
+    $mathString = ereg_replace ('[^0-9\+-\*\/\(\) ]', '', $mathString);    // remove any non-numbers chars; exception for math operators
+    $compute = create_function("", "return (" . $mathString . ");" );
+    $value = 0 + $compute();
+
     $transaction_data = [];
     $transaction_data['date'] = filter_var($data['date'], FILTER_SANITIZE_STRING);
-    $transaction_data['value'] = filter_var($data['value'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $transaction_data['value'] = $value;
     $transaction_data['description'] = filter_var($data['description'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     $transaction_data['category'] = filter_var($data['category'][0], FILTER_SANITIZE_NUMBER_INT);
     $transaction_data['account'] = filter_var($data['account'][0], FILTER_SANITIZE_NUMBER_INT);

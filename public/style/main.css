@@ -274,9 +274,25 @@ footer {
 .tag h3 {
   padding-top: 0;
 }
+.year {
+  display: inline-block;
+  vertical-align: top;
+}
+.month {
+  border-top: 1px #bbb solid;
+  margin-top: 2rem;
+}
+.month h4 {
+  padding-top: 0.5rem;
+}
 .summary p {
   display: inline-block;
   padding-right: 2rem;
+  color: #999;
+}
+.summary p span {
+  display: block;
+  color: #000;
 }
 .summary .negative {
   color: #f55;

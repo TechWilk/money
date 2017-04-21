@@ -399,12 +399,35 @@ footer
   }
 }
 
+.year
+{
+  display: inline-block;
+  vertical-align: top;
+}
+
+.month
+{
+  border-top: 1px #bbb solid;
+  margin-top: 2rem;
+
+  h4 {
+    padding-top: 0.5rem;
+  }
+}
+
 .summary
 {
   p
   {
     display: inline-block;
     padding-right: 2rem;
+    color: #999;
+
+    span
+    {
+      display: block;
+      color: @mainText;
+    }
   }
 
   .negative

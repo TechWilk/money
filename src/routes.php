@@ -200,6 +200,15 @@ $app->get('/transactions[/{account}]', function ($request, $response, $args) {
     return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions, 'account' => $account,"router" => $this->router ] );
 })->setName('transactions');
 
+$app->get('/transactions/{year}/{month}', function ($request, $response, $args) {
+    // Sample log message
+    $this->logger->info("Fetch transactions GET '/transactions/".$args['year']."/".$args['month']."/'");
+
+    $transactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of ".$args['month']." ".$args['year']), 'max' => new DateTime("last day of ".$args['month']." ".$args['year'])])->orderByDate('desc')->find();
+
+    return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions,"router" => $this->router ] );
+})->setName('month');
+
 
 $app->get('/[{name}]', function ($request, $response, $args) {
     // Sample log message

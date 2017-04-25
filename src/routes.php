@@ -204,7 +204,16 @@ $app->get('/transactions/{year}/{month}', function ($request, $response, $args) 
     // Sample log message
     $this->logger->info("Fetch transactions GET '/transactions/".$args['year']."/".$args['month']."/'");
 
-    $transactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of ".$args['month']." ".$args['year']), 'max' => new DateTime("last day of ".$args['month']." ".$args['year'])])->orderByDate('desc')->find();
+    try
+    {
+        $minDate = new DateTime("first day of ".$args['month']." ".$args['year']);
+        $maxDate = new DateTime("last day of ".$args['month']." ".$args['year']);
+        $transactions = TransactionQuery::create()->filterByDate(['min' => $minDate, 'max' => $maxDate])->orderByDate('desc')->find();
+    }
+    catch (\Exception $e)
+    {
+        $transactions = [];
+    }
 
     return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions,"router" => $this->router ] );
 })->setName('month');

@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Hashtag;
-use \HashtagQuery;
+use \TransactionHashtag;
+use \TransactionHashtagQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'hashtag' table.
+ * This class defines the structure of the 'transaction_hashtag' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class HashtagTableMap extends TableMap
+class TransactionHashtagTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class HashtagTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.HashtagTableMap';
+    const CLASS_NAME = '.Map.TransactionHashtagTableMap';
 
     /**
      * The default database name for this class
@@ -44,17 +44,17 @@ class HashtagTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'hashtag';
+    const TABLE_NAME = 'transaction_hashtag';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Hashtag';
+    const OM_CLASS = '\\TransactionHashtag';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Hashtag';
+    const CLASS_DEFAULT = 'TransactionHashtag';
 
     /**
      * The total number of columns
@@ -72,14 +72,14 @@ class HashtagTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the id field
+     * the column name for the transaction_id field
      */
-    const COL_ID = 'hashtag.id';
+    const COL_TRANSACTION_ID = 'transaction_hashtag.transaction_id';
 
     /**
-     * the column name for the tag field
+     * the column name for the hashtag_id field
      */
-    const COL_TAG = 'hashtag.tag';
+    const COL_HASHTAG_ID = 'transaction_hashtag.hashtag_id';
 
     /**
      * The default string format for model objects of the related table
@@ -93,10 +93,10 @@ class HashtagTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Tag', ),
-        self::TYPE_CAMELNAME     => array('id', 'tag', ),
-        self::TYPE_COLNAME       => array(HashtagTableMap::COL_ID, HashtagTableMap::COL_TAG, ),
-        self::TYPE_FIELDNAME     => array('id', 'tag', ),
+        self::TYPE_PHPNAME       => array('TransactionId', 'HashtagId', ),
+        self::TYPE_CAMELNAME     => array('transactionId', 'hashtagId', ),
+        self::TYPE_COLNAME       => array(TransactionHashtagTableMap::COL_TRANSACTION_ID, TransactionHashtagTableMap::COL_HASHTAG_ID, ),
+        self::TYPE_FIELDNAME     => array('transaction_id', 'hashtag_id', ),
         self::TYPE_NUM           => array(0, 1, )
     );
 
@@ -107,10 +107,10 @@ class HashtagTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Tag' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'tag' => 1, ),
-        self::TYPE_COLNAME       => array(HashtagTableMap::COL_ID => 0, HashtagTableMap::COL_TAG => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'tag' => 1, ),
+        self::TYPE_PHPNAME       => array('TransactionId' => 0, 'HashtagId' => 1, ),
+        self::TYPE_CAMELNAME     => array('transactionId' => 0, 'hashtagId' => 1, ),
+        self::TYPE_COLNAME       => array(TransactionHashtagTableMap::COL_TRANSACTION_ID => 0, TransactionHashtagTableMap::COL_HASHTAG_ID => 1, ),
+        self::TYPE_FIELDNAME     => array('transaction_id' => 0, 'hashtag_id' => 1, ),
         self::TYPE_NUM           => array(0, 1, )
     );
 
@@ -124,15 +124,16 @@ class HashtagTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('hashtag');
-        $this->setPhpName('Hashtag');
+        $this->setName('transaction_hashtag');
+        $this->setPhpName('TransactionHashtag');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Hashtag');
+        $this->setClassName('\\TransactionHashtag');
         $this->setPackage('');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addPrimaryKey('tag', 'Tag', 'VARCHAR', true, 50, null);
+        $this->addForeignPrimaryKey('transaction_id', 'TransactionId', 'INTEGER' , 'transaction', 'id', true, null, null);
+        $this->addForeignPrimaryKey('hashtag_id', 'HashtagId', 'INTEGER' , 'hashtag', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -140,14 +141,20 @@ class HashtagTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('TransactionHashtag', '\\TransactionHashtag', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Transaction', '\\Transaction', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':transaction_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Hashtag', '\\Hashtag', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':hashtag_id',
     1 => ':id',
   ),
-), null, null, 'TransactionHashtags', false);
-        $this->addRelation('Transaction', '\\Transaction', RelationMap::MANY_TO_MANY, array(), null, null, 'Transactions');
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -158,14 +165,14 @@ class HashtagTableMap extends TableMap
      * to the cache in order to ensure that the same objects are always returned by find*()
      * and findPk*() calls.
      *
-     * @param \Hashtag $obj A \Hashtag object.
+     * @param \TransactionHashtag $obj A \TransactionHashtag object.
      * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize([(null === $obj->getId() || is_scalar($obj->getId()) || is_callable([$obj->getId(), '__toString']) ? (string) $obj->getId() : $obj->getId()), (null === $obj->getTag() || is_scalar($obj->getTag()) || is_callable([$obj->getTag(), '__toString']) ? (string) $obj->getTag() : $obj->getTag())]);
+                $key = serialize([(null === $obj->getTransactionId() || is_scalar($obj->getTransactionId()) || is_callable([$obj->getTransactionId(), '__toString']) ? (string) $obj->getTransactionId() : $obj->getTransactionId()), (null === $obj->getHashtagId() || is_scalar($obj->getHashtagId()) || is_callable([$obj->getHashtagId(), '__toString']) ? (string) $obj->getHashtagId() : $obj->getHashtagId())]);
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -179,13 +186,13 @@ class HashtagTableMap extends TableMap
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param mixed $value A \Hashtag object or a primary key value.
+     * @param mixed $value A \TransactionHashtag object or a primary key value.
      */
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
-            if (is_object($value) && $value instanceof \Hashtag) {
-                $key = serialize([(null === $value->getId() || is_scalar($value->getId()) || is_callable([$value->getId(), '__toString']) ? (string) $value->getId() : $value->getId()), (null === $value->getTag() || is_scalar($value->getTag()) || is_callable([$value->getTag(), '__toString']) ? (string) $value->getTag() : $value->getTag())]);
+            if (is_object($value) && $value instanceof \TransactionHashtag) {
+                $key = serialize([(null === $value->getTransactionId() || is_scalar($value->getTransactionId()) || is_callable([$value->getTransactionId(), '__toString']) ? (string) $value->getTransactionId() : $value->getTransactionId()), (null === $value->getHashtagId() || is_scalar($value->getHashtagId()) || is_callable([$value->getHashtagId(), '__toString']) ? (string) $value->getHashtagId() : $value->getHashtagId())]);
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -195,7 +202,7 @@ class HashtagTableMap extends TableMap
 
                 return;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \Hashtag object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \TransactionHashtag object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
                 throw $e;
             }
 
@@ -219,11 +226,11 @@ class HashtagTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)])]);
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -245,12 +252,12 @@ class HashtagTableMap extends TableMap
         $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)
         ];
-        $pks[] = (string) $row[
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 1 + $offset
-                : self::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)
         ];
 
         return $pks;
@@ -269,7 +276,7 @@ class HashtagTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? HashtagTableMap::CLASS_DEFAULT : HashtagTableMap::OM_CLASS;
+        return $withPrefix ? TransactionHashtagTableMap::CLASS_DEFAULT : TransactionHashtagTableMap::OM_CLASS;
     }
 
     /**
@@ -283,22 +290,22 @@ class HashtagTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Hashtag object, last column rank)
+     * @return array           (TransactionHashtag object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = HashtagTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = HashtagTableMap::getInstanceFromPool($key))) {
+        $key = TransactionHashtagTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = TransactionHashtagTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + HashtagTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + TransactionHashtagTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = HashtagTableMap::OM_CLASS;
-            /** @var Hashtag $obj */
+            $cls = TransactionHashtagTableMap::OM_CLASS;
+            /** @var TransactionHashtag $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            HashtagTableMap::addInstanceToPool($obj, $key);
+            TransactionHashtagTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -321,18 +328,18 @@ class HashtagTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = HashtagTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = HashtagTableMap::getInstanceFromPool($key))) {
+            $key = TransactionHashtagTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = TransactionHashtagTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Hashtag $obj */
+                /** @var TransactionHashtag $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                HashtagTableMap::addInstanceToPool($obj, $key);
+                TransactionHashtagTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -353,11 +360,11 @@ class HashtagTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(HashtagTableMap::COL_ID);
-            $criteria->addSelectColumn(HashtagTableMap::COL_TAG);
+            $criteria->addSelectColumn(TransactionHashtagTableMap::COL_TRANSACTION_ID);
+            $criteria->addSelectColumn(TransactionHashtagTableMap::COL_HASHTAG_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.tag');
+            $criteria->addSelectColumn($alias . '.transaction_id');
+            $criteria->addSelectColumn($alias . '.hashtag_id');
         }
     }
 
@@ -370,7 +377,7 @@ class HashtagTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(HashtagTableMap::DATABASE_NAME)->getTable(HashtagTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(TransactionHashtagTableMap::DATABASE_NAME)->getTable(TransactionHashtagTableMap::TABLE_NAME);
     }
 
     /**
@@ -378,16 +385,16 @@ class HashtagTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(HashtagTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(HashtagTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new HashtagTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(TransactionHashtagTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(TransactionHashtagTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new TransactionHashtagTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Hashtag or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a TransactionHashtag or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Hashtag object or primary key or array of primary keys
+     * @param mixed               $values Criteria or TransactionHashtag object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -398,17 +405,17 @@ class HashtagTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HashtagTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(TransactionHashtagTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Hashtag) { // it's a model object
+        } elseif ($values instanceof \TransactionHashtag) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(HashtagTableMap::DATABASE_NAME);
+            $criteria = new Criteria(TransactionHashtagTableMap::DATABASE_NAME);
             // primary key is composite; we therefore, expect
             // the primary key passed to be an array of pkey values
             if (count($values) == count($values, COUNT_RECURSIVE)) {
@@ -416,19 +423,19 @@ class HashtagTableMap extends TableMap
                 $values = array($values);
             }
             foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(HashtagTableMap::COL_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(HashtagTableMap::COL_TAG, $value[1]));
+                $criterion = $criteria->getNewCriterion(TransactionHashtagTableMap::COL_TRANSACTION_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(TransactionHashtagTableMap::COL_HASHTAG_ID, $value[1]));
                 $criteria->addOr($criterion);
             }
         }
 
-        $query = HashtagQuery::create()->mergeWith($criteria);
+        $query = TransactionHashtagQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            HashtagTableMap::clearInstancePool();
+            TransactionHashtagTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                HashtagTableMap::removeInstanceFromPool($singleval);
+                TransactionHashtagTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -436,20 +443,20 @@ class HashtagTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the hashtag table.
+     * Deletes all rows from the transaction_hashtag table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return HashtagQuery::create()->doDeleteAll($con);
+        return TransactionHashtagQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Hashtag or Criteria object.
+     * Performs an INSERT on the database, given a TransactionHashtag or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Hashtag object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or TransactionHashtag object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -458,22 +465,18 @@ class HashtagTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HashtagTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(TransactionHashtagTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Hashtag object
-        }
-
-        if ($criteria->containsKey(HashtagTableMap::COL_ID) && $criteria->keyContainsValue(HashtagTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.HashtagTableMap::COL_ID.')');
+            $criteria = $criteria->buildCriteria(); // build Criteria from TransactionHashtag object
         }
 
 
         // Set the correct dbName
-        $query = HashtagQuery::create()->mergeWith($criteria);
+        $query = TransactionHashtagQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -482,7 +485,7 @@ class HashtagTableMap extends TableMap
         });
     }
 
-} // HashtagTableMap
+} // TransactionHashtagTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-HashtagTableMap::buildTableMap();
+TransactionHashtagTableMap::buildTableMap();

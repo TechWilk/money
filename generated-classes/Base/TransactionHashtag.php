@@ -5,19 +5,16 @@ namespace Base;
 use \Hashtag as ChildHashtag;
 use \HashtagQuery as ChildHashtagQuery;
 use \Transaction as ChildTransaction;
-use \TransactionHashtag as ChildTransactionHashtag;
 use \TransactionHashtagQuery as ChildTransactionHashtagQuery;
 use \TransactionQuery as ChildTransactionQuery;
 use \Exception;
 use \PDO;
-use Map\HashtagTableMap;
 use Map\TransactionHashtagTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -26,18 +23,18 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
 /**
- * Base class that represents a row from the 'hashtag' table.
+ * Base class that represents a row from the 'transaction_hashtag' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Hashtag implements ActiveRecordInterface
+abstract class TransactionHashtag implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\HashtagTableMap';
+    const TABLE_MAP = '\\Map\\TransactionHashtagTableMap';
 
 
     /**
@@ -67,34 +64,28 @@ abstract class Hashtag implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the id field.
+     * The value for the transaction_id field.
      *
      * @var        int
      */
-    protected $id;
+    protected $transaction_id;
 
     /**
-     * The value for the tag field.
+     * The value for the hashtag_id field.
      *
-     * @var        string
+     * @var        int
      */
-    protected $tag;
+    protected $hashtag_id;
 
     /**
-     * @var        ObjectCollection|ChildTransactionHashtag[] Collection to store aggregation of ChildTransactionHashtag objects.
+     * @var        ChildTransaction
      */
-    protected $collTransactionHashtags;
-    protected $collTransactionHashtagsPartial;
+    protected $aTransaction;
 
     /**
-     * @var        ObjectCollection|ChildTransaction[] Cross Collection to store aggregation of ChildTransaction objects.
+     * @var        ChildHashtag
      */
-    protected $collTransactions;
-
-    /**
-     * @var bool
-     */
-    protected $collTransactionsPartial;
+    protected $aHashtag;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -105,19 +96,7 @@ abstract class Hashtag implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildTransaction[]
-     */
-    protected $transactionsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildTransactionHashtag[]
-     */
-    protected $transactionHashtagsScheduledForDeletion = null;
-
-    /**
-     * Initializes internal state of Base\Hashtag object.
+     * Initializes internal state of Base\TransactionHashtag object.
      */
     public function __construct()
     {
@@ -212,9 +191,9 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Hashtag</code> instance.  If
-     * <code>obj</code> is an instance of <code>Hashtag</code>, delegates to
-     * <code>equals(Hashtag)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>TransactionHashtag</code> instance.  If
+     * <code>obj</code> is an instance of <code>TransactionHashtag</code>, delegates to
+     * <code>equals(TransactionHashtag)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -280,7 +259,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Hashtag The current object, for fluid interface
+     * @return $this|TransactionHashtag The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -342,64 +321,72 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Get the [id] column value.
+     * Get the [transaction_id] column value.
      *
      * @return int
      */
-    public function getId()
+    public function getTransactionId()
     {
-        return $this->id;
+        return $this->transaction_id;
     }
 
     /**
-     * Get the [tag] column value.
+     * Get the [hashtag_id] column value.
      *
-     * @return string
+     * @return int
      */
-    public function getTag()
+    public function getHashtagId()
     {
-        return $this->tag;
+        return $this->hashtag_id;
     }
 
     /**
-     * Set the value of [id] column.
+     * Set the value of [transaction_id] column.
      *
      * @param int $v new value
-     * @return $this|\Hashtag The current object (for fluent API support)
+     * @return $this|\TransactionHashtag The current object (for fluent API support)
      */
-    public function setId($v)
+    public function setTransactionId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[HashtagTableMap::COL_ID] = true;
+        if ($this->transaction_id !== $v) {
+            $this->transaction_id = $v;
+            $this->modifiedColumns[TransactionHashtagTableMap::COL_TRANSACTION_ID] = true;
+        }
+
+        if ($this->aTransaction !== null && $this->aTransaction->getId() !== $v) {
+            $this->aTransaction = null;
         }
 
         return $this;
-    } // setId()
+    } // setTransactionId()
 
     /**
-     * Set the value of [tag] column.
+     * Set the value of [hashtag_id] column.
      *
-     * @param string $v new value
-     * @return $this|\Hashtag The current object (for fluent API support)
+     * @param int $v new value
+     * @return $this|\TransactionHashtag The current object (for fluent API support)
      */
-    public function setTag($v)
+    public function setHashtagId($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
-        if ($this->tag !== $v) {
-            $this->tag = $v;
-            $this->modifiedColumns[HashtagTableMap::COL_TAG] = true;
+        if ($this->hashtag_id !== $v) {
+            $this->hashtag_id = $v;
+            $this->modifiedColumns[TransactionHashtagTableMap::COL_HASHTAG_ID] = true;
+        }
+
+        if ($this->aHashtag !== null && $this->aHashtag->getId() !== $v) {
+            $this->aHashtag = null;
         }
 
         return $this;
-    } // setTag()
+    } // setHashtagId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -437,11 +424,11 @@ abstract class Hashtag implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : HashtagTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : TransactionHashtagTableMap::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->transaction_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : HashtagTableMap::translateFieldName('Tag', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->tag = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TransactionHashtagTableMap::translateFieldName('HashtagId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->hashtag_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -450,10 +437,10 @@ abstract class Hashtag implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = HashtagTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = TransactionHashtagTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Hashtag'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\TransactionHashtag'), 0, $e);
         }
     }
 
@@ -472,6 +459,12 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aTransaction !== null && $this->transaction_id !== $this->aTransaction->getId()) {
+            $this->aTransaction = null;
+        }
+        if ($this->aHashtag !== null && $this->hashtag_id !== $this->aHashtag->getId()) {
+            $this->aHashtag = null;
+        }
     } // ensureConsistency
 
     /**
@@ -495,13 +488,13 @@ abstract class Hashtag implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(HashtagTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(TransactionHashtagTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildHashtagQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildTransactionHashtagQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -511,9 +504,8 @@ abstract class Hashtag implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collTransactionHashtags = null;
-
-            $this->collTransactions = null;
+            $this->aTransaction = null;
+            $this->aHashtag = null;
         } // if (deep)
     }
 
@@ -523,8 +515,8 @@ abstract class Hashtag implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Hashtag::setDeleted()
-     * @see Hashtag::isDeleted()
+     * @see TransactionHashtag::setDeleted()
+     * @see TransactionHashtag::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -533,11 +525,11 @@ abstract class Hashtag implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HashtagTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(TransactionHashtagTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildHashtagQuery::create()
+            $deleteQuery = ChildTransactionHashtagQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -568,7 +560,7 @@ abstract class Hashtag implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(HashtagTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(TransactionHashtagTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -587,7 +579,7 @@ abstract class Hashtag implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                HashtagTableMap::addInstanceToPool($this);
+                TransactionHashtagTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -613,6 +605,25 @@ abstract class Hashtag implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aTransaction !== null) {
+                if ($this->aTransaction->isModified() || $this->aTransaction->isNew()) {
+                    $affectedRows += $this->aTransaction->save($con);
+                }
+                $this->setTransaction($this->aTransaction);
+            }
+
+            if ($this->aHashtag !== null) {
+                if ($this->aHashtag->isModified() || $this->aHashtag->isNew()) {
+                    $affectedRows += $this->aHashtag->save($con);
+                }
+                $this->setHashtag($this->aHashtag);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -622,52 +633,6 @@ abstract class Hashtag implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->transactionsScheduledForDeletion !== null) {
-                if (!$this->transactionsScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    foreach ($this->transactionsScheduledForDeletion as $entry) {
-                        $entryPk = [];
-
-                        $entryPk[1] = $this->getId();
-                        $entryPk[0] = $entry->getId();
-                        $pks[] = $entryPk;
-                    }
-
-                    \TransactionHashtagQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-
-                    $this->transactionsScheduledForDeletion = null;
-                }
-
-            }
-
-            if ($this->collTransactions) {
-                foreach ($this->collTransactions as $transaction) {
-                    if (!$transaction->isDeleted() && ($transaction->isNew() || $transaction->isModified())) {
-                        $transaction->save($con);
-                    }
-                }
-            }
-
-
-            if ($this->transactionHashtagsScheduledForDeletion !== null) {
-                if (!$this->transactionHashtagsScheduledForDeletion->isEmpty()) {
-                    \TransactionHashtagQuery::create()
-                        ->filterByPrimaryKeys($this->transactionHashtagsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->transactionHashtagsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collTransactionHashtags !== null) {
-                foreach ($this->collTransactionHashtags as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -690,21 +655,17 @@ abstract class Hashtag implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[HashtagTableMap::COL_ID] = true;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . HashtagTableMap::COL_ID . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(HashtagTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'id';
+        if ($this->isColumnModified(TransactionHashtagTableMap::COL_TRANSACTION_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'transaction_id';
         }
-        if ($this->isColumnModified(HashtagTableMap::COL_TAG)) {
-            $modifiedColumns[':p' . $index++]  = 'tag';
+        if ($this->isColumnModified(TransactionHashtagTableMap::COL_HASHTAG_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'hashtag_id';
         }
 
         $sql = sprintf(
-            'INSERT INTO hashtag (%s) VALUES (%s)',
+            'INSERT INTO transaction_hashtag (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -713,11 +674,11 @@ abstract class Hashtag implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'id':
-                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                    case 'transaction_id':
+                        $stmt->bindValue($identifier, $this->transaction_id, PDO::PARAM_INT);
                         break;
-                    case 'tag':
-                        $stmt->bindValue($identifier, $this->tag, PDO::PARAM_STR);
+                    case 'hashtag_id':
+                        $stmt->bindValue($identifier, $this->hashtag_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -726,13 +687,6 @@ abstract class Hashtag implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -765,7 +719,7 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = HashtagTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = TransactionHashtagTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -782,10 +736,10 @@ abstract class Hashtag implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getId();
+                return $this->getTransactionId();
                 break;
             case 1:
-                return $this->getTag();
+                return $this->getHashtagId();
                 break;
             default:
                 return null;
@@ -811,14 +765,14 @@ abstract class Hashtag implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Hashtag'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['TransactionHashtag'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Hashtag'][$this->hashCode()] = true;
-        $keys = HashtagTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['TransactionHashtag'][$this->hashCode()] = true;
+        $keys = TransactionHashtagTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getId(),
-            $keys[1] => $this->getTag(),
+            $keys[0] => $this->getTransactionId(),
+            $keys[1] => $this->getHashtagId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -826,20 +780,35 @@ abstract class Hashtag implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collTransactionHashtags) {
+            if (null !== $this->aTransaction) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'transactionHashtags';
+                        $key = 'transaction';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'transaction_hashtags';
+                        $key = 'transaction';
                         break;
                     default:
-                        $key = 'TransactionHashtags';
+                        $key = 'Transaction';
                 }
 
-                $result[$key] = $this->collTransactionHashtags->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->aTransaction->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aHashtag) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'hashtag';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'hashtag';
+                        break;
+                    default:
+                        $key = 'Hashtag';
+                }
+
+                $result[$key] = $this->aHashtag->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -855,11 +824,11 @@ abstract class Hashtag implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Hashtag
+     * @return $this|\TransactionHashtag
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = HashtagTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = TransactionHashtagTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -870,16 +839,16 @@ abstract class Hashtag implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Hashtag
+     * @return $this|\TransactionHashtag
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setId($value);
+                $this->setTransactionId($value);
                 break;
             case 1:
-                $this->setTag($value);
+                $this->setHashtagId($value);
                 break;
         } // switch()
 
@@ -905,13 +874,13 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = HashtagTableMap::getFieldNames($keyType);
+        $keys = TransactionHashtagTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setId($arr[$keys[0]]);
+            $this->setTransactionId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setTag($arr[$keys[1]]);
+            $this->setHashtagId($arr[$keys[1]]);
         }
     }
 
@@ -932,7 +901,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Hashtag The current object, for fluid interface
+     * @return $this|\TransactionHashtag The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -952,13 +921,13 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(HashtagTableMap::DATABASE_NAME);
+        $criteria = new Criteria(TransactionHashtagTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(HashtagTableMap::COL_ID)) {
-            $criteria->add(HashtagTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(TransactionHashtagTableMap::COL_TRANSACTION_ID)) {
+            $criteria->add(TransactionHashtagTableMap::COL_TRANSACTION_ID, $this->transaction_id);
         }
-        if ($this->isColumnModified(HashtagTableMap::COL_TAG)) {
-            $criteria->add(HashtagTableMap::COL_TAG, $this->tag);
+        if ($this->isColumnModified(TransactionHashtagTableMap::COL_HASHTAG_ID)) {
+            $criteria->add(TransactionHashtagTableMap::COL_HASHTAG_ID, $this->hashtag_id);
         }
 
         return $criteria;
@@ -976,9 +945,9 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildHashtagQuery::create();
-        $criteria->add(HashtagTableMap::COL_ID, $this->id);
-        $criteria->add(HashtagTableMap::COL_TAG, $this->tag);
+        $criteria = ChildTransactionHashtagQuery::create();
+        $criteria->add(TransactionHashtagTableMap::COL_TRANSACTION_ID, $this->transaction_id);
+        $criteria->add(TransactionHashtagTableMap::COL_HASHTAG_ID, $this->hashtag_id);
 
         return $criteria;
     }
@@ -991,11 +960,25 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId() &&
-            null !== $this->getTag();
+        $validPk = null !== $this->getTransactionId() &&
+            null !== $this->getHashtagId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 2;
         $primaryKeyFKs = [];
+
+        //relation transaction_hashtag_fk_98bea7 to table transaction
+        if ($this->aTransaction && $hash = spl_object_hash($this->aTransaction)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
+
+        //relation transaction_hashtag_fk_8d04e3 to table hashtag
+        if ($this->aHashtag && $hash = spl_object_hash($this->aHashtag)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1014,8 +997,8 @@ abstract class Hashtag implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getId();
-        $pks[1] = $this->getTag();
+        $pks[0] = $this->getTransactionId();
+        $pks[1] = $this->getHashtagId();
 
         return $pks;
     }
@@ -1028,8 +1011,8 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setId($keys[0]);
-        $this->setTag($keys[1]);
+        $this->setTransactionId($keys[0]);
+        $this->setHashtagId($keys[1]);
     }
 
     /**
@@ -1038,7 +1021,7 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return (null === $this->getId()) && (null === $this->getTag());
+        return (null === $this->getTransactionId()) && (null === $this->getHashtagId());
     }
 
     /**
@@ -1047,31 +1030,17 @@ abstract class Hashtag implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Hashtag (or compatible) type.
+     * @param      object $copyObj An object of \TransactionHashtag (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setTag($this->getTag());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getTransactionHashtags() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addTransactionHashtag($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setTransactionId($this->getTransactionId());
+        $copyObj->setHashtagId($this->getHashtagId());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1084,7 +1053,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Hashtag Clone of current object.
+     * @return \TransactionHashtag Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1097,516 +1066,108 @@ abstract class Hashtag implements ActiveRecordInterface
         return $copyObj;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ChildTransaction object.
      *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('TransactionHashtag' == $relationName) {
-            return $this->initTransactionHashtags();
-        }
-    }
-
-    /**
-     * Clears out the collTransactionHashtags collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addTransactionHashtags()
-     */
-    public function clearTransactionHashtags()
-    {
-        $this->collTransactionHashtags = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collTransactionHashtags collection loaded partially.
-     */
-    public function resetPartialTransactionHashtags($v = true)
-    {
-        $this->collTransactionHashtagsPartial = $v;
-    }
-
-    /**
-     * Initializes the collTransactionHashtags collection.
-     *
-     * By default this just sets the collTransactionHashtags collection to an empty array (like clearcollTransactionHashtags());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initTransactionHashtags($overrideExisting = true)
-    {
-        if (null !== $this->collTransactionHashtags && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = TransactionHashtagTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collTransactionHashtags = new $collectionClassName;
-        $this->collTransactionHashtags->setModel('\TransactionHashtag');
-    }
-
-    /**
-     * Gets an array of ChildTransactionHashtag objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildHashtag is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildTransactionHashtag[] List of ChildTransactionHashtag objects
+     * @param  ChildTransaction $v
+     * @return $this|\TransactionHashtag The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getTransactionHashtags(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function setTransaction(ChildTransaction $v = null)
     {
-        $partial = $this->collTransactionHashtagsPartial && !$this->isNew();
-        if (null === $this->collTransactionHashtags || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collTransactionHashtags) {
-                // return empty collection
-                $this->initTransactionHashtags();
-            } else {
-                $collTransactionHashtags = ChildTransactionHashtagQuery::create(null, $criteria)
-                    ->filterByHashtag($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collTransactionHashtagsPartial && count($collTransactionHashtags)) {
-                        $this->initTransactionHashtags(false);
-
-                        foreach ($collTransactionHashtags as $obj) {
-                            if (false == $this->collTransactionHashtags->contains($obj)) {
-                                $this->collTransactionHashtags->append($obj);
-                            }
-                        }
-
-                        $this->collTransactionHashtagsPartial = true;
-                    }
-
-                    return $collTransactionHashtags;
-                }
-
-                if ($partial && $this->collTransactionHashtags) {
-                    foreach ($this->collTransactionHashtags as $obj) {
-                        if ($obj->isNew()) {
-                            $collTransactionHashtags[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collTransactionHashtags = $collTransactionHashtags;
-                $this->collTransactionHashtagsPartial = false;
-            }
-        }
-
-        return $this->collTransactionHashtags;
-    }
-
-    /**
-     * Sets a collection of ChildTransactionHashtag objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $transactionHashtags A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildHashtag The current object (for fluent API support)
-     */
-    public function setTransactionHashtags(Collection $transactionHashtags, ConnectionInterface $con = null)
-    {
-        /** @var ChildTransactionHashtag[] $transactionHashtagsToDelete */
-        $transactionHashtagsToDelete = $this->getTransactionHashtags(new Criteria(), $con)->diff($transactionHashtags);
-
-
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->transactionHashtagsScheduledForDeletion = clone $transactionHashtagsToDelete;
-
-        foreach ($transactionHashtagsToDelete as $transactionHashtagRemoved) {
-            $transactionHashtagRemoved->setHashtag(null);
-        }
-
-        $this->collTransactionHashtags = null;
-        foreach ($transactionHashtags as $transactionHashtag) {
-            $this->addTransactionHashtag($transactionHashtag);
-        }
-
-        $this->collTransactionHashtags = $transactionHashtags;
-        $this->collTransactionHashtagsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related TransactionHashtag objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related TransactionHashtag objects.
-     * @throws PropelException
-     */
-    public function countTransactionHashtags(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collTransactionHashtagsPartial && !$this->isNew();
-        if (null === $this->collTransactionHashtags || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collTransactionHashtags) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getTransactionHashtags());
-            }
-
-            $query = ChildTransactionHashtagQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByHashtag($this)
-                ->count($con);
-        }
-
-        return count($this->collTransactionHashtags);
-    }
-
-    /**
-     * Method called to associate a ChildTransactionHashtag object to this object
-     * through the ChildTransactionHashtag foreign key attribute.
-     *
-     * @param  ChildTransactionHashtag $l ChildTransactionHashtag
-     * @return $this|\Hashtag The current object (for fluent API support)
-     */
-    public function addTransactionHashtag(ChildTransactionHashtag $l)
-    {
-        if ($this->collTransactionHashtags === null) {
-            $this->initTransactionHashtags();
-            $this->collTransactionHashtagsPartial = true;
-        }
-
-        if (!$this->collTransactionHashtags->contains($l)) {
-            $this->doAddTransactionHashtag($l);
-
-            if ($this->transactionHashtagsScheduledForDeletion and $this->transactionHashtagsScheduledForDeletion->contains($l)) {
-                $this->transactionHashtagsScheduledForDeletion->remove($this->transactionHashtagsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildTransactionHashtag $transactionHashtag The ChildTransactionHashtag object to add.
-     */
-    protected function doAddTransactionHashtag(ChildTransactionHashtag $transactionHashtag)
-    {
-        $this->collTransactionHashtags[]= $transactionHashtag;
-        $transactionHashtag->setHashtag($this);
-    }
-
-    /**
-     * @param  ChildTransactionHashtag $transactionHashtag The ChildTransactionHashtag object to remove.
-     * @return $this|ChildHashtag The current object (for fluent API support)
-     */
-    public function removeTransactionHashtag(ChildTransactionHashtag $transactionHashtag)
-    {
-        if ($this->getTransactionHashtags()->contains($transactionHashtag)) {
-            $pos = $this->collTransactionHashtags->search($transactionHashtag);
-            $this->collTransactionHashtags->remove($pos);
-            if (null === $this->transactionHashtagsScheduledForDeletion) {
-                $this->transactionHashtagsScheduledForDeletion = clone $this->collTransactionHashtags;
-                $this->transactionHashtagsScheduledForDeletion->clear();
-            }
-            $this->transactionHashtagsScheduledForDeletion[]= clone $transactionHashtag;
-            $transactionHashtag->setHashtag(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Hashtag is new, it will return
-     * an empty collection; or if this Hashtag has previously
-     * been saved, it will retrieve related TransactionHashtags from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Hashtag.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildTransactionHashtag[] List of ChildTransactionHashtag objects
-     */
-    public function getTransactionHashtagsJoinTransaction(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildTransactionHashtagQuery::create(null, $criteria);
-        $query->joinWith('Transaction', $joinBehavior);
-
-        return $this->getTransactionHashtags($query, $con);
-    }
-
-    /**
-     * Clears out the collTransactions collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addTransactions()
-     */
-    public function clearTransactions()
-    {
-        $this->collTransactions = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Initializes the collTransactions crossRef collection.
-     *
-     * By default this just sets the collTransactions collection to an empty collection (like clearTransactions());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initTransactions()
-    {
-        $collectionClassName = TransactionHashtagTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collTransactions = new $collectionClassName;
-        $this->collTransactionsPartial = true;
-        $this->collTransactions->setModel('\Transaction');
-    }
-
-    /**
-     * Checks if the collTransactions collection is loaded.
-     *
-     * @return bool
-     */
-    public function isTransactionsLoaded()
-    {
-        return null !== $this->collTransactions;
-    }
-
-    /**
-     * Gets a collection of ChildTransaction objects related by a many-to-many relationship
-     * to the current object by way of the transaction_hashtag cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildHashtag is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
-     */
-    public function getTransactions(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collTransactionsPartial && !$this->isNew();
-        if (null === $this->collTransactions || null !== $criteria || $partial) {
-            if ($this->isNew()) {
-                // return empty collection
-                if (null === $this->collTransactions) {
-                    $this->initTransactions();
-                }
-            } else {
-
-                $query = ChildTransactionQuery::create(null, $criteria)
-                    ->filterByHashtag($this);
-                $collTransactions = $query->find($con);
-                if (null !== $criteria) {
-                    return $collTransactions;
-                }
-
-                if ($partial && $this->collTransactions) {
-                    //make sure that already added objects gets added to the list of the database.
-                    foreach ($this->collTransactions as $obj) {
-                        if (!$collTransactions->contains($obj)) {
-                            $collTransactions[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collTransactions = $collTransactions;
-                $this->collTransactionsPartial = false;
-            }
-        }
-
-        return $this->collTransactions;
-    }
-
-    /**
-     * Sets a collection of Transaction objects related by a many-to-many relationship
-     * to the current object by way of the transaction_hashtag cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param  Collection $transactions A Propel collection.
-     * @param  ConnectionInterface $con Optional connection object
-     * @return $this|ChildHashtag The current object (for fluent API support)
-     */
-    public function setTransactions(Collection $transactions, ConnectionInterface $con = null)
-    {
-        $this->clearTransactions();
-        $currentTransactions = $this->getTransactions();
-
-        $transactionsScheduledForDeletion = $currentTransactions->diff($transactions);
-
-        foreach ($transactionsScheduledForDeletion as $toDelete) {
-            $this->removeTransaction($toDelete);
-        }
-
-        foreach ($transactions as $transaction) {
-            if (!$currentTransactions->contains($transaction)) {
-                $this->doAddTransaction($transaction);
-            }
-        }
-
-        $this->collTransactionsPartial = false;
-        $this->collTransactions = $transactions;
-
-        return $this;
-    }
-
-    /**
-     * Gets the number of Transaction objects related by a many-to-many relationship
-     * to the current object by way of the transaction_hashtag cross-reference table.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      boolean $distinct Set to true to force count distinct
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return int the number of related Transaction objects
-     */
-    public function countTransactions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collTransactionsPartial && !$this->isNew();
-        if (null === $this->collTransactions || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collTransactions) {
-                return 0;
-            } else {
-
-                if ($partial && !$criteria) {
-                    return count($this->getTransactions());
-                }
-
-                $query = ChildTransactionQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByHashtag($this)
-                    ->count($con);
-            }
+        if ($v === null) {
+            $this->setTransactionId(NULL);
         } else {
-            return count($this->collTransactions);
-        }
-    }
-
-    /**
-     * Associate a ChildTransaction to this object
-     * through the transaction_hashtag cross reference table.
-     *
-     * @param ChildTransaction $transaction
-     * @return ChildHashtag The current object (for fluent API support)
-     */
-    public function addTransaction(ChildTransaction $transaction)
-    {
-        if ($this->collTransactions === null) {
-            $this->initTransactions();
+            $this->setTransactionId($v->getId());
         }
 
-        if (!$this->getTransactions()->contains($transaction)) {
-            // only add it if the **same** object is not already associated
-            $this->collTransactions->push($transaction);
-            $this->doAddTransaction($transaction);
-        }
+        $this->aTransaction = $v;
 
-        return $this;
-    }
-
-    /**
-     *
-     * @param ChildTransaction $transaction
-     */
-    protected function doAddTransaction(ChildTransaction $transaction)
-    {
-        $transactionHashtag = new ChildTransactionHashtag();
-
-        $transactionHashtag->setTransaction($transaction);
-
-        $transactionHashtag->setHashtag($this);
-
-        $this->addTransactionHashtag($transactionHashtag);
-
-        // set the back reference to this object directly as using provided method either results
-        // in endless loop or in multiple relations
-        if (!$transaction->isHashtagsLoaded()) {
-            $transaction->initHashtags();
-            $transaction->getHashtags()->push($this);
-        } elseif (!$transaction->getHashtags()->contains($this)) {
-            $transaction->getHashtags()->push($this);
-        }
-
-    }
-
-    /**
-     * Remove transaction of this object
-     * through the transaction_hashtag cross reference table.
-     *
-     * @param ChildTransaction $transaction
-     * @return ChildHashtag The current object (for fluent API support)
-     */
-    public function removeTransaction(ChildTransaction $transaction)
-    {
-        if ($this->getTransactions()->contains($transaction)) { $transactionHashtag = new ChildTransactionHashtag();
-
-            $transactionHashtag->setTransaction($transaction);
-            if ($transaction->isHashtagsLoaded()) {
-                //remove the back reference if available
-                $transaction->getHashtags()->removeObject($this);
-            }
-
-            $transactionHashtag->setHashtag($this);
-            $this->removeTransactionHashtag(clone $transactionHashtag);
-            $transactionHashtag->clear();
-
-            $this->collTransactions->remove($this->collTransactions->search($transaction));
-
-            if (null === $this->transactionsScheduledForDeletion) {
-                $this->transactionsScheduledForDeletion = clone $this->collTransactions;
-                $this->transactionsScheduledForDeletion->clear();
-            }
-
-            $this->transactionsScheduledForDeletion->push($transaction);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildTransaction object, it will not be re-added.
+        if ($v !== null) {
+            $v->addTransactionHashtag($this);
         }
 
 
         return $this;
+    }
+
+
+    /**
+     * Get the associated ChildTransaction object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildTransaction The associated ChildTransaction object.
+     * @throws PropelException
+     */
+    public function getTransaction(ConnectionInterface $con = null)
+    {
+        if ($this->aTransaction === null && ($this->transaction_id !== null)) {
+            $this->aTransaction = ChildTransactionQuery::create()->findPk($this->transaction_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aTransaction->addTransactionHashtags($this);
+             */
+        }
+
+        return $this->aTransaction;
+    }
+
+    /**
+     * Declares an association between this object and a ChildHashtag object.
+     *
+     * @param  ChildHashtag $v
+     * @return $this|\TransactionHashtag The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setHashtag(ChildHashtag $v = null)
+    {
+        if ($v === null) {
+            $this->setHashtagId(NULL);
+        } else {
+            $this->setHashtagId($v->getId());
+        }
+
+        $this->aHashtag = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildHashtag object, it will not be re-added.
+        if ($v !== null) {
+            $v->addTransactionHashtag($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildHashtag object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildHashtag The associated ChildHashtag object.
+     * @throws PropelException
+     */
+    public function getHashtag(ConnectionInterface $con = null)
+    {
+        if ($this->aHashtag === null && ($this->hashtag_id !== null)) {
+            $this->aHashtag = ChildHashtagQuery::create()
+                ->filterByTransactionHashtag($this) // here
+                ->findOne($con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aHashtag->addTransactionHashtags($this);
+             */
+        }
+
+        return $this->aHashtag;
     }
 
     /**
@@ -1616,8 +1177,14 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->id = null;
-        $this->tag = null;
+        if (null !== $this->aTransaction) {
+            $this->aTransaction->removeTransactionHashtag($this);
+        }
+        if (null !== $this->aHashtag) {
+            $this->aHashtag->removeTransactionHashtag($this);
+        }
+        $this->transaction_id = null;
+        $this->hashtag_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1636,20 +1203,10 @@ abstract class Hashtag implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collTransactionHashtags) {
-                foreach ($this->collTransactionHashtags as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collTransactions) {
-                foreach ($this->collTransactions as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collTransactionHashtags = null;
-        $this->collTransactions = null;
+        $this->aTransaction = null;
+        $this->aHashtag = null;
     }
 
     /**
@@ -1659,7 +1216,7 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(HashtagTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(TransactionHashtagTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

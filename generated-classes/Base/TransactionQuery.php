@@ -60,17 +60,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTransactionQuery rightJoinWithBreakdown() Adds a RIGHT JOIN clause and with to the query using the Breakdown relation
  * @method     ChildTransactionQuery innerJoinWithBreakdown() Adds a INNER JOIN clause and with to the query using the Breakdown relation
  *
- * @method     ChildTransactionQuery leftJoinHashtag($relationAlias = null) Adds a LEFT JOIN clause to the query using the Hashtag relation
- * @method     ChildTransactionQuery rightJoinHashtag($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Hashtag relation
- * @method     ChildTransactionQuery innerJoinHashtag($relationAlias = null) Adds a INNER JOIN clause to the query using the Hashtag relation
+ * @method     ChildTransactionQuery leftJoinTransactionHashtag($relationAlias = null) Adds a LEFT JOIN clause to the query using the TransactionHashtag relation
+ * @method     ChildTransactionQuery rightJoinTransactionHashtag($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TransactionHashtag relation
+ * @method     ChildTransactionQuery innerJoinTransactionHashtag($relationAlias = null) Adds a INNER JOIN clause to the query using the TransactionHashtag relation
  *
- * @method     ChildTransactionQuery joinWithHashtag($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Hashtag relation
+ * @method     ChildTransactionQuery joinWithTransactionHashtag($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the TransactionHashtag relation
  *
- * @method     ChildTransactionQuery leftJoinWithHashtag() Adds a LEFT JOIN clause and with to the query using the Hashtag relation
- * @method     ChildTransactionQuery rightJoinWithHashtag() Adds a RIGHT JOIN clause and with to the query using the Hashtag relation
- * @method     ChildTransactionQuery innerJoinWithHashtag() Adds a INNER JOIN clause and with to the query using the Hashtag relation
+ * @method     ChildTransactionQuery leftJoinWithTransactionHashtag() Adds a LEFT JOIN clause and with to the query using the TransactionHashtag relation
+ * @method     ChildTransactionQuery rightJoinWithTransactionHashtag() Adds a RIGHT JOIN clause and with to the query using the TransactionHashtag relation
+ * @method     ChildTransactionQuery innerJoinWithTransactionHashtag() Adds a INNER JOIN clause and with to the query using the TransactionHashtag relation
  *
- * @method     \AccountQuery|\BreakdownQuery|\HashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \AccountQuery|\BreakdownQuery|\TransactionHashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildTransaction findOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query
  * @method     ChildTransaction findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTransaction matching the query, or a new ChildTransaction object populated from the query conditions when no match is found
@@ -628,40 +628,40 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Hashtag object
+     * Filter the query by a related \TransactionHashtag object
      *
-     * @param \Hashtag|ObjectCollection $hashtag the related object to use as filter
+     * @param \TransactionHashtag|ObjectCollection $transactionHashtag the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildTransactionQuery The current query, for fluid interface
      */
-    public function filterByHashtag($hashtag, $comparison = null)
+    public function filterByTransactionHashtag($transactionHashtag, $comparison = null)
     {
-        if ($hashtag instanceof \Hashtag) {
+        if ($transactionHashtag instanceof \TransactionHashtag) {
             return $this
-                ->addUsingAlias(TransactionTableMap::COL_ID, $hashtag->getTransactionId(), $comparison);
-        } elseif ($hashtag instanceof ObjectCollection) {
+                ->addUsingAlias(TransactionTableMap::COL_ID, $transactionHashtag->getTransactionId(), $comparison);
+        } elseif ($transactionHashtag instanceof ObjectCollection) {
             return $this
-                ->useHashtagQuery()
-                ->filterByPrimaryKeys($hashtag->getPrimaryKeys())
+                ->useTransactionHashtagQuery()
+                ->filterByPrimaryKeys($transactionHashtag->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByHashtag() only accepts arguments of type \Hashtag or Collection');
+            throw new PropelException('filterByTransactionHashtag() only accepts arguments of type \TransactionHashtag or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Hashtag relation
+     * Adds a JOIN clause to the query using the TransactionHashtag relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
-    public function joinHashtag($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinTransactionHashtag($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Hashtag');
+        $relationMap = $tableMap->getRelation('TransactionHashtag');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -676,14 +676,14 @@ abstract class TransactionQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Hashtag');
+            $this->addJoinObject($join, 'TransactionHashtag');
         }
 
         return $this;
     }
 
     /**
-     * Use the Hashtag relation Hashtag object
+     * Use the TransactionHashtag relation TransactionHashtag object
      *
      * @see useQuery()
      *
@@ -691,13 +691,30 @@ abstract class TransactionQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \HashtagQuery A secondary query class using the current class as primary query
+     * @return \TransactionHashtagQuery A secondary query class using the current class as primary query
      */
-    public function useHashtagQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useTransactionHashtagQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinHashtag($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Hashtag', '\HashtagQuery');
+            ->joinTransactionHashtag($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'TransactionHashtag', '\TransactionHashtagQuery');
+    }
+
+    /**
+     * Filter the query by a related Hashtag object
+     * using the transaction_hashtag table as cross reference
+     *
+     * @param Hashtag $hashtag the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByHashtag($hashtag, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useTransactionHashtagQuery()
+            ->filterByHashtag($hashtag, $comparison)
+            ->endUse();
     }
 
     /**

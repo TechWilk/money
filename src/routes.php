@@ -37,17 +37,7 @@ $app->get('/tags', function ($request, $response, $args) {
 
     $this->logger->info("Fetch tags GET '/tags'");
 
-    $tags = HashtagQuery::create()->distinct()->orderByTag()->find();
-
-    $lastTag = new Hashtag;
-    foreach($tags as $key => $tag)
-    {
-        if ($tag->getTag() == $lastTag->getTag())
-        {
-            unset($tags[$key]);
-        }
-        $lastTag = $tag;
-    }
+    $tags = HashtagQuery::create()->orderByTag()->find();
 
     return $this->renderer->render($response, 'tags.phtml', [ "tags" => $tags, "router" => $this->router ] );
 })->setName('tags');
@@ -60,35 +50,25 @@ $app->get('/tags.json', function ($request, $response, $args) {
     $query = $request->getQueryParams('q');
     //$query = strtolower($query['q']);
 
-    $tags = HashtagQuery::create()->distinct()->orderByTag()->find();
+    $tags = HashtagQuery::create()->orderByTag()->find();
 
     // if (isset($query))
     // {
-    //     $tags = HashtagQuery::create()->distinct()->where('Hashtag.Tag LIKE ?', '%'.$query.'%')->orderByTag()->toString();
+    //     $tags = HashtagQuery::create()->where('Hashtag.Tag LIKE ?', '%'.$query.'%')->orderByTag()->toString();
     // }
 
     $tagNamesArray = [];
 
-    $lastTag = new Hashtag;
-    foreach($tags as $key => $tag)
+    foreach($tags as $tag)
     {
-        if ($tag->getTag() == $lastTag->getTag())
-        {
-            unset($tags[$key]);
-        }
-        else
-        {
-            $tagNamesArray[$tag->getTag()] = $tag->getTag();
-        }
-        $lastTag = $tag;
-        
+        $tagNamesArray[$tag->getTag()] = [$tag->getTag(), $tag->countTransactions()];  
     }
 
     if (isset($query['q']))
     {
         foreach($tagNamesArray as $key => $tag)
         {
-            if (! (strpos($tag, strtolower($query['q'])) !== false) )
+            if (! (strpos($tag[0], strtolower($query['q'])) !== false) )
             {
                 unset($tagNamesArray[$key]);
             }
@@ -103,7 +83,7 @@ $app->get('/transactions/tag/{tag}', function ($request, $response, $args) {
 
     $this->logger->info("Fetch tag GET '/tag/".$args['tag']."'");
 
-    $transactions = TransactionQuery::create()->useHashtagQuery()->filterByTag(strtolower($args['tag']))->endUse()->orderByDate('desc')->find();
+    $transactions = TransactionQuery::create()->useTransactionHashtagQuery()->useHashtagQuery()->filterByTag(strtolower($args['tag']))->endUse()->endUse()->orderByDate('desc')->find();
 
     return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions, 'tagName' => $args['tag'], "router" => $this->router ] );
 })->setName('tag');
@@ -218,6 +198,51 @@ $app->get('/transactions/{year}/{month}', function ($request, $response, $args) 
     return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions,"router" => $this->router ] );
 })->setName('month');
 
+
+/*
+$app->get('/fixHashtags', function ($request, $response, $args) {
+
+    $transactions = TransactionQuery::create()->find();
+    foreach ($transactions as $transaction)
+    {
+        preg_match_all("/#(\\w+)/", $transaction->getDescription(), $hashtags);
+        $hashtags = array_map('strtolower', $hashtags[1]);
+        foreach ($hashtags as $tag)
+        {
+            var_dump($tag);
+            //exit;
+            $h = new Hashtag();
+            if (HashtagQuery::create()->filterByTag($tag)->count() == 0)
+            {
+                $h->setTag($tag);
+                $h->save();
+               
+            }
+            else
+            {
+                $h = HashtagQuery::create()->filterByTag($tag)->findOne();
+            }
+            var_dump($h);
+            $hasHashtag = false;
+            foreach ($transaction->getHashtags() as $currentHashtag)
+            {
+                var_dump($currentHashtag);
+                if ($currentHashtag->getTag() == $h->getTag())
+                {
+                    $hasHashtag = true;
+                }
+            }
+            if (!$hasHashtag)
+            {
+                $transaction->addHashtag($h);
+                $transaction->save();
+            }
+        }
+    }
+
+    return $response->withStatus(302)->withHeader('Location', $this->router->pathFor('home'));
+});
+*/
 
 $app->get('/[{name}]', function ($request, $response, $args) {
     // Sample log message

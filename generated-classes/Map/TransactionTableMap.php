@@ -172,13 +172,14 @@ class TransactionTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Breakdowns', false);
-        $this->addRelation('Hashtag', '\\Hashtag', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('TransactionHashtag', '\\TransactionHashtag', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':transaction_id',
     1 => ':id',
   ),
-), null, null, 'Hashtags', false);
+), null, null, 'TransactionHashtags', false);
+        $this->addRelation('Hashtag', '\\Hashtag', RelationMap::MANY_TO_MANY, array(), null, null, 'Hashtags');
     } // buildRelations()
 
     /**

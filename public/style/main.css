@@ -273,6 +273,11 @@ footer {
 }
 .tag h3 {
   padding-top: 0;
+  display: inline-block;
+}
+.tag small {
+  padding: 0 0.5rem;
+  display: inline-block;
 }
 .year {
   display: inline-block;

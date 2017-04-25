@@ -71,7 +71,11 @@
                         .fail(function ()     { callback([]);   });
                 },
                 replace: function (value) {
-                    return '$1#' + value + ' ';
+                    return '$1#' + value[0] + ' ';
+                },
+                template: function (value, term) {
+                // `value` is an element of array callbacked by searchFunc.
+                return value[0] + ' (' + value[1] + ')';
                 }//,
                 //cache: true
             }

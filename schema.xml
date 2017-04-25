@@ -42,13 +42,23 @@
 
 
   <table name="hashtag" phpName="Hashtag">
+    <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
     <column name="tag" type="varchar" size="50" primaryKey="true" required="true" />
-    <column name="transaction_id" type="integer" primaryKey="true" required="true"/>
-    
-    <foreign-key foreignTable="transaction">
-      <reference local="transaction_id" foreign="id" />
-    </foreign-key>
+    <unique>
+      <unique-column name="tag" />
+    </unique>
   </table>
+
+  <table name="transaction_hashtag" isCrossRef="true">
+  <column name="transaction_id" type="integer" primaryKey="true"/>
+  <column name="hashtag_id" type="integer" primaryKey="true"/>
+  <foreign-key foreignTable="transaction">
+    <reference local="transaction_id" foreign="id" />
+  </foreign-key>
+  <foreign-key foreignTable="hashtag">
+    <reference local="hashtag_id" foreign="id"/>
+  </foreign-key>
+</table>
 
 
   <table name="user" phpName="User">

@@ -29,6 +29,7 @@ foreach($tags as $tag) {
             <div class="tag">
                 <a href="<?= $router->pathFor('tag', [ 'tag' => $tag->getTag() ]) ?>">
                     <h3>#<?= $tag->getTag() ?></h3>
+                    <small><?= $tag->countTransactions() ?></small>
                 </a>
             </div>
             <?php endforeach; ?>

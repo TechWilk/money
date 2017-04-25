@@ -9,12 +9,14 @@ use \BreakdownQuery as ChildBreakdownQuery;
 use \Hashtag as ChildHashtag;
 use \HashtagQuery as ChildHashtagQuery;
 use \Transaction as ChildTransaction;
+use \TransactionHashtag as ChildTransactionHashtag;
+use \TransactionHashtagQuery as ChildTransactionHashtagQuery;
 use \TransactionQuery as ChildTransactionQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
 use Map\BreakdownTableMap;
-use Map\HashtagTableMap;
+use Map\TransactionHashtagTableMap;
 use Map\TransactionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -118,9 +120,19 @@ abstract class Transaction implements ActiveRecordInterface
     protected $collBreakdownsPartial;
 
     /**
-     * @var        ObjectCollection|ChildHashtag[] Collection to store aggregation of ChildHashtag objects.
+     * @var        ObjectCollection|ChildTransactionHashtag[] Collection to store aggregation of ChildTransactionHashtag objects.
+     */
+    protected $collTransactionHashtags;
+    protected $collTransactionHashtagsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildHashtag[] Cross Collection to store aggregation of ChildHashtag objects.
      */
     protected $collHashtags;
+
+    /**
+     * @var bool
+     */
     protected $collHashtagsPartial;
 
     /**
@@ -133,15 +145,21 @@ abstract class Transaction implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildHashtag[]
+     */
+    protected $hashtagsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildBreakdown[]
      */
     protected $breakdownsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildHashtag[]
+     * @var ObjectCollection|ChildTransactionHashtag[]
      */
-    protected $hashtagsScheduledForDeletion = null;
+    protected $transactionHashtagsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Transaction object.
@@ -660,8 +678,9 @@ abstract class Transaction implements ActiveRecordInterface
             $this->aAccount = null;
             $this->collBreakdowns = null;
 
-            $this->collHashtags = null;
+            $this->collTransactionHashtags = null;
 
+            $this->collHashtags = null;
         } // if (deep)
     }
 
@@ -784,6 +803,35 @@ abstract class Transaction implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->hashtagsScheduledForDeletion !== null) {
+                if (!$this->hashtagsScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    foreach ($this->hashtagsScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
+                    }
+
+                    \TransactionHashtagQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+
+                    $this->hashtagsScheduledForDeletion = null;
+                }
+
+            }
+
+            if ($this->collHashtags) {
+                foreach ($this->collHashtags as $hashtag) {
+                    if (!$hashtag->isDeleted() && ($hashtag->isNew() || $hashtag->isModified())) {
+                        $hashtag->save($con);
+                    }
+                }
+            }
+
+
             if ($this->breakdownsScheduledForDeletion !== null) {
                 if (!$this->breakdownsScheduledForDeletion->isEmpty()) {
                     \BreakdownQuery::create()
@@ -801,17 +849,17 @@ abstract class Transaction implements ActiveRecordInterface
                 }
             }
 
-            if ($this->hashtagsScheduledForDeletion !== null) {
-                if (!$this->hashtagsScheduledForDeletion->isEmpty()) {
-                    \HashtagQuery::create()
-                        ->filterByPrimaryKeys($this->hashtagsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->transactionHashtagsScheduledForDeletion !== null) {
+                if (!$this->transactionHashtagsScheduledForDeletion->isEmpty()) {
+                    \TransactionHashtagQuery::create()
+                        ->filterByPrimaryKeys($this->transactionHashtagsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->hashtagsScheduledForDeletion = null;
+                    $this->transactionHashtagsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collHashtags !== null) {
-                foreach ($this->collHashtags as $referrerFK) {
+            if ($this->collTransactionHashtags !== null) {
+                foreach ($this->collTransactionHashtags as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1038,20 +1086,20 @@ abstract class Transaction implements ActiveRecordInterface
 
                 $result[$key] = $this->collBreakdowns->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collHashtags) {
+            if (null !== $this->collTransactionHashtags) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'hashtags';
+                        $key = 'transactionHashtags';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'hashtags';
+                        $key = 'transaction_hashtags';
                         break;
                     default:
-                        $key = 'Hashtags';
+                        $key = 'TransactionHashtags';
                 }
 
-                $result[$key] = $this->collHashtags->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collTransactionHashtags->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1301,9 +1349,9 @@ abstract class Transaction implements ActiveRecordInterface
                 }
             }
 
-            foreach ($this->getHashtags() as $relObj) {
+            foreach ($this->getTransactionHashtags() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addHashtag($relObj->copy($deepCopy));
+                    $copyObj->addTransactionHashtag($relObj->copy($deepCopy));
                 }
             }
 
@@ -1402,8 +1450,8 @@ abstract class Transaction implements ActiveRecordInterface
         if ('Breakdown' == $relationName) {
             return $this->initBreakdowns();
         }
-        if ('Hashtag' == $relationName) {
-            return $this->initHashtags();
+        if ('TransactionHashtag' == $relationName) {
+            return $this->initTransactionHashtags();
         }
     }
 
@@ -1658,6 +1706,259 @@ abstract class Transaction implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collTransactionHashtags collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addTransactionHashtags()
+     */
+    public function clearTransactionHashtags()
+    {
+        $this->collTransactionHashtags = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collTransactionHashtags collection loaded partially.
+     */
+    public function resetPartialTransactionHashtags($v = true)
+    {
+        $this->collTransactionHashtagsPartial = $v;
+    }
+
+    /**
+     * Initializes the collTransactionHashtags collection.
+     *
+     * By default this just sets the collTransactionHashtags collection to an empty array (like clearcollTransactionHashtags());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initTransactionHashtags($overrideExisting = true)
+    {
+        if (null !== $this->collTransactionHashtags && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = TransactionHashtagTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collTransactionHashtags = new $collectionClassName;
+        $this->collTransactionHashtags->setModel('\TransactionHashtag');
+    }
+
+    /**
+     * Gets an array of ChildTransactionHashtag objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildTransaction is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildTransactionHashtag[] List of ChildTransactionHashtag objects
+     * @throws PropelException
+     */
+    public function getTransactionHashtags(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTransactionHashtagsPartial && !$this->isNew();
+        if (null === $this->collTransactionHashtags || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collTransactionHashtags) {
+                // return empty collection
+                $this->initTransactionHashtags();
+            } else {
+                $collTransactionHashtags = ChildTransactionHashtagQuery::create(null, $criteria)
+                    ->filterByTransaction($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collTransactionHashtagsPartial && count($collTransactionHashtags)) {
+                        $this->initTransactionHashtags(false);
+
+                        foreach ($collTransactionHashtags as $obj) {
+                            if (false == $this->collTransactionHashtags->contains($obj)) {
+                                $this->collTransactionHashtags->append($obj);
+                            }
+                        }
+
+                        $this->collTransactionHashtagsPartial = true;
+                    }
+
+                    return $collTransactionHashtags;
+                }
+
+                if ($partial && $this->collTransactionHashtags) {
+                    foreach ($this->collTransactionHashtags as $obj) {
+                        if ($obj->isNew()) {
+                            $collTransactionHashtags[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collTransactionHashtags = $collTransactionHashtags;
+                $this->collTransactionHashtagsPartial = false;
+            }
+        }
+
+        return $this->collTransactionHashtags;
+    }
+
+    /**
+     * Sets a collection of ChildTransactionHashtag objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $transactionHashtags A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildTransaction The current object (for fluent API support)
+     */
+    public function setTransactionHashtags(Collection $transactionHashtags, ConnectionInterface $con = null)
+    {
+        /** @var ChildTransactionHashtag[] $transactionHashtagsToDelete */
+        $transactionHashtagsToDelete = $this->getTransactionHashtags(new Criteria(), $con)->diff($transactionHashtags);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->transactionHashtagsScheduledForDeletion = clone $transactionHashtagsToDelete;
+
+        foreach ($transactionHashtagsToDelete as $transactionHashtagRemoved) {
+            $transactionHashtagRemoved->setTransaction(null);
+        }
+
+        $this->collTransactionHashtags = null;
+        foreach ($transactionHashtags as $transactionHashtag) {
+            $this->addTransactionHashtag($transactionHashtag);
+        }
+
+        $this->collTransactionHashtags = $transactionHashtags;
+        $this->collTransactionHashtagsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related TransactionHashtag objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related TransactionHashtag objects.
+     * @throws PropelException
+     */
+    public function countTransactionHashtags(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTransactionHashtagsPartial && !$this->isNew();
+        if (null === $this->collTransactionHashtags || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTransactionHashtags) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getTransactionHashtags());
+            }
+
+            $query = ChildTransactionHashtagQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByTransaction($this)
+                ->count($con);
+        }
+
+        return count($this->collTransactionHashtags);
+    }
+
+    /**
+     * Method called to associate a ChildTransactionHashtag object to this object
+     * through the ChildTransactionHashtag foreign key attribute.
+     *
+     * @param  ChildTransactionHashtag $l ChildTransactionHashtag
+     * @return $this|\Transaction The current object (for fluent API support)
+     */
+    public function addTransactionHashtag(ChildTransactionHashtag $l)
+    {
+        if ($this->collTransactionHashtags === null) {
+            $this->initTransactionHashtags();
+            $this->collTransactionHashtagsPartial = true;
+        }
+
+        if (!$this->collTransactionHashtags->contains($l)) {
+            $this->doAddTransactionHashtag($l);
+
+            if ($this->transactionHashtagsScheduledForDeletion and $this->transactionHashtagsScheduledForDeletion->contains($l)) {
+                $this->transactionHashtagsScheduledForDeletion->remove($this->transactionHashtagsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildTransactionHashtag $transactionHashtag The ChildTransactionHashtag object to add.
+     */
+    protected function doAddTransactionHashtag(ChildTransactionHashtag $transactionHashtag)
+    {
+        $this->collTransactionHashtags[]= $transactionHashtag;
+        $transactionHashtag->setTransaction($this);
+    }
+
+    /**
+     * @param  ChildTransactionHashtag $transactionHashtag The ChildTransactionHashtag object to remove.
+     * @return $this|ChildTransaction The current object (for fluent API support)
+     */
+    public function removeTransactionHashtag(ChildTransactionHashtag $transactionHashtag)
+    {
+        if ($this->getTransactionHashtags()->contains($transactionHashtag)) {
+            $pos = $this->collTransactionHashtags->search($transactionHashtag);
+            $this->collTransactionHashtags->remove($pos);
+            if (null === $this->transactionHashtagsScheduledForDeletion) {
+                $this->transactionHashtagsScheduledForDeletion = clone $this->collTransactionHashtags;
+                $this->transactionHashtagsScheduledForDeletion->clear();
+            }
+            $this->transactionHashtagsScheduledForDeletion[]= clone $transactionHashtag;
+            $transactionHashtag->setTransaction(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Transaction is new, it will return
+     * an empty collection; or if this Transaction has previously
+     * been saved, it will retrieve related TransactionHashtags from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Transaction.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildTransactionHashtag[] List of ChildTransactionHashtag objects
+     */
+    public function getTransactionHashtagsJoinHashtag(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildTransactionHashtagQuery::create(null, $criteria);
+        $query->joinWith('Hashtag', $joinBehavior);
+
+        return $this->getTransactionHashtags($query, $con);
+    }
+
+    /**
      * Clears out the collHashtags collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -1672,39 +1973,36 @@ abstract class Transaction implements ActiveRecordInterface
     }
 
     /**
-     * Reset is the collHashtags collection loaded partially.
-     */
-    public function resetPartialHashtags($v = true)
-    {
-        $this->collHashtagsPartial = $v;
-    }
-
-    /**
-     * Initializes the collHashtags collection.
+     * Initializes the collHashtags crossRef collection.
      *
-     * By default this just sets the collHashtags collection to an empty array (like clearcollHashtags());
+     * By default this just sets the collHashtags collection to an empty collection (like clearHashtags());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
      * @return void
      */
-    public function initHashtags($overrideExisting = true)
+    public function initHashtags()
     {
-        if (null !== $this->collHashtags && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = HashtagTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = TransactionHashtagTableMap::getTableMap()->getCollectionClassName();
 
         $this->collHashtags = new $collectionClassName;
+        $this->collHashtagsPartial = true;
         $this->collHashtags->setModel('\Hashtag');
     }
 
     /**
-     * Gets an array of ChildHashtag objects which contain a foreign key that references this object.
+     * Checks if the collHashtags collection is loaded.
+     *
+     * @return bool
+     */
+    public function isHashtagsLoaded()
+    {
+        return null !== $this->collHashtags;
+    }
+
+    /**
+     * Gets a collection of ChildHashtag objects related by a many-to-many relationship
+     * to the current object by way of the transaction_hashtag cross-reference table.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1712,42 +2010,33 @@ abstract class Transaction implements ActiveRecordInterface
      * If this ChildTransaction is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
      * @return ObjectCollection|ChildHashtag[] List of ChildHashtag objects
-     * @throws PropelException
      */
     public function getHashtags(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         $partial = $this->collHashtagsPartial && !$this->isNew();
-        if (null === $this->collHashtags || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collHashtags) {
+        if (null === $this->collHashtags || null !== $criteria || $partial) {
+            if ($this->isNew()) {
                 // return empty collection
-                $this->initHashtags();
+                if (null === $this->collHashtags) {
+                    $this->initHashtags();
+                }
             } else {
-                $collHashtags = ChildHashtagQuery::create(null, $criteria)
-                    ->filterByTransaction($this)
-                    ->find($con);
 
+                $query = ChildHashtagQuery::create(null, $criteria)
+                    ->filterByTransaction($this);
+                $collHashtags = $query->find($con);
                 if (null !== $criteria) {
-                    if (false !== $this->collHashtagsPartial && count($collHashtags)) {
-                        $this->initHashtags(false);
-
-                        foreach ($collHashtags as $obj) {
-                            if (false == $this->collHashtags->contains($obj)) {
-                                $this->collHashtags->append($obj);
-                            }
-                        }
-
-                        $this->collHashtagsPartial = true;
-                    }
-
                     return $collHashtags;
                 }
 
                 if ($partial && $this->collHashtags) {
+                    //make sure that already added objects gets added to the list of the database.
                     foreach ($this->collHashtags as $obj) {
-                        if ($obj->isNew()) {
+                        if (!$collHashtags->contains($obj)) {
                             $collHashtags[] = $obj;
                         }
                     }
@@ -1762,49 +2051,47 @@ abstract class Transaction implements ActiveRecordInterface
     }
 
     /**
-     * Sets a collection of ChildHashtag objects related by a one-to-many relationship
-     * to the current object.
+     * Sets a collection of Hashtag objects related by a many-to-many relationship
+     * to the current object by way of the transaction_hashtag cross-reference table.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $hashtags A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
+     * @param  Collection $hashtags A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
      * @return $this|ChildTransaction The current object (for fluent API support)
      */
     public function setHashtags(Collection $hashtags, ConnectionInterface $con = null)
     {
-        /** @var ChildHashtag[] $hashtagsToDelete */
-        $hashtagsToDelete = $this->getHashtags(new Criteria(), $con)->diff($hashtags);
+        $this->clearHashtags();
+        $currentHashtags = $this->getHashtags();
 
+        $hashtagsScheduledForDeletion = $currentHashtags->diff($hashtags);
 
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->hashtagsScheduledForDeletion = clone $hashtagsToDelete;
-
-        foreach ($hashtagsToDelete as $hashtagRemoved) {
-            $hashtagRemoved->setTransaction(null);
+        foreach ($hashtagsScheduledForDeletion as $toDelete) {
+            $this->removeHashtag($toDelete);
         }
 
-        $this->collHashtags = null;
         foreach ($hashtags as $hashtag) {
-            $this->addHashtag($hashtag);
+            if (!$currentHashtags->contains($hashtag)) {
+                $this->doAddHashtag($hashtag);
+            }
         }
 
-        $this->collHashtags = $hashtags;
         $this->collHashtagsPartial = false;
+        $this->collHashtags = $hashtags;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Hashtag objects.
+     * Gets the number of Hashtag objects related by a many-to-many relationship
+     * to the current object by way of the transaction_hashtag cross-reference table.
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Hashtag objects.
-     * @throws PropelException
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related Hashtag objects
      */
     public function countHashtags(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
@@ -1812,75 +2099,104 @@ abstract class Transaction implements ActiveRecordInterface
         if (null === $this->collHashtags || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collHashtags) {
                 return 0;
-            }
+            } else {
 
-            if ($partial && !$criteria) {
-                return count($this->getHashtags());
-            }
+                if ($partial && !$criteria) {
+                    return count($this->getHashtags());
+                }
 
-            $query = ChildHashtagQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
+                $query = ChildHashtagQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
 
-            return $query
-                ->filterByTransaction($this)
-                ->count($con);
+                return $query
+                    ->filterByTransaction($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collHashtags);
         }
-
-        return count($this->collHashtags);
     }
 
     /**
-     * Method called to associate a ChildHashtag object to this object
-     * through the ChildHashtag foreign key attribute.
+     * Associate a ChildHashtag to this object
+     * through the transaction_hashtag cross reference table.
      *
-     * @param  ChildHashtag $l ChildHashtag
-     * @return $this|\Transaction The current object (for fluent API support)
+     * @param ChildHashtag $hashtag
+     * @return ChildTransaction The current object (for fluent API support)
      */
-    public function addHashtag(ChildHashtag $l)
+    public function addHashtag(ChildHashtag $hashtag)
     {
         if ($this->collHashtags === null) {
             $this->initHashtags();
-            $this->collHashtagsPartial = true;
         }
 
-        if (!$this->collHashtags->contains($l)) {
-            $this->doAddHashtag($l);
-
-            if ($this->hashtagsScheduledForDeletion and $this->hashtagsScheduledForDeletion->contains($l)) {
-                $this->hashtagsScheduledForDeletion->remove($this->hashtagsScheduledForDeletion->search($l));
-            }
+        if (!$this->getHashtags()->contains($hashtag)) {
+            // only add it if the **same** object is not already associated
+            $this->collHashtags->push($hashtag);
+            $this->doAddHashtag($hashtag);
         }
 
         return $this;
     }
 
     /**
-     * @param ChildHashtag $hashtag The ChildHashtag object to add.
+     *
+     * @param ChildHashtag $hashtag
      */
     protected function doAddHashtag(ChildHashtag $hashtag)
     {
-        $this->collHashtags[]= $hashtag;
-        $hashtag->setTransaction($this);
+        $transactionHashtag = new ChildTransactionHashtag();
+
+        $transactionHashtag->setHashtag($hashtag);
+
+        $transactionHashtag->setTransaction($this);
+
+        $this->addTransactionHashtag($transactionHashtag);
+
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$hashtag->isTransactionsLoaded()) {
+            $hashtag->initTransactions();
+            $hashtag->getTransactions()->push($this);
+        } elseif (!$hashtag->getTransactions()->contains($this)) {
+            $hashtag->getTransactions()->push($this);
+        }
+
     }
 
     /**
-     * @param  ChildHashtag $hashtag The ChildHashtag object to remove.
-     * @return $this|ChildTransaction The current object (for fluent API support)
+     * Remove hashtag of this object
+     * through the transaction_hashtag cross reference table.
+     *
+     * @param ChildHashtag $hashtag
+     * @return ChildTransaction The current object (for fluent API support)
      */
     public function removeHashtag(ChildHashtag $hashtag)
     {
-        if ($this->getHashtags()->contains($hashtag)) {
-            $pos = $this->collHashtags->search($hashtag);
-            $this->collHashtags->remove($pos);
+        if ($this->getHashtags()->contains($hashtag)) { $transactionHashtag = new ChildTransactionHashtag();
+
+            $transactionHashtag->setHashtag($hashtag);
+            if ($hashtag->isTransactionsLoaded()) {
+                //remove the back reference if available
+                $hashtag->getTransactions()->removeObject($this);
+            }
+
+            $transactionHashtag->setTransaction($this);
+            $this->removeTransactionHashtag(clone $transactionHashtag);
+            $transactionHashtag->clear();
+
+            $this->collHashtags->remove($this->collHashtags->search($hashtag));
+
             if (null === $this->hashtagsScheduledForDeletion) {
                 $this->hashtagsScheduledForDeletion = clone $this->collHashtags;
                 $this->hashtagsScheduledForDeletion->clear();
             }
-            $this->hashtagsScheduledForDeletion[]= clone $hashtag;
-            $hashtag->setTransaction(null);
+
+            $this->hashtagsScheduledForDeletion->push($hashtag);
         }
+
 
         return $this;
     }
@@ -1923,6 +2239,11 @@ abstract class Transaction implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collTransactionHashtags) {
+                foreach ($this->collTransactionHashtags as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collHashtags) {
                 foreach ($this->collHashtags as $o) {
                     $o->clearAllReferences($deep);
@@ -1931,6 +2252,7 @@ abstract class Transaction implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collBreakdowns = null;
+        $this->collTransactionHashtags = null;
         $this->collHashtags = null;
         $this->aAccount = null;
     }

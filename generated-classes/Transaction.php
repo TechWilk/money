@@ -32,27 +32,29 @@ class Transaction extends BaseTransaction
       $this->modifiedColumns[TransactionTableMap::COL_DESCRIPTION] = true;
 
       // find and store new hashtags
-      $hashtagsAdded;
       preg_match_all("/#(\\w+)/", $v, $hashtags);
       $hashtags = array_map('strtolower', $hashtags[1]);
       foreach ($hashtags as $tag)
       {
-        if (HashtagQuery::create()->filterByTag($tag)->filterByTransactionId($this->getId())->count() == 0) // todo: IF hashtag is NOT already set
+        $h = new Hashtag();
+        if (HashtagQuery::create()->filterByTag($tag)->count() == 0)
         {
-          $h = new Hashtag();
-          $h->setTag($tag);
-          $h->setTransaction($this);
-          $h->save();
+            $h->setTag($tag);
+            $h->save();
         }
+        else
+        {
+            $h = HashtagQuery::create()->filterByTag($tag)->findOne();
+        }
+        $this->addHashtag($h);
       }
 
       // remove hashtags no longer in use
-      $hashtagsInTransaction = HashtagQuery::create()->filterByTransactionId($this->getId())->find();
-      foreach ($hashtagsInTransaction as $tag)
+      foreach ($this->getHashtags() as $tag)
       {
         if (!in_array($tag->getTag(), $hashtags))
         {
-          $tag->delete();
+          $this->removeHashtag($tag);
         }
       }
 

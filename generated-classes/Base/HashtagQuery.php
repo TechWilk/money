@@ -20,11 +20,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
+ * @method     ChildHashtagQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildHashtagQuery orderByTag($order = Criteria::ASC) Order by the tag column
- * @method     ChildHashtagQuery orderByTransactionId($order = Criteria::ASC) Order by the transaction_id column
  *
+ * @method     ChildHashtagQuery groupById() Group by the id column
  * @method     ChildHashtagQuery groupByTag() Group by the tag column
- * @method     ChildHashtagQuery groupByTransactionId() Group by the transaction_id column
  *
  * @method     ChildHashtagQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildHashtagQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -34,33 +34,33 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHashtagQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildHashtagQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildHashtagQuery leftJoinTransaction($relationAlias = null) Adds a LEFT JOIN clause to the query using the Transaction relation
- * @method     ChildHashtagQuery rightJoinTransaction($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Transaction relation
- * @method     ChildHashtagQuery innerJoinTransaction($relationAlias = null) Adds a INNER JOIN clause to the query using the Transaction relation
+ * @method     ChildHashtagQuery leftJoinTransactionHashtag($relationAlias = null) Adds a LEFT JOIN clause to the query using the TransactionHashtag relation
+ * @method     ChildHashtagQuery rightJoinTransactionHashtag($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TransactionHashtag relation
+ * @method     ChildHashtagQuery innerJoinTransactionHashtag($relationAlias = null) Adds a INNER JOIN clause to the query using the TransactionHashtag relation
  *
- * @method     ChildHashtagQuery joinWithTransaction($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Transaction relation
+ * @method     ChildHashtagQuery joinWithTransactionHashtag($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the TransactionHashtag relation
  *
- * @method     ChildHashtagQuery leftJoinWithTransaction() Adds a LEFT JOIN clause and with to the query using the Transaction relation
- * @method     ChildHashtagQuery rightJoinWithTransaction() Adds a RIGHT JOIN clause and with to the query using the Transaction relation
- * @method     ChildHashtagQuery innerJoinWithTransaction() Adds a INNER JOIN clause and with to the query using the Transaction relation
+ * @method     ChildHashtagQuery leftJoinWithTransactionHashtag() Adds a LEFT JOIN clause and with to the query using the TransactionHashtag relation
+ * @method     ChildHashtagQuery rightJoinWithTransactionHashtag() Adds a RIGHT JOIN clause and with to the query using the TransactionHashtag relation
+ * @method     ChildHashtagQuery innerJoinWithTransactionHashtag() Adds a INNER JOIN clause and with to the query using the TransactionHashtag relation
  *
- * @method     \TransactionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TransactionHashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildHashtag findOne(ConnectionInterface $con = null) Return the first ChildHashtag matching the query
  * @method     ChildHashtag findOneOrCreate(ConnectionInterface $con = null) Return the first ChildHashtag matching the query, or a new ChildHashtag object populated from the query conditions when no match is found
  *
- * @method     ChildHashtag findOneByTag(string $tag) Return the first ChildHashtag filtered by the tag column
- * @method     ChildHashtag findOneByTransactionId(int $transaction_id) Return the first ChildHashtag filtered by the transaction_id column *
+ * @method     ChildHashtag findOneById(int $id) Return the first ChildHashtag filtered by the id column
+ * @method     ChildHashtag findOneByTag(string $tag) Return the first ChildHashtag filtered by the tag column *
 
  * @method     ChildHashtag requirePk($key, ConnectionInterface $con = null) Return the ChildHashtag by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHashtag requireOne(ConnectionInterface $con = null) Return the first ChildHashtag matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
+ * @method     ChildHashtag requireOneById(int $id) Return the first ChildHashtag filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHashtag requireOneByTag(string $tag) Return the first ChildHashtag filtered by the tag column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildHashtag requireOneByTransactionId(int $transaction_id) Return the first ChildHashtag filtered by the transaction_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildHashtag[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildHashtag objects based on current ModelCriteria
+ * @method     ChildHashtag[]|ObjectCollection findById(int $id) Return ChildHashtag objects filtered by the id column
  * @method     ChildHashtag[]|ObjectCollection findByTag(string $tag) Return ChildHashtag objects filtered by the tag column
- * @method     ChildHashtag[]|ObjectCollection findByTransactionId(int $transaction_id) Return ChildHashtag objects filtered by the transaction_id column
  * @method     ChildHashtag[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -113,7 +113,7 @@ abstract class HashtagQuery extends ModelCriteria
      * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param array[$tag, $transaction_id] $key Primary key to use for the query
+     * @param array[$id, $tag] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildHashtag|array|mixed the result, formatted by the current formatter
@@ -159,11 +159,11 @@ abstract class HashtagQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT tag, transaction_id FROM hashtag WHERE tag = :p0 AND transaction_id = :p1';
+        $sql = 'SELECT id, tag FROM hashtag WHERE id = :p0 AND tag = :p1';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key[0], PDO::PARAM_STR);
-            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_STR);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -233,8 +233,8 @@ abstract class HashtagQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(HashtagTableMap::COL_TAG, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(HashtagTableMap::COL_TRANSACTION_ID, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(HashtagTableMap::COL_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(HashtagTableMap::COL_TAG, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -252,13 +252,54 @@ abstract class HashtagQuery extends ModelCriteria
             return $this->add(null, '1<>1', Criteria::CUSTOM);
         }
         foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(HashtagTableMap::COL_TAG, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(HashtagTableMap::COL_TRANSACTION_ID, $key[1], Criteria::EQUAL);
+            $cton0 = $this->getNewCriterion(HashtagTableMap::COL_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(HashtagTableMap::COL_TAG, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
 
         return $this;
+    }
+
+    /**
+     * Filter the query on the id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterById(1234); // WHERE id = 1234
+     * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+     * $query->filterById(array('min' => 12)); // WHERE id > 12
+     * </code>
+     *
+     * @param     mixed $id The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildHashtagQuery The current query, for fluid interface
+     */
+    public function filterById($id = null, $comparison = null)
+    {
+        if (is_array($id)) {
+            $useMinMax = false;
+            if (isset($id['min'])) {
+                $this->addUsingAlias(HashtagTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($id['max'])) {
+                $this->addUsingAlias(HashtagTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(HashtagTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -287,87 +328,40 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the transaction_id column
+     * Filter the query by a related \TransactionHashtag object
      *
-     * Example usage:
-     * <code>
-     * $query->filterByTransactionId(1234); // WHERE transaction_id = 1234
-     * $query->filterByTransactionId(array(12, 34)); // WHERE transaction_id IN (12, 34)
-     * $query->filterByTransactionId(array('min' => 12)); // WHERE transaction_id > 12
-     * </code>
-     *
-     * @see       filterByTransaction()
-     *
-     * @param     mixed $transactionId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildHashtagQuery The current query, for fluid interface
-     */
-    public function filterByTransactionId($transactionId = null, $comparison = null)
-    {
-        if (is_array($transactionId)) {
-            $useMinMax = false;
-            if (isset($transactionId['min'])) {
-                $this->addUsingAlias(HashtagTableMap::COL_TRANSACTION_ID, $transactionId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($transactionId['max'])) {
-                $this->addUsingAlias(HashtagTableMap::COL_TRANSACTION_ID, $transactionId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(HashtagTableMap::COL_TRANSACTION_ID, $transactionId, $comparison);
-    }
-
-    /**
-     * Filter the query by a related \Transaction object
-     *
-     * @param \Transaction|ObjectCollection $transaction The related object(s) to use as filter
+     * @param \TransactionHashtag|ObjectCollection $transactionHashtag the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildHashtagQuery The current query, for fluid interface
      */
-    public function filterByTransaction($transaction, $comparison = null)
+    public function filterByTransactionHashtag($transactionHashtag, $comparison = null)
     {
-        if ($transaction instanceof \Transaction) {
+        if ($transactionHashtag instanceof \TransactionHashtag) {
             return $this
-                ->addUsingAlias(HashtagTableMap::COL_TRANSACTION_ID, $transaction->getId(), $comparison);
-        } elseif ($transaction instanceof ObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
+                ->addUsingAlias(HashtagTableMap::COL_ID, $transactionHashtag->getHashtagId(), $comparison);
+        } elseif ($transactionHashtag instanceof ObjectCollection) {
             return $this
-                ->addUsingAlias(HashtagTableMap::COL_TRANSACTION_ID, $transaction->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->useTransactionHashtagQuery()
+                ->filterByPrimaryKeys($transactionHashtag->getPrimaryKeys())
+                ->endUse();
         } else {
-            throw new PropelException('filterByTransaction() only accepts arguments of type \Transaction or Collection');
+            throw new PropelException('filterByTransactionHashtag() only accepts arguments of type \TransactionHashtag or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Transaction relation
+     * Adds a JOIN clause to the query using the TransactionHashtag relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildHashtagQuery The current query, for fluid interface
      */
-    public function joinTransaction($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinTransactionHashtag($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Transaction');
+        $relationMap = $tableMap->getRelation('TransactionHashtag');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -382,14 +376,14 @@ abstract class HashtagQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Transaction');
+            $this->addJoinObject($join, 'TransactionHashtag');
         }
 
         return $this;
     }
 
     /**
-     * Use the Transaction relation Transaction object
+     * Use the TransactionHashtag relation TransactionHashtag object
      *
      * @see useQuery()
      *
@@ -397,13 +391,30 @@ abstract class HashtagQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TransactionQuery A secondary query class using the current class as primary query
+     * @return \TransactionHashtagQuery A secondary query class using the current class as primary query
      */
-    public function useTransactionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useTransactionHashtagQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinTransaction($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Transaction', '\TransactionQuery');
+            ->joinTransactionHashtag($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'TransactionHashtag', '\TransactionHashtagQuery');
+    }
+
+    /**
+     * Filter the query by a related Transaction object
+     * using the transaction_hashtag table as cross reference
+     *
+     * @param Transaction $transaction the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildHashtagQuery The current query, for fluid interface
+     */
+    public function filterByTransaction($transaction, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useTransactionHashtagQuery()
+            ->filterByTransaction($transaction, $comparison)
+            ->endUse();
     }
 
     /**
@@ -416,8 +427,8 @@ abstract class HashtagQuery extends ModelCriteria
     public function prune($hashtag = null)
     {
         if ($hashtag) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(HashtagTableMap::COL_TAG), $hashtag->getTag(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(HashtagTableMap::COL_TRANSACTION_ID), $hashtag->getTransactionId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(HashtagTableMap::COL_ID), $hashtag->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(HashtagTableMap::COL_TAG), $hashtag->getTag(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

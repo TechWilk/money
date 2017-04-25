@@ -55,6 +55,11 @@ class Transaction extends BaseTransaction
         if (!in_array($tag->getTag(), $hashtags))
         {
           $this->removeHashtag($tag);
+          $this->save();
+          if ($tag->countTransactions() == 0)
+          {
+            $tag->delete();
+          }
         }
       }
 

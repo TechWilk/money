@@ -1,0 +1,30 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+<h1>All Hashtags</h1>
+
+<p>Jump to:</p>
+<ul class="quick-links letters">
+    {% for letter, tagsWithLetter in tags | group_by(=> _.tag|first|capitalize ) %}
+    <li>
+        <a href="#{{ letter }}">{{ letter }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% for letter, tagsWithLetter in tags | group_by(=> _.tag|first|capitalize ) %}
+<div class="letter <?= $letter ?>" id="{{ letter }}">
+    <p>{{ letter }}</p>
+    {% for tag in tagsWithLetter %}
+    <div class="tag">
+        <a href="{{ path_for('tag', { 'tag': tag.tag } ) }}">
+            <h3>#{{ tag.tag }}</h3>
+            <small>{{ tag.countTransactions }}</small>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{#
+<div class="transaction {{ transaction.value > 0 ? 'income' : 'outgoings' }} {{ transaction.account.name | lower }}">
+    <h2 class="value">{{ transaction.account.name }}: £{{ transaction.value }}</h2>
+    <p>{{ transaction.date | date('j F Y (D)') }}</p>
+    <p><?= preg_replace('/#(\w+)/', ' <a href="'.$router->pathFor('tag', [ 'tag' => '$1']).'">#$1</a>', $t->getDescription()) ?></p>
+    <p>{{ transaction.description }}</p>
+    <p><a href="{{ path_for('transaction-edit', { 'id': transaction.id }) }}">edit</a></p>
+</div>
+
+#}
+<div class="transaction {{ transaction.value > 0 ? 'income' : 'outgoings' }} {{ transaction.account.name | lower }}">
+  <a href="{{ path_for('transaction', { 'id': transaction.id } ) }}">
+    <h3>£{{ transaction.value }}</h3>
+  </a>
+  <p>
+    <a href="{{ path_for('transactions', { 'account': transaction.account.name } ) }}">
+      {{ transaction.account.name }}:
+    </a>
+    {{ transaction.date | date('j F Y (D)') }} - {{ transaction.description | hashtagify }}
+    (<a href="{{ path_for('transaction-edit', { 'id': transaction.id } ) }}">edit</a>)
+  </p>
+</div>

@@ -39,7 +39,7 @@ $app->get('/tags', function ($request, $response, $args) {
 
     $tags = HashtagQuery::create()->orderByTag()->find();
 
-    return $this->renderer->render($response, 'tags.phtml', [ "tags" => $tags, "router" => $this->router ] );
+    return $this->view->render($response, 'tags.twig', [ "tags" => $tags, "router" => $this->router ] );
 })->setName('tags');
 
 
@@ -85,7 +85,7 @@ $app->get('/transactions/tag/{tag}', function ($request, $response, $args) {
 
     $transactions = TransactionQuery::create()->useTransactionHashtagQuery()->useHashtagQuery()->filterByTag(strtolower($args['tag']))->endUse()->endUse()->orderByDate('desc')->find();
 
-    return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions, 'tagName' => $args['tag'], "router" => $this->router ] );
+    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'tagName' => $args['tag'], "router" => $this->router ] );
 })->setName('tag');
 
 
@@ -97,7 +97,7 @@ $app->post('/transaction[/{id}]', function ($request, $response, $args) {
     $data = $request->getParsedBody();
 
     $mathString = trim($data['value']);     // trim white spaces
-    $mathString = ereg_replace ('[^0-9\+-\*\/\(\) ]', '', $mathString);    // remove any non-numbers chars; exception for math operators
+    $mathString = preg_replace ('[^0-9\+-\*\/\(\) ]', '', $mathString);    // remove any non-numbers chars; exception for math operators
     $compute = create_function("", "return (" . $mathString . ");" );
     $value = 0 + $compute();
 
@@ -139,7 +139,7 @@ $app->get('/transaction/new', function ($request, $response, $args) {
     $categories = CategoryQuery::create()->find();
     $accounts = AccountQuery::create()->find();
 
-    return $this->renderer->render($response, 'transaction-new.phtml', [ 'categories' => $categories, 'accounts' => $accounts, "router" => $this->router ]);
+    return $this->view->render($response, 'transaction-new.twig', [ 'categories' => $categories, 'accounts' => $accounts, "router" => $this->router ]);
 })->setName('transaction-new');
 
 $app->get('/transaction/{id}/edit', function ($request, $response, $args) {
@@ -152,7 +152,7 @@ $app->get('/transaction/{id}/edit', function ($request, $response, $args) {
     $q = new TransactionQuery();
     $t = $q->findPK($args['id']);
 
-    return $this->renderer->render($response, 'transaction-new.phtml', [ "t" => $t, 'categories' => $categories, 'accounts' => $accounts, "router" => $this->router ] );
+    return $this->view->render($response, 'transaction-new.twig', [ "transaction" => $t, 'categories' => $categories, 'accounts' => $accounts, "router" => $this->router ] );
 })->setName('transaction-edit');
 
 $app->get('/transaction/{id}', function ($request, $response, $args) {
@@ -162,7 +162,7 @@ $app->get('/transaction/{id}', function ($request, $response, $args) {
     $q = new TransactionQuery();
     $t = $q->findPK($args['id']);
 
-    return $this->renderer->render($response, 'transaction.phtml', [ "t" => $t, "router" => $this->router ] );
+    return $this->view->render($response, 'transaction.twig', [ "transaction" => $t, "router" => $this->router ] );
 })->setName('transaction');
 
 
@@ -171,13 +171,14 @@ $app->get('/transactions[/{account}]', function ($request, $response, $args) {
     $this->logger->info("Fetch transactions GET '/transactions");
 
     $transactions = TransactionQuery::create()->orderByDate('desc')->find();
-    if ($args['account'])
+    if (isset($args['account']))
     {
         $account = AccountQuery::create()->filterByName($args['account'])->findOne();
         $transactions = TransactionQuery::create()->filterByAccount($account)->orderByDate('desc')->find();
+        return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'account' => $account, "router" => $this->router ] );
     }
 
-    return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions, 'account' => $account,"router" => $this->router ] );
+    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, "router" => $this->router ] );
 })->setName('transactions');
 
 $app->get('/transactions/{year}/{month}', function ($request, $response, $args) {
@@ -195,7 +196,7 @@ $app->get('/transactions/{year}/{month}', function ($request, $response, $args) 
         $transactions = [];
     }
 
-    return $this->renderer->render($response, 'transactions.phtml', [ "transactions" => $transactions,"router" => $this->router ] );
+    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, "date" => $args['month'].' '.$args['year'], "router" => $this->router ] );
 })->setName('month');
 
 
@@ -249,5 +250,5 @@ $app->get('/[{name}]', function ($request, $response, $args) {
     $this->logger->info("Slim-Skeleton '/' route");
 
     // Render index view
-    return $this->renderer->render($response, 'index.phtml', [ "name" => $args['name'], "router" => $this->router ] );
+    return $this->renderer->render($response, 'index.phtml', [ "router" => $this->router ] );
 })->setName('home');

@@ -1,0 +1,44 @@
+{#
+$incomings = 0;
+$outgoings = 0;
+foreach ($transactions as $t)
+{
+    if ($t->getValue() > 0)
+    {
+        $incomings += $t->getValue();
+    }
+    else
+    {
+        $outgoings += abs($t->getValue());
+    }
+}
+$net = $incomings - $outgoings;
+#}
+{% extends 'layout.twig' %}
+
+{% block content %}
+<h1>
+    All Transaction
+    {{ account ? 'for ' ~ account.name : '' }}
+    {{ tagName ? 'with #' ~ tagName : '' }}
+    {{ date ? 'in ' ~ date : '' }}
+</h1>
+{#
+<div class="summary">
+    <p>In: <span>£{{ incomings }}</span></p>
+    <p>Out: <span>£{{ outgoings }}</span></p>
+    <p>Net: <span class="{{ net < 0 ? 'negative' : '' }}">£{{ net }}</span></p>
+</div>
+#}
+<p>Listed with the newest first</p>
+
+{% for month, transactionsInMonth in transactions | group_by(=> _.date|date('M Y')|capitalize) %}
+<div class="month">
+    <h2>{{ month }}</h2>
+    {% for transaction in transactionsInMonth %}
+    {% include 'transaction-slim.twig' %}
+    {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<h1>New Transaction</h1>
+<p>Data of a transaction</p>
+
+<form class="transaction" action="{{ transaction ? path_for('transaction-post', { 'id': transaction.id } ) : path_for('transaction-post') }}" method="post">
+    <div>
+        <p onclick="today()">Today</p>
+        <label for="date">Date:</label>
+        <input type="text" name="date" id="date" value="{{ transaction.date is empty ? '' : transaction.date|date("Y-m-d") }}">
+    </div>
+
+    <div class="toggle">
+        <input type="radio" name="direction" value="outgoings" id="outgoings" {{ transaction.value < 0 or transaction.value is empty ? 'checked="checked"' : '' }}><label for="outgoings">Outgoings</label>
+        <input type="radio" name="direction" value="income" id="income" {{ transaction.value > 0 ? 'checked="checked"' : '' }}><label for="income">Income</label>
+    </div>
+    <label for="value">Value (£):</label>
+    <input type="text" name="value" id="value" value="{{ transaction.value is empty ? '' : transaction.value|abs }}">
+
+{#
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+        <?php foreach($categories as $c): ?>
+        <option value="<?= $c->getId() ?>" <?= ($t && ($t->getCategoryId() == $c->getId())) ? 'selected="selected"' : ''?>><?= $c->getName() ?></option>
+        <?php endforeach; ?>
+    </select>
+#}
+
+    <label for="account">Account:</label>
+    <select name="account" id="account">
+        {% for account in accounts %}
+        <option value="{{ account.id }}" {{ transaction.account == account ? 'selected="selected"' : '' }}>{{ account.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="description">Description: (use #hashtags)</label>
+    <input type="text" name="description" id="description" value="{{ transaction.description }}" data-url="{{ path_for('tags-json') }}">
+
+    <button type="submit">Save</button>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="{{ path_for('home') }}script/jquery.textcomplete.min.js"></script>
+<script>
+    function today()
+    {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd='0'+dd
+        } 
+
+        if(mm<10) {
+            mm='0'+mm
+        } 
+
+        today = yyyy+'-'+mm+'-'+dd;
+        document.getElementById("date").value = today;
+    }
+
+    $('#description').textcomplete([
+    { // hashtag strategy
+        match: /(^|\s|#)(\w*)$/, // or use /(^|\s)#(\w*)$/ to force #
+        search: function (term, callback) {
+            term = term.toLowerCase();
+            //callback(cache[term], true);
+            $.getJSON($('#description').data("url"), { q: term })
+                .done(function (resp) { callback(resp); })
+                .fail(function ()     { callback([]);   });
+        },
+        replace: function (value) {
+            return '$1#' + value[0] + ' ';
+        },
+        template: function (value, term) {
+        // `value` is an element of array callbacked by searchFunc.
+        return value[0] + ' (' + value[1] + ')';
+        }//,
+        //cache: true
+    }
+]);
+</script>
+<style>
+    .textcomplete-dropdown {
+        border: 1px solid #ddd;
+        background-color: white;
+    }
+
+    .textcomplete-dropdown li {
+        border-top: 1px solid #ddd;
+        padding: 2px 5px;
+    }
+
+    .textcomplete-dropdown li:first-child {
+        border-top: none;
+    }
+
+    .textcomplete-dropdown li:hover,
+    .textcomplete-dropdown .active {
+        background-color: rgb(110, 183, 219);
+    }
+
+    .textcomplete-dropdown li:hover a,
+    .textcomplete-dropdown .active a {
+        color: #fff;
+    }
+
+    .textcomplete-dropdown {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .textcomplete-dropdown a:hover {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

@@ -25,7 +25,8 @@
         "techwilk/twig-hashtagify": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": ">=4.8 < 6.0"
+        "phpunit/phpunit": ">=4.8 < 6.0",
+        "satooshi/php-coveralls": "^1.0"
     },
     "autoload-dev": {
         "psr-4": {
@@ -37,7 +38,7 @@
     },
 	"scripts": {
         "start": "php -S 0.0.0.0:8080 -t public public/index.php",
-        "test": "phpunit"
+        "test": "phpunit --coverage-clover build/logs/clover.xml"
 	}
 
 }

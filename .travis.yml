@@ -9,4 +9,8 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE money_test;'
 install: composer install
-script: phpunit
+script:
+  - mkdir -p build/logs
+  - composer test
+after_success:
+  - travis_retry php vendor/bin/coveralls -v

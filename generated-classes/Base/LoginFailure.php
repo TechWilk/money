@@ -2,42 +2,37 @@
 
 namespace Base;
 
-use \Account as ChildAccount;
-use \AccountQuery as ChildAccountQuery;
-use \Breakdown as ChildBreakdown;
-use \BreakdownQuery as ChildBreakdownQuery;
-use \Category as ChildCategory;
-use \CategoryQuery as ChildCategoryQuery;
+use \LoginFailureQuery as ChildLoginFailureQuery;
+use \DateTime;
 use \Exception;
 use \PDO;
-use Map\BreakdownTableMap;
-use Map\CategoryTableMap;
+use Map\LoginFailureTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'category' table.
+ * Base class that represents a row from the 'loginFailure' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Category implements ActiveRecordInterface
+abstract class LoginFailure implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\CategoryTableMap';
+    const TABLE_MAP = '\\Map\\LoginFailureTableMap';
 
 
     /**
@@ -67,36 +62,26 @@ abstract class Category implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the id field.
-     *
-     * @var        int
-     */
-    protected $id;
-
-    /**
-     * The value for the name field.
+     * The value for the username field.
      *
      * @var        string
      */
-    protected $name;
+    protected $username;
 
     /**
-     * The value for the account_id field.
+     * The value for the ipaddress field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $account_id;
+    protected $ipaddress;
 
     /**
-     * @var        ChildAccount
+     * The value for the timestamp field.
+     *
+     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
+     * @var        DateTime
      */
-    protected $aAccount;
-
-    /**
-     * @var        ObjectCollection|ChildBreakdown[] Collection to store aggregation of ChildBreakdown objects.
-     */
-    protected $collBreakdowns;
-    protected $collBreakdownsPartial;
+    protected $timestamp;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -107,16 +92,22 @@ abstract class Category implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBreakdown[]
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
      */
-    protected $breakdownsScheduledForDeletion = null;
+    public function applyDefaultValues()
+    {
+    }
 
     /**
-     * Initializes internal state of Base\Category object.
+     * Initializes internal state of Base\LoginFailure object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -208,9 +199,9 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Category</code> instance.  If
-     * <code>obj</code> is an instance of <code>Category</code>, delegates to
-     * <code>equals(Category)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>LoginFailure</code> instance.  If
+     * <code>obj</code> is an instance of <code>LoginFailure</code>, delegates to
+     * <code>equals(LoginFailure)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -276,7 +267,7 @@ abstract class Category implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Category The current object, for fluid interface
+     * @return $this|LoginFailure The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -338,98 +329,104 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
-     * Get the [id] column value.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Get the [name] column value.
+     * Get the [username] column value.
      *
      * @return string
      */
-    public function getName()
+    public function getUsername()
     {
-        return $this->name;
+        return $this->username;
     }
 
     /**
-     * Get the [account_id] column value.
+     * Get the [ipaddress] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getAccountId()
+    public function getipAddress()
     {
-        return $this->account_id;
+        return $this->ipaddress;
     }
 
     /**
-     * Set the value of [id] column.
+     * Get the [optionally formatted] temporal [timestamp] column value.
      *
-     * @param int $v new value
-     * @return $this|\Category The current object (for fluent API support)
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function setId($v)
+    public function getTimestamp($format = NULL)
     {
-        if ($v !== null) {
-            $v = (int) $v;
+        if ($format === null) {
+            return $this->timestamp;
+        } else {
+            return $this->timestamp instanceof \DateTimeInterface ? $this->timestamp->format($format) : null;
         }
-
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[CategoryTableMap::COL_ID] = true;
-        }
-
-        return $this;
-    } // setId()
+    }
 
     /**
-     * Set the value of [name] column.
+     * Set the value of [username] column.
      *
      * @param string $v new value
-     * @return $this|\Category The current object (for fluent API support)
+     * @return $this|\LoginFailure The current object (for fluent API support)
      */
-    public function setName($v)
+    public function setUsername($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[CategoryTableMap::COL_NAME] = true;
+        if ($this->username !== $v) {
+            $this->username = $v;
+            $this->modifiedColumns[LoginFailureTableMap::COL_USERNAME] = true;
         }
 
         return $this;
-    } // setName()
+    } // setUsername()
 
     /**
-     * Set the value of [account_id] column.
+     * Set the value of [ipaddress] column.
      *
-     * @param int $v new value
-     * @return $this|\Category The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\LoginFailure The current object (for fluent API support)
      */
-    public function setAccountId($v)
+    public function setipAddress($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->account_id !== $v) {
-            $this->account_id = $v;
-            $this->modifiedColumns[CategoryTableMap::COL_ACCOUNT_ID] = true;
-        }
-
-        if ($this->aAccount !== null && $this->aAccount->getId() !== $v) {
-            $this->aAccount = null;
+        if ($this->ipaddress !== $v) {
+            $this->ipaddress = $v;
+            $this->modifiedColumns[LoginFailureTableMap::COL_IPADDRESS] = true;
         }
 
         return $this;
-    } // setAccountId()
+    } // setipAddress()
+
+    /**
+     * Sets the value of [timestamp] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\LoginFailure The current object (for fluent API support)
+     */
+    public function setTimestamp($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->timestamp !== null || $dt !== null) {
+            if ($this->timestamp === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->timestamp->format("Y-m-d H:i:s.u")) {
+                $this->timestamp = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[LoginFailureTableMap::COL_TIMESTAMP] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setTimestamp()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -467,14 +464,17 @@ abstract class Category implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : CategoryTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : LoginFailureTableMap::translateFieldName('Username', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->username = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : CategoryTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : LoginFailureTableMap::translateFieldName('ipAddress', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->ipaddress = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : CategoryTableMap::translateFieldName('AccountId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->account_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : LoginFailureTableMap::translateFieldName('Timestamp', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->timestamp = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -483,10 +483,10 @@ abstract class Category implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = CategoryTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = LoginFailureTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Category'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\LoginFailure'), 0, $e);
         }
     }
 
@@ -505,9 +505,6 @@ abstract class Category implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aAccount !== null && $this->account_id !== $this->aAccount->getId()) {
-            $this->aAccount = null;
-        }
     } // ensureConsistency
 
     /**
@@ -531,13 +528,13 @@ abstract class Category implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(CategoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(LoginFailureTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildCategoryQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildLoginFailureQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -546,9 +543,6 @@ abstract class Category implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->aAccount = null;
-            $this->collBreakdowns = null;
 
         } // if (deep)
     }
@@ -559,8 +553,8 @@ abstract class Category implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Category::setDeleted()
-     * @see Category::isDeleted()
+     * @see LoginFailure::setDeleted()
+     * @see LoginFailure::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -569,11 +563,11 @@ abstract class Category implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LoginFailureTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildCategoryQuery::create()
+            $deleteQuery = ChildLoginFailureQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -608,7 +602,7 @@ abstract class Category implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(LoginFailureTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -627,7 +621,7 @@ abstract class Category implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                CategoryTableMap::addInstanceToPool($this);
+                LoginFailureTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -653,18 +647,6 @@ abstract class Category implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aAccount !== null) {
-                if ($this->aAccount->isModified() || $this->aAccount->isNew()) {
-                    $affectedRows += $this->aAccount->save($con);
-                }
-                $this->setAccount($this->aAccount);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -674,23 +656,6 @@ abstract class Category implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->breakdownsScheduledForDeletion !== null) {
-                if (!$this->breakdownsScheduledForDeletion->isEmpty()) {
-                    \BreakdownQuery::create()
-                        ->filterByPrimaryKeys($this->breakdownsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->breakdownsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collBreakdowns !== null) {
-                foreach ($this->collBreakdowns as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -713,24 +678,20 @@ abstract class Category implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[CategoryTableMap::COL_ID] = true;
-        if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CategoryTableMap::COL_ID . ')');
-        }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(CategoryTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'id';
+        if ($this->isColumnModified(LoginFailureTableMap::COL_USERNAME)) {
+            $modifiedColumns[':p' . $index++]  = 'username';
         }
-        if ($this->isColumnModified(CategoryTableMap::COL_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'name';
+        if ($this->isColumnModified(LoginFailureTableMap::COL_IPADDRESS)) {
+            $modifiedColumns[':p' . $index++]  = 'ipAddress';
         }
-        if ($this->isColumnModified(CategoryTableMap::COL_ACCOUNT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'account_id';
+        if ($this->isColumnModified(LoginFailureTableMap::COL_TIMESTAMP)) {
+            $modifiedColumns[':p' . $index++]  = 'timestamp';
         }
 
         $sql = sprintf(
-            'INSERT INTO category (%s) VALUES (%s)',
+            'INSERT INTO loginFailure (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -739,14 +700,14 @@ abstract class Category implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'id':
-                        $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                    case 'username':
+                        $stmt->bindValue($identifier, $this->username, PDO::PARAM_STR);
                         break;
-                    case 'name':
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                    case 'ipAddress':
+                        $stmt->bindValue($identifier, $this->ipaddress, PDO::PARAM_STR);
                         break;
-                    case 'account_id':
-                        $stmt->bindValue($identifier, $this->account_id, PDO::PARAM_INT);
+                    case 'timestamp':
+                        $stmt->bindValue($identifier, $this->timestamp ? $this->timestamp->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -755,13 +716,6 @@ abstract class Category implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -794,7 +748,7 @@ abstract class Category implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = CategoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LoginFailureTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -811,13 +765,13 @@ abstract class Category implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getId();
+                return $this->getUsername();
                 break;
             case 1:
-                return $this->getName();
+                return $this->getipAddress();
                 break;
             case 2:
-                return $this->getAccountId();
+                return $this->getTimestamp();
                 break;
             default:
                 return null;
@@ -836,60 +790,31 @@ abstract class Category implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['Category'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['LoginFailure'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Category'][$this->hashCode()] = true;
-        $keys = CategoryTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['LoginFailure'][$this->hashCode()] = true;
+        $keys = LoginFailureTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getAccountId(),
+            $keys[0] => $this->getUsername(),
+            $keys[1] => $this->getipAddress(),
+            $keys[2] => $this->getTimestamp(),
         );
+        if ($result[$keys[2]] instanceof \DateTimeInterface) {
+            $result[$keys[2]] = $result[$keys[2]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aAccount) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'account';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'account';
-                        break;
-                    default:
-                        $key = 'Account';
-                }
-
-                $result[$key] = $this->aAccount->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->collBreakdowns) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'breakdowns';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'breakdowns';
-                        break;
-                    default:
-                        $key = 'Breakdowns';
-                }
-
-                $result[$key] = $this->collBreakdowns->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
 
         return $result;
     }
@@ -903,11 +828,11 @@ abstract class Category implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Category
+     * @return $this|\LoginFailure
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = CategoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = LoginFailureTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -918,19 +843,19 @@ abstract class Category implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Category
+     * @return $this|\LoginFailure
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setId($value);
+                $this->setUsername($value);
                 break;
             case 1:
-                $this->setName($value);
+                $this->setipAddress($value);
                 break;
             case 2:
-                $this->setAccountId($value);
+                $this->setTimestamp($value);
                 break;
         } // switch()
 
@@ -956,16 +881,16 @@ abstract class Category implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = CategoryTableMap::getFieldNames($keyType);
+        $keys = LoginFailureTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setId($arr[$keys[0]]);
+            $this->setUsername($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setName($arr[$keys[1]]);
+            $this->setipAddress($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setAccountId($arr[$keys[2]]);
+            $this->setTimestamp($arr[$keys[2]]);
         }
     }
 
@@ -986,7 +911,7 @@ abstract class Category implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Category The current object, for fluid interface
+     * @return $this|\LoginFailure The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1006,16 +931,16 @@ abstract class Category implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(CategoryTableMap::DATABASE_NAME);
+        $criteria = new Criteria(LoginFailureTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(CategoryTableMap::COL_ID)) {
-            $criteria->add(CategoryTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(LoginFailureTableMap::COL_USERNAME)) {
+            $criteria->add(LoginFailureTableMap::COL_USERNAME, $this->username);
         }
-        if ($this->isColumnModified(CategoryTableMap::COL_NAME)) {
-            $criteria->add(CategoryTableMap::COL_NAME, $this->name);
+        if ($this->isColumnModified(LoginFailureTableMap::COL_IPADDRESS)) {
+            $criteria->add(LoginFailureTableMap::COL_IPADDRESS, $this->ipaddress);
         }
-        if ($this->isColumnModified(CategoryTableMap::COL_ACCOUNT_ID)) {
-            $criteria->add(CategoryTableMap::COL_ACCOUNT_ID, $this->account_id);
+        if ($this->isColumnModified(LoginFailureTableMap::COL_TIMESTAMP)) {
+            $criteria->add(LoginFailureTableMap::COL_TIMESTAMP, $this->timestamp);
         }
 
         return $criteria;
@@ -1033,8 +958,7 @@ abstract class Category implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildCategoryQuery::create();
-        $criteria->add(CategoryTableMap::COL_ID, $this->id);
+        throw new LogicException('The LoginFailure object has no primary key');
 
         return $criteria;
     }
@@ -1047,7 +971,7 @@ abstract class Category implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = false;
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1062,23 +986,27 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns NULL since this table doesn't have a primary key.
+     * This method exists only for BC and is deprecated!
+     * @return null
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        return null;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Dummy primary key setter.
      *
-     * @param       int $key Primary key.
-     * @return void
+     * This function only exists to preserve backwards compatibility.  It is no longer
+     * needed or required by the Persistent interface.  It will be removed in next BC-breaking
+     * release of Propel.
+     *
+     * @deprecated
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($pk)
     {
-        $this->setId($key);
+        // do nothing, because this object doesn't have any primary keys
     }
 
     /**
@@ -1087,7 +1015,7 @@ abstract class Category implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return ;
     }
 
     /**
@@ -1096,32 +1024,18 @@ abstract class Category implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Category (or compatible) type.
+     * @param      object $copyObj An object of \LoginFailure (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
-        $copyObj->setAccountId($this->getAccountId());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getBreakdowns() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBreakdown($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setUsername($this->getUsername());
+        $copyObj->setipAddress($this->getipAddress());
+        $copyObj->setTimestamp($this->getTimestamp());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1134,7 +1048,7 @@ abstract class Category implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Category Clone of current object.
+     * @return \LoginFailure Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1148,338 +1062,18 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildAccount object.
-     *
-     * @param  ChildAccount $v
-     * @return $this|\Category The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setAccount(ChildAccount $v = null)
-    {
-        if ($v === null) {
-            $this->setAccountId(NULL);
-        } else {
-            $this->setAccountId($v->getId());
-        }
-
-        $this->aAccount = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildAccount object, it will not be re-added.
-        if ($v !== null) {
-            $v->addCategory($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildAccount object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildAccount The associated ChildAccount object.
-     * @throws PropelException
-     */
-    public function getAccount(ConnectionInterface $con = null)
-    {
-        if ($this->aAccount === null && ($this->account_id !== null)) {
-            $this->aAccount = ChildAccountQuery::create()->findPk($this->account_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aAccount->addCategories($this);
-             */
-        }
-
-        return $this->aAccount;
-    }
-
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Breakdown' == $relationName) {
-            $this->initBreakdowns();
-            return;
-        }
-    }
-
-    /**
-     * Clears out the collBreakdowns collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addBreakdowns()
-     */
-    public function clearBreakdowns()
-    {
-        $this->collBreakdowns = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collBreakdowns collection loaded partially.
-     */
-    public function resetPartialBreakdowns($v = true)
-    {
-        $this->collBreakdownsPartial = $v;
-    }
-
-    /**
-     * Initializes the collBreakdowns collection.
-     *
-     * By default this just sets the collBreakdowns collection to an empty array (like clearcollBreakdowns());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initBreakdowns($overrideExisting = true)
-    {
-        if (null !== $this->collBreakdowns && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = BreakdownTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collBreakdowns = new $collectionClassName;
-        $this->collBreakdowns->setModel('\Breakdown');
-    }
-
-    /**
-     * Gets an array of ChildBreakdown objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildCategory is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBreakdown[] List of ChildBreakdown objects
-     * @throws PropelException
-     */
-    public function getBreakdowns(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collBreakdownsPartial && !$this->isNew();
-        if (null === $this->collBreakdowns || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBreakdowns) {
-                // return empty collection
-                $this->initBreakdowns();
-            } else {
-                $collBreakdowns = ChildBreakdownQuery::create(null, $criteria)
-                    ->filterByCategory($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collBreakdownsPartial && count($collBreakdowns)) {
-                        $this->initBreakdowns(false);
-
-                        foreach ($collBreakdowns as $obj) {
-                            if (false == $this->collBreakdowns->contains($obj)) {
-                                $this->collBreakdowns->append($obj);
-                            }
-                        }
-
-                        $this->collBreakdownsPartial = true;
-                    }
-
-                    return $collBreakdowns;
-                }
-
-                if ($partial && $this->collBreakdowns) {
-                    foreach ($this->collBreakdowns as $obj) {
-                        if ($obj->isNew()) {
-                            $collBreakdowns[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collBreakdowns = $collBreakdowns;
-                $this->collBreakdownsPartial = false;
-            }
-        }
-
-        return $this->collBreakdowns;
-    }
-
-    /**
-     * Sets a collection of ChildBreakdown objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $breakdowns A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildCategory The current object (for fluent API support)
-     */
-    public function setBreakdowns(Collection $breakdowns, ConnectionInterface $con = null)
-    {
-        /** @var ChildBreakdown[] $breakdownsToDelete */
-        $breakdownsToDelete = $this->getBreakdowns(new Criteria(), $con)->diff($breakdowns);
-
-
-        $this->breakdownsScheduledForDeletion = $breakdownsToDelete;
-
-        foreach ($breakdownsToDelete as $breakdownRemoved) {
-            $breakdownRemoved->setCategory(null);
-        }
-
-        $this->collBreakdowns = null;
-        foreach ($breakdowns as $breakdown) {
-            $this->addBreakdown($breakdown);
-        }
-
-        $this->collBreakdowns = $breakdowns;
-        $this->collBreakdownsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Breakdown objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Breakdown objects.
-     * @throws PropelException
-     */
-    public function countBreakdowns(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collBreakdownsPartial && !$this->isNew();
-        if (null === $this->collBreakdowns || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBreakdowns) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getBreakdowns());
-            }
-
-            $query = ChildBreakdownQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByCategory($this)
-                ->count($con);
-        }
-
-        return count($this->collBreakdowns);
-    }
-
-    /**
-     * Method called to associate a ChildBreakdown object to this object
-     * through the ChildBreakdown foreign key attribute.
-     *
-     * @param  ChildBreakdown $l ChildBreakdown
-     * @return $this|\Category The current object (for fluent API support)
-     */
-    public function addBreakdown(ChildBreakdown $l)
-    {
-        if ($this->collBreakdowns === null) {
-            $this->initBreakdowns();
-            $this->collBreakdownsPartial = true;
-        }
-
-        if (!$this->collBreakdowns->contains($l)) {
-            $this->doAddBreakdown($l);
-
-            if ($this->breakdownsScheduledForDeletion and $this->breakdownsScheduledForDeletion->contains($l)) {
-                $this->breakdownsScheduledForDeletion->remove($this->breakdownsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildBreakdown $breakdown The ChildBreakdown object to add.
-     */
-    protected function doAddBreakdown(ChildBreakdown $breakdown)
-    {
-        $this->collBreakdowns[]= $breakdown;
-        $breakdown->setCategory($this);
-    }
-
-    /**
-     * @param  ChildBreakdown $breakdown The ChildBreakdown object to remove.
-     * @return $this|ChildCategory The current object (for fluent API support)
-     */
-    public function removeBreakdown(ChildBreakdown $breakdown)
-    {
-        if ($this->getBreakdowns()->contains($breakdown)) {
-            $pos = $this->collBreakdowns->search($breakdown);
-            $this->collBreakdowns->remove($pos);
-            if (null === $this->breakdownsScheduledForDeletion) {
-                $this->breakdownsScheduledForDeletion = clone $this->collBreakdowns;
-                $this->breakdownsScheduledForDeletion->clear();
-            }
-            $this->breakdownsScheduledForDeletion[]= clone $breakdown;
-            $breakdown->setCategory(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Category is new, it will return
-     * an empty collection; or if this Category has previously
-     * been saved, it will retrieve related Breakdowns from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Category.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildBreakdown[] List of ChildBreakdown objects
-     */
-    public function getBreakdownsJoinTransaction(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildBreakdownQuery::create(null, $criteria);
-        $query->joinWith('Transaction', $joinBehavior);
-
-        return $this->getBreakdowns($query, $con);
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aAccount) {
-            $this->aAccount->removeCategory($this);
-        }
-        $this->id = null;
-        $this->name = null;
-        $this->account_id = null;
+        $this->username = null;
+        $this->ipaddress = null;
+        $this->timestamp = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1496,15 +1090,8 @@ abstract class Category implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collBreakdowns) {
-                foreach ($this->collBreakdowns as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collBreakdowns = null;
-        $this->aAccount = null;
     }
 
     /**
@@ -1514,7 +1101,7 @@ abstract class Category implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(CategoryTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(LoginFailureTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

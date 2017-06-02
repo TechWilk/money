@@ -567,6 +567,10 @@ abstract class Hashtag implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(HashtagTableMap::DATABASE_NAME);
         }
@@ -978,7 +982,6 @@ abstract class Hashtag implements ActiveRecordInterface
     {
         $criteria = ChildHashtagQuery::create();
         $criteria->add(HashtagTableMap::COL_ID, $this->id);
-        $criteria->add(HashtagTableMap::COL_TAG, $this->tag);
 
         return $criteria;
     }
@@ -991,8 +994,7 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId() &&
-            null !== $this->getTag();
+        $validPk = null !== $this->getId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1007,29 +1009,23 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Returns the composite primary key for this object.
-     * The array elements will be in same order as specified in XML.
-     * @return array
+     * Returns the primary key for this object (row).
+     * @return int
      */
     public function getPrimaryKey()
     {
-        $pks = array();
-        $pks[0] = $this->getId();
-        $pks[1] = $this->getTag();
-
-        return $pks;
+        return $this->getId();
     }
 
     /**
-     * Set the [composite] primary key.
+     * Generic method to set the primary key (id column).
      *
-     * @param      array $keys The elements of the composite key (order must match the order in XML file).
+     * @param       int $key Primary key.
      * @return void
      */
-    public function setPrimaryKey($keys)
+    public function setPrimaryKey($key)
     {
-        $this->setId($keys[0]);
-        $this->setTag($keys[1]);
+        $this->setId($key);
     }
 
     /**
@@ -1038,7 +1034,7 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return (null === $this->getId()) && (null === $this->getTag());
+        return null === $this->getId();
     }
 
     /**
@@ -1109,7 +1105,8 @@ abstract class Hashtag implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('TransactionHashtag' == $relationName) {
-            return $this->initTransactionHashtags();
+            $this->initTransactionHashtags();
+            return;
         }
     }
 
@@ -1583,8 +1580,8 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function removeTransaction(ChildTransaction $transaction)
     {
-        if ($this->getTransactions()->contains($transaction)) { $transactionHashtag = new ChildTransactionHashtag();
-
+        if ($this->getTransactions()->contains($transaction)) {
+            $transactionHashtag = new ChildTransactionHashtag();
             $transactionHashtag->setTransaction($transaction);
             if ($transaction->isHashtagsLoaded()) {
                 //remove the back reference if available

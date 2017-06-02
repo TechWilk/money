@@ -455,7 +455,7 @@ abstract class TransactionHashtagQuery extends ModelCriteria
             }
 
             return $this
-                ->addUsingAlias(TransactionHashtagTableMap::COL_HASHTAG_ID, $hashtag->toKeyValue('Id', 'Id'), $comparison);
+                ->addUsingAlias(TransactionHashtagTableMap::COL_HASHTAG_ID, $hashtag->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByHashtag() only accepts arguments of type \Hashtag or Collection');
         }

@@ -582,6 +582,10 @@ abstract class Account implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(AccountTableMap::DATABASE_NAME);
         }
@@ -1163,13 +1167,16 @@ abstract class Account implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('Transaction' == $relationName) {
-            return $this->initTransactions();
+            $this->initTransactions();
+            return;
         }
         if ('Category' == $relationName) {
-            return $this->initCategories();
+            $this->initCategories();
+            return;
         }
         if ('User' == $relationName) {
-            return $this->initUsers();
+            $this->initUsers();
+            return;
         }
     }
 

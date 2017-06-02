@@ -110,10 +110,10 @@ abstract class HashtagQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj = $c->findPk(array(12, 34), $con);
+     * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param array[$id, $tag] $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildHashtag|array|mixed the result, formatted by the current formatter
@@ -138,7 +138,7 @@ abstract class HashtagQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = HashtagTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+        if ((null !== ($obj = HashtagTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -159,11 +159,10 @@ abstract class HashtagQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, tag FROM hashtag WHERE id = :p0 AND tag = :p1';
+        $sql = 'SELECT id, tag FROM hashtag WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
-            $stmt->bindValue(':p1', $key[1], PDO::PARAM_STR);
+            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -174,7 +173,7 @@ abstract class HashtagQuery extends ModelCriteria
             /** @var ChildHashtag $obj */
             $obj = new ChildHashtag();
             $obj->hydrate($row);
-            HashtagTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            HashtagTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -203,7 +202,7 @@ abstract class HashtagQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
+     * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -233,10 +232,8 @@ abstract class HashtagQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(HashtagTableMap::COL_ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(HashtagTableMap::COL_TAG, $key[1], Criteria::EQUAL);
 
-        return $this;
+        return $this->addUsingAlias(HashtagTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -248,17 +245,8 @@ abstract class HashtagQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
-        if (empty($keys)) {
-            return $this->add(null, '1<>1', Criteria::CUSTOM);
-        }
-        foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(HashtagTableMap::COL_ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(HashtagTableMap::COL_TAG, $key[1], Criteria::EQUAL);
-            $cton0->addAnd($cton1);
-            $this->addOr($cton0);
-        }
 
-        return $this;
+        return $this->addUsingAlias(HashtagTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -427,9 +415,7 @@ abstract class HashtagQuery extends ModelCriteria
     public function prune($hashtag = null)
     {
         if ($hashtag) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(HashtagTableMap::COL_ID), $hashtag->getId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(HashtagTableMap::COL_TAG), $hashtag->getTag(), Criteria::NOT_EQUAL);
-            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
+            $this->addUsingAlias(HashtagTableMap::COL_ID, $hashtag->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;

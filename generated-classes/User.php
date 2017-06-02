@@ -66,6 +66,6 @@ class User extends BaseUser
   */
   public function getName()
   {
-      return $this->firstname . ' ' . $this->lastname;
+      return $this->first_name . ' ' . $this->last_name;
   }
 }

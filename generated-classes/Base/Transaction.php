@@ -734,6 +734,10 @@ abstract class Transaction implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(TransactionTableMap::DATABASE_NAME);
         }
@@ -1046,7 +1050,7 @@ abstract class Transaction implements ActiveRecordInterface
             $keys[3] => $this->getDescription(),
             $keys[4] => $this->getAccountId(),
         );
-        if ($result[$keys[1]] instanceof \DateTime) {
+        if ($result[$keys[1]] instanceof \DateTimeInterface) {
             $result[$keys[1]] = $result[$keys[1]]->format('c');
         }
 
@@ -1448,10 +1452,12 @@ abstract class Transaction implements ActiveRecordInterface
     public function initRelation($relationName)
     {
         if ('Breakdown' == $relationName) {
-            return $this->initBreakdowns();
+            $this->initBreakdowns();
+            return;
         }
         if ('TransactionHashtag' == $relationName) {
-            return $this->initTransactionHashtags();
+            $this->initTransactionHashtags();
+            return;
         }
     }
 
@@ -2175,8 +2181,8 @@ abstract class Transaction implements ActiveRecordInterface
      */
     public function removeHashtag(ChildHashtag $hashtag)
     {
-        if ($this->getHashtags()->contains($hashtag)) { $transactionHashtag = new ChildTransactionHashtag();
-
+        if ($this->getHashtags()->contains($hashtag)) {
+            $transactionHashtag = new ChildTransactionHashtag();
             $transactionHashtag->setHashtag($hashtag);
             if ($hashtag->isTransactionsLoaded()) {
                 //remove the back reference if available

@@ -135,5 +135,18 @@ CREATE TABLE `account`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+-- ---------------------------------------------------------------------
+-- loginFailure
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `loginFailure`;
+
+CREATE TABLE `loginFailure`
+(
+    `username` VARCHAR(30) NOT NULL,
+    `ipAddress` VARCHAR(15) NOT NULL,
+    `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

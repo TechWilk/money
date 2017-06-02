@@ -559,6 +559,10 @@ abstract class TransactionHashtag implements ActiveRecordInterface
             throw new PropelException("You cannot save an object that has been deleted.");
         }
 
+        if ($this->alreadyInSave) {
+            return 0;
+        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(TransactionHashtagTableMap::DATABASE_NAME);
         }
@@ -1155,9 +1159,7 @@ abstract class TransactionHashtag implements ActiveRecordInterface
     public function getHashtag(ConnectionInterface $con = null)
     {
         if ($this->aHashtag === null && ($this->hashtag_id !== null)) {
-            $this->aHashtag = ChildHashtagQuery::create()
-                ->filterByTransactionHashtag($this) // here
-                ->findOne($con);
+            $this->aHashtag = ChildHashtagQuery::create()->findPk($this->hashtag_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be

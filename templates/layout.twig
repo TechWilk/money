@@ -18,6 +18,7 @@
           <li><a href="{{ path_for('home', { 'id': 1 } ) }}">My Account</a></li>
         </ul>
       </nav>
+      <p>You are logged in as {{ currentuser.name }}. <a href="{{ path_for('logout') }}">Logout</a></p>
     </header>
     <main>
     {% block content %}{% endblock %}

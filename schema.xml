@@ -82,4 +82,10 @@
     <column name="name" type="varchar" size="50" required="true" />
   </table>
 
+  <table name="loginFailure" idMethod="native" phpName="LoginFailure">
+    <column name="username" phpName="Username" type="VARCHAR" size="30" required="true"/>
+    <column name="ipAddress" phpName="ipAddress" type="VARCHAR" size="15" required="true"/>
+    <column name="timestamp" phpName="Timestamp" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
+  </table>
+
 </database>

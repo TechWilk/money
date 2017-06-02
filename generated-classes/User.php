@@ -1,6 +1,7 @@
 <?php
 
 use Base\User as BaseUser;
+use Map\UserTableMap;
 
 /**
  * Skeleton subclass for representing a row from the 'user' table.
@@ -14,5 +15,57 @@ use Base\User as BaseUser;
  */
 class User extends BaseUser
 {
+  /**
+  * Set the value of [password] column.
+  *
+  * @param string $v new value
+  * @return $this|\User The current object (for fluent API support)
+  */
+  public function setPassword($v)
+  {
+    if ($v !== null) {
+      $v = (string) $v;
+    }
 
+    if (!password_verify($v, $this->password_hash)) {
+      $bcrypt_options = [
+        'cost' => 12,
+      ];
+      $this->password_hash = password_hash($v, PASSWORD_BCRYPT, $bcrypt_options);;
+      $this->modifiedColumns[UserTableMap::COL_PASSWORD_HASH] = true;
+    }
+
+    return $this;
+  } // setPassword()
+
+
+  /**
+  * Check a plain text password against the value of [password] column.
+  *
+  * @param string $v plain text password
+  * @return $this|\User The current object (for fluent API support)
+  */
+  public function checkPassword($v)
+  {
+    if ($v !== null) {
+      $v = (string) $v;
+    }
+    else
+    {
+      return false;
+    }
+
+    return password_verify($v, $this->password_hash);
+  } // checkPassword()
+
+
+  /**
+  * Get the [firstname] and [lastname] column value concatenated with a space.
+  *
+  * @return string
+  */
+  public function getName()
+  {
+      return $this->firstname . ' ' . $this->lastname;
+  }
 }

@@ -105,19 +105,19 @@ $app->post('/transaction[/{id}]', function ($request, $response, $args) {
     $transaction_data['date'] = filter_var($data['date'], FILTER_SANITIZE_STRING);
     $transaction_data['value'] = $value;
     $transaction_data['description'] = filter_var($data['description'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-    $transaction_data['category'] = filter_var($data['category'][0], FILTER_SANITIZE_NUMBER_INT);
+    //$transaction_data['category'] = filter_var($data['category'][0], FILTER_SANITIZE_NUMBER_INT);
     $transaction_data['account'] = filter_var($data['account'][0], FILTER_SANITIZE_NUMBER_INT);
 
     $t = new Transaction();
 
-    if ($args['id'])
+    if (isset($args['id']))
     {
         $t = TransactionQuery::create()->findPK($args['id']);
     }
 
     $t->setDate(new DateTime($transaction_data['date']));
 
-    if ($data['direction'] == "outgoings" )
+    if (isset($data['direction']) && $data['direction'] == "outgoings" )
     {
         $transaction_data['value'] = 0 - $transaction_data['value'];
     }

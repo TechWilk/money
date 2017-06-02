@@ -4,6 +4,8 @@ namespace Tests\Functional;
 
 class HomepageTest extends BaseTestCase
 {
+    protected $withMiddleware = false;
+
     /**
      * Test that the index route returns a rendered response containing the text 'Dashbpard', 'Totals' and 'view all'
      */

@@ -4,6 +4,8 @@ namespace Tests\Functional;
 
 class HashtagsPageTest extends BaseTestCase
 {
+    protected $withMiddleware = false;
+
     /**
      * Test that the hashtags route returns a rendered response containing the text 'All Hashtags' and 'Jump to'
      */

@@ -4,7 +4,7 @@ namespace Tests\Data;
 
 class TestData
 {
-  public static function populateDatabase()
+  public function populateDatabase()
   {
     $account = new \Account();
     $account->setName('Cash');

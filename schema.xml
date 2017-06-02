@@ -43,7 +43,7 @@
 
   <table name="hashtag" phpName="Hashtag">
     <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-    <column name="tag" type="varchar" size="50" primaryKey="true" required="true" />
+    <column name="tag" type="varchar" size="50" required="true" />
     <unique>
       <unique-column name="tag" />
     </unique>

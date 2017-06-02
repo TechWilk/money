@@ -2,7 +2,7 @@
     "name": "techwilk/money",
     "description": "A Slim Framework skeleton application for rapid development",
     "keywords": ["microframework", "rest", "router", "psr7"],
-    "homepage": "http://github.com/slimphp/Slim-Skeleton",
+    "homepage": "http://github.com/TechWilk/money",
     "license": "MIT",
     "authors": [
         {

@@ -1,4 +1,4 @@
-# Money
+# Money [![Build status](https://img.shields.io/travis/TechWilk/money.svg)](https://travis-ci.org/TechWilk/money)
 
 A very quick and messy web app for logging finances, currently considered a pre-alpha release and still under significant development.
 

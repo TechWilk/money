@@ -96,14 +96,9 @@ $app->post('/transaction[/{id}]', function ($request, $response, $args) {
     
     $data = $request->getParsedBody();
 
-    $mathString = trim($data['value']);     // trim white spaces
-    $mathString = preg_replace ('[^0-9\+-\*\/\(\) ]', '', $mathString);    // remove any non-numbers chars; exception for math operators
-    $compute = create_function("", "return (" . $mathString . ");" );
-    $value = 0 + $compute();
-
     $transaction_data = [];
     $transaction_data['date'] = filter_var($data['date'], FILTER_SANITIZE_STRING);
-    $transaction_data['value'] = $value;
+    $transaction_data['value'] = Maths::calculateString($data['value']);
     $transaction_data['description'] = filter_var($data['description'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     //$transaction_data['category'] = filter_var($data['category'][0], FILTER_SANITIZE_NUMBER_INT);
     $transaction_data['account'] = filter_var($data['account'][0], FILTER_SANITIZE_NUMBER_INT);

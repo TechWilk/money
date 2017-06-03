@@ -94,7 +94,7 @@
 <h2>This month</h2>
 <div class="summary">
     <p>Income: £{{ months.this.income }}</p>
-    <p>Outgoing: £{{ month.this.outgoings }}</p>
+    <p>Outgoing: £{{ months.this.outgoings }}</p>
 </div>
 {% for transaction in months.this.transactions %}
 {% include 'transaction-slim.twig' %}
@@ -103,7 +103,7 @@
 <h2>Last month</h2>
 <div class="summary">
     <p>Income: £{{ months.last.income }}</p>
-    <p>Outgoing: £{{ month.last.outgoings }}</p>
+    <p>Outgoing: £{{ months.last.outgoings }}</p>
 </div>
 {% for transaction in months.last.transactions %}
 {% include 'transaction-slim.twig' %}

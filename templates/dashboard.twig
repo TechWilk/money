@@ -1,0 +1,115 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<h2>Totals</h2>
+
+<div class="year">
+    <h3>Last Year</h3>
+    <div class="summary">
+        <p>In: <span>£{{ years.last.income }}</span></p>
+        <p>Out: <span>£{{ years.last.outgoings }}</span></p>
+        <p>Net:
+            <span class="{{ years.last.income - years.last.outgoings < 0 ? 'negative' : '' }}">
+                £{{ years.last.income - years.last.outgoings }}
+            </span>
+        </p>
+    </div>
+    {% for name, month in years.last.months %}
+    <div class="month">
+        <a href="{{ path_for('month', { 'month': name, 'year': 'first day of January last year'|date('Y') } ) }}">
+            <h4>
+                {{ name }} {{ 'first day of January last year'|date('Y') }}
+            </h4>
+        </a>
+        <div class="summary">
+            <p>In: <span>£{{ month.income }}</span></p>
+            <p>Out: <span>£{{ month.outgoings }}</span></p>
+            <p>Net:
+                <span class="{{ month.income - month.outgoings < 0 ? 'negative' : '' }}">
+                    £{{ month.income - month.outgoings }}
+                </span>
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="year">
+    <h3>This Year</h3>
+    <div class="summary">
+        <p>In: <span>£{{ years.this.income }}</span></p>
+        <p>Out: <span>£{{ years.this.outgoings }}</span></p>
+        <p>Net:
+            <span class="{{ years.this.income - years.this.outgoings < 0 ? 'negative' : '' }}">
+                £{{ years.this.income - years.this.outgoings }}
+            </span>
+        </p>    
+    </div>
+    {% for name, month in years.this.months %}
+    <div class="month">
+        <a href="{{ path_for('month', { 'month': name, 'year': 'today'|date('Y') } ) }}">
+            <h4>
+                {{ name }} {{ 'today'|date('Y') }}
+            </h4>
+        </a>
+        <div class="summary">
+            <p>In: <span>£{{ month.income }}</span></p>
+            <p>Out: <span>£{{ month.outgoings }}</span></p>
+            <p>Net:
+                <span class="{{ month.income - month.outgoings < 0 ? 'negative' : '' }}">
+                    £{{ month.income - month.outgoings }}
+                </span>
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+    
+</div>
+
+<div class="year">
+    <h3>Top hashtags</h3>
+    {% for hashtag in hashtags.top %}
+    <div class="tag">
+        <a href="{{ path_for('tag', { 'tag': hashtag.tag } ) }}">
+            <h3>#{{ hashtag.tag }}</h3>
+            <small>{{ hashtag.countTransactions }}</small>
+        </a>
+    </div>
+    {% endfor %}
+    <h3>Newest hashtags</h3>
+    {% for hashtag in hashtags.newest %}
+    <div class="tag">
+        <a href="{{ path_for('tag', { 'tag': hashtag.tag } ) }}">
+            <h3>#{{ hashtag.tag }}</h3>
+            <small>{{ hashtag.countTransactions }}</small>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+
+<h2>This month</h2>
+<div class="summary">
+    <p>Income: £{{ months.this.income }}</p>
+    <p>Outgoing: £{{ month.this.outgoings }}</p>
+</div>
+{% for transaction in months.this.transactions %}
+{% include 'transaction-slim.twig' %}
+{% endfor %}
+
+<h2>Last month</h2>
+<div class="summary">
+    <p>Income: £{{ months.last.income }}</p>
+    <p>Outgoing: £{{ month.last.outgoings }}</p>
+</div>
+{% for transaction in months.last.transactions %}
+{% include 'transaction-slim.twig' %}
+{% endfor %}
+<a href="{{ path_for('transactions') }}">
+    view all
+</a>
+
+{% endblock %}

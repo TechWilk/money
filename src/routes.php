@@ -19,7 +19,7 @@ $app->post('/user', function ($request, $response, $args) {
         $u->setPasswordHash(password_hash('something',PASSWORD_BCRYPT));
         $u->save();
     }
-    return $this->renderer->render($response, 'index.phtml', [ "user" => $u, "router" => $this->router ] );
+    return $this->renderer->render($response, 'index.phtml', [ "user" => $u, ] );
 })->setName('user-new');
 
 
@@ -29,7 +29,7 @@ $app->get('/user/{id}', function ($request, $response, $args) {
     $q = new UserQuery();
     $u = $q->findPK($args['id']);
     
-    return $this->renderer->render($response, 'user.phtml', [ "user" => $u, "router" => $this->router ] );
+    return $this->renderer->render($response, 'user.phtml', [ "user" => $u, ] );
 })->setName('user');
 
 
@@ -39,7 +39,7 @@ $app->get('/tags', function ($request, $response, $args) {
 
     $tags = HashtagQuery::create()->orderByTag()->find();
 
-    return $this->view->render($response, 'tags.twig', [ "tags" => $tags, "router" => $this->router ] );
+    return $this->view->render($response, 'tags.twig', [ "tags" => $tags, ] );
 })->setName('tags');
 
 
@@ -85,7 +85,7 @@ $app->get('/transactions/tag/{tag}', function ($request, $response, $args) {
 
     $transactions = TransactionQuery::create()->useTransactionHashtagQuery()->useHashtagQuery()->filterByTag(strtolower($args['tag']))->endUse()->endUse()->orderByDate('desc')->find();
 
-    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'tagName' => $args['tag'], "router" => $this->router ] );
+    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'tagName' => $args['tag'], ] );
 })->setName('tag');
 
 
@@ -134,7 +134,7 @@ $app->get('/transaction/new', function ($request, $response, $args) {
     $categories = CategoryQuery::create()->find();
     $accounts = AccountQuery::create()->find();
 
-    return $this->view->render($response, 'transaction-new.twig', [ 'categories' => $categories, 'accounts' => $accounts, "router" => $this->router ]);
+    return $this->view->render($response, 'transaction-new.twig', [ 'categories' => $categories, 'accounts' => $accounts, ]);
 })->setName('transaction-new');
 
 $app->get('/transaction/{id}/edit', function ($request, $response, $args) {
@@ -147,7 +147,7 @@ $app->get('/transaction/{id}/edit', function ($request, $response, $args) {
     $q = new TransactionQuery();
     $t = $q->findPK($args['id']);
 
-    return $this->view->render($response, 'transaction-new.twig', [ "transaction" => $t, 'categories' => $categories, 'accounts' => $accounts, "router" => $this->router ] );
+    return $this->view->render($response, 'transaction-new.twig', [ "transaction" => $t, 'categories' => $categories, 'accounts' => $accounts, ] );
 })->setName('transaction-edit');
 
 $app->get('/transaction/{id}', function ($request, $response, $args) {
@@ -157,7 +157,7 @@ $app->get('/transaction/{id}', function ($request, $response, $args) {
     $q = new TransactionQuery();
     $t = $q->findPK($args['id']);
 
-    return $this->view->render($response, 'transaction.twig', [ "transaction" => $t, "router" => $this->router ] );
+    return $this->view->render($response, 'transaction.twig', [ "transaction" => $t, ] );
 })->setName('transaction');
 
 
@@ -170,10 +170,10 @@ $app->get('/transactions[/{account}]', function ($request, $response, $args) {
     {
         $account = AccountQuery::create()->filterByName($args['account'])->findOne();
         $transactions = TransactionQuery::create()->filterByAccount($account)->orderByDate('desc')->find();
-        return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'account' => $account, "router" => $this->router ] );
+        return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'account' => $account, ] );
     }
 
-    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, "router" => $this->router ] );
+    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, ] );
 })->setName('transactions');
 
 $app->get('/transactions/{year}/{month}', function ($request, $response, $args) {
@@ -191,7 +191,7 @@ $app->get('/transactions/{year}/{month}', function ($request, $response, $args) 
         $transactions = [];
     }
 
-    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, "date" => $args['month'].' '.$args['year'], "router" => $this->router ] );
+    return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, "date" => $args['month'].' '.$args['year'], ] );
 })->setName('month');
 
 
@@ -321,8 +321,8 @@ $app->get('/', function ($request, $response, $args) {
 
     $topHashtags = HashtagQuery::create()
                     ->useTransactionHashtagQuery()
-                    ->withColumn('COUNT(*)', 'Count')
-                    ->select(array('Transaction', 'Count'))
+                        ->withColumn('COUNT(*)', 'Count')
+                        ->select(array('Transaction', 'Count'))
                     ->endUse()
                     ->groupByTag()
                     ->orderByCount('desc')

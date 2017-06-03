@@ -13,6 +13,39 @@
     {% endfor %}
 </ul>
 
+<div class="tag-group">
+    <p>Top Hashtags</p>
+    {% for hashtag in top %}
+    <div>
+        <a href="{{ path_for('tag', { 'tag': hashtag.tag } ) }}">
+            <p>{{ hashtag.tag }} <small>{{ hashtag.countTransactions }}</small></p>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="tag-group">
+    <p>Newest Hashtags</p>
+    {% for hashtag in newest %}
+    <div>
+        <a href="{{ path_for('tag', { 'tag': hashtag.tag } ) }}">
+            <p>{{ hashtag.tag }} <small>{{ hashtag.countTransactions }}</small></p>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{#}
+<div class="tag-group">
+    <p>Reciently Viewed</p>
+    {% for hashtag in recient %}
+    <div>
+        <a href="{{ path_for('tag', { 'tag': hashtag.tag } ) }}">
+            <p>{{ hashtag.tag }} <small>{{ hashtag.countTransactions }}</small></p>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+#}
 {% for letter, tagsWithLetter in tags | group_by(=> _.tag|first|capitalize ) %}
 <div class="letter <?= $letter ?>" id="{{ letter }}">
     <p>{{ letter }}</p>

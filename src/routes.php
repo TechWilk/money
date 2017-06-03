@@ -39,7 +39,18 @@ $app->get('/tags', function ($request, $response, $args) {
 
     $tags = HashtagQuery::create()->orderByTag()->find();
 
-    return $this->view->render($response, 'tags.twig', [ "tags" => $tags, ] );
+    $topHashtags = HashtagQuery::create()
+                ->useTransactionHashtagQuery()
+                    ->withColumn('COUNT(*)', 'Count')
+                    ->select(array('Transaction', 'Count'))
+                ->endUse()
+                ->groupByTag()
+                ->orderByCount('desc')
+                ->limit(5)
+                ;
+    $newestHashtags = HashtagQuery::create()->orderById('desc')->limit(5)->find();
+
+    return $this->view->render($response, 'tags.twig', [ "tags" => $tags, 'newest' => $newestHashtags, 'top' => $topHashtags ] );
 })->setName('tags');
 
 

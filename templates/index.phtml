@@ -1,5 +1,17 @@
 <?php
 
+$topHashtags = HashtagQuery::create()
+    ->useTransactionHashtagQuery()
+    ->withColumn('COUNT(*)', 'Count')
+    ->select(array('Transaction', 'Count'))
+    ->endUse()
+    ->groupByTag()
+    ->orderByCount('desc')
+    ->limit(5)
+    ;
+$newestHashtags = HashtagQuery::create()->orderById('desc')->limit(5)->find();
+
+
 $monthTransactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of this month"), 'max' => new DateTime("last day of this month")])->orderByDate('desc')->find();
 $lastMonthTransactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of last month"), 'max' => new DateTime("last day of last month")])->orderByDate('desc')->find();
 $yearTransactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of January this year"), 'max' => new DateTime("last day of December this year")])->orderByDate('desc')->find();
@@ -132,7 +144,7 @@ foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Augus
             </div>
             <?php foreach ($monthsLastYear as $monthName => $monthDetails): ?>
             <div class="month">
-                <a href="<?= $router->pathFor('month', [ 'month' => $monthName, 'year' => (new DateTime)->format('Y') ]) ?>">
+                <a href="<?= $router->pathFor('month', [ 'month' => $monthName, 'year' => (new DateTime("first day of January last year"))->format('Y') ]) ?>">
                     <h4>
                         <?= $monthName ?> <?= (new DateTime("first day of January last year"))->format('Y') ?>
                     </h4>
@@ -168,6 +180,27 @@ foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Augus
             </div>
             <?php endforeach ?>
             
+        </div>
+
+        <div class="year">
+            <h3>Top hashtags</h3>
+            <?php foreach ($topHashtags as $tag): ?>
+            <div class="tag">
+                <a href="<?= $router->pathFor('tag', [ 'tag' => $tag->getTag() ]) ?>">
+                    <h3>#<?= $tag->getTag() ?></h3>
+                    <small><?= $tag->countTransactions() ?></small>
+                </a>
+            </div>
+            <?php endforeach ?>
+            <h3>Newest hashtags</h3>
+            <?php foreach ($newestHashtags as $tag): ?>
+            <div class="tag">
+                <a href="<?= $router->pathFor('tag', [ 'tag' => $tag->getTag() ]) ?>">
+                    <h3>#<?= $tag->getTag() ?></h3>
+                    <small><?= $tag->countTransactions() ?></small>
+                </a>
+            </div>
+            <?php endforeach ?>
         </div>
         
 

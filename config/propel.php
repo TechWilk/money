@@ -1,9 +1,6 @@
 <?php
 
-$config['db']['name'] = 'dev_money';
-$config['db']['host'] = '127.0.0.1';
-$config['db']['user'] = 'root';
-$config['db']['pass'] = 'local';
+include(__DIR__ . '/database.php');
 
 return [
     'propel' => [

@@ -6,3 +6,6 @@ build/logs/*
 php_errors.log
 error_log.txt
 .vscode/launch.json
+config/*
+!config/*.default.php
+!config/propel.php

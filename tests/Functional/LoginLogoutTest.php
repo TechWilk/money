@@ -50,13 +50,16 @@ class LoginLogoutTest extends BaseTestCase
 
   public function testPostLoginTooManyAttempts()
   {
+    $allowedAttempts = 8;
+
     $i = 0;
-    while ($i < 15)
+    while ($i < ($allowedAttempts + 1))
     {
       $response = $this->runApp('POST', '/login', ['username' => 'spam@example.com', 'password' => 'this-is-not-correct']);
+      sleep(1); // ensure timestamp in db is updated
       $i += 1;
     }
-    $this->assertEquals($i, 15);
+    $this->assertEquals($i, ($allowedAttempts + 1));
 
     $this->assertEquals(401, $response->getStatusCode());
     $this->assertContains('Too many failed login attempts', (string)$response->getBody());

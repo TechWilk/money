@@ -82,7 +82,7 @@ class Authentication
     $numberOfAllowedAttempts = 8;
     $lockOutInterval = 15; // mins
 
-    $loginFailures = LoginFailureQuery::create()->filterByUsername($username)->filterByTimestamp(['min' => new DateTime("-$numberOfAllowedAttempts minutes")])->count();
+    $loginFailures = LoginFailureQuery::create()->filterByUsername($username)->filterByTimestamp(['min' => new DateTime("-$lockOutInterval minutes")])->count();
 
     if ($loginFailures < $numberOfAllowedAttempts) {
       return true;

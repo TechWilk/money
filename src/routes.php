@@ -19,7 +19,7 @@ $app->post('/user', function ($request, $response, $args) {
         $u->setPasswordHash(password_hash('something',PASSWORD_BCRYPT));
         $u->save();
     }
-    return $this->renderer->render($response, 'index.phtml', [ "user" => $u, ] );
+    return $this->view->render($response, 'dashboard.twig', [ "user" => $u, ] );
 })->setName('user-new');
 
 
@@ -29,7 +29,7 @@ $app->get('/user/{id}', function ($request, $response, $args) {
     $q = new UserQuery();
     $u = $q->findPK($args['id']);
     
-    return $this->renderer->render($response, 'user.phtml', [ "user" => $u, ] );
+    return $this->view->render($response, 'user.twig', [ "user" => $u, ] );
 })->setName('user');
 
 

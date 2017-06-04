@@ -6,12 +6,6 @@ use Aptoma\Twig\Extension\MarkdownEngine;
 
 $container = $app->getContainer();
 
-// view renderer
-$container['renderer'] = function ($c) {
-    $settings = $c->get('settings')['renderer'];
-    return new Slim\Views\PhpRenderer($settings['template_path']);
-};
-
 // TWIG view renderer
 $container['view'] = function ($c) {
     $settings = $c->get('settings')['renderer'];

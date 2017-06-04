@@ -1,0 +1,16 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<h1>User</h1>
+<p>Data of a user</p>
+
+<div class="user">
+    <h2>{{ user.name }}</h2>
+    <p>{{ user.email }}</p>
+</div>
+
+<div class="account">
+    <h2>{{ user.account.name }}</h2>
+    <p>ID: {{ user.account.id }}</p>
+</div>
+{% endblock %}

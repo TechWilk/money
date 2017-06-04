@@ -56,7 +56,6 @@ class LoginLogoutTest extends BaseTestCase
     while ($i < ($allowedAttempts + 1))
     {
       $response = $this->runApp('POST', '/login', ['username' => 'spam@example.com', 'password' => 'this-is-not-correct']);
-      sleep(1); // ensure timestamp in db is updated
       $i += 1;
     }
     $this->assertEquals($i, ($allowedAttempts + 1));

@@ -12,7 +12,7 @@ $app->post('/user', function ($request, $response, $args) {
         $a->save();
 
         $u = new User();
-        $u->setAccountId($a->getId());
+        $u->addAccount($a);
         $u->setFirstName('Christopher');
         $u->setLastName('Wilkinson');
         $u->setEmail('c@wilk.tech');
@@ -20,6 +20,11 @@ $app->post('/user', function ($request, $response, $args) {
         $u->save();
     }
     return $this->view->render($response, 'dashboard.twig', [ "user" => $u, ] );
+})->setName('user-new-post');
+
+$app->get('/user/new', function ($request, $response, $args) {
+    
+    return $this->view->render($response, 'user-new.twig', [ ] );
 })->setName('user-new');
 
 

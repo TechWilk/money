@@ -154,13 +154,14 @@ class AccountTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Categories', false);
-        $this->addRelation('User', '\\User', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('UserAccounts', '\\UserAccounts', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':account_id',
     1 => ':id',
   ),
-), null, null, 'Users', false);
+), null, null, 'UserAccountss', false);
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
 
     /**

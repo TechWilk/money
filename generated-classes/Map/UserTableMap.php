@@ -59,7 +59,7 @@ class UserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,17 +69,12 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
      */
     const COL_ID = 'user.id';
-
-    /**
-     * the column name for the account_id field
-     */
-    const COL_ACCOUNT_ID = 'user.account_id';
 
     /**
      * the column name for the first_name field
@@ -123,11 +118,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'AccountId', 'FirstName', 'LastName', 'Email', 'PasswordHash', 'PasswordExpire', 'Enable', ),
-        self::TYPE_CAMELNAME     => array('id', 'accountId', 'firstName', 'lastName', 'email', 'passwordHash', 'passwordExpire', 'enable', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_ACCOUNT_ID, UserTableMap::COL_FIRST_NAME, UserTableMap::COL_LAST_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_PASSWORD_HASH, UserTableMap::COL_PASSWORD_EXPIRE, UserTableMap::COL_ENABLE, ),
-        self::TYPE_FIELDNAME     => array('id', 'account_id', 'first_name', 'last_name', 'email', 'password_hash', 'password_expire', 'enable', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id', 'FirstName', 'LastName', 'Email', 'PasswordHash', 'PasswordExpire', 'Enable', ),
+        self::TYPE_CAMELNAME     => array('id', 'firstName', 'lastName', 'email', 'passwordHash', 'passwordExpire', 'enable', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_FIRST_NAME, UserTableMap::COL_LAST_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_PASSWORD_HASH, UserTableMap::COL_PASSWORD_EXPIRE, UserTableMap::COL_ENABLE, ),
+        self::TYPE_FIELDNAME     => array('id', 'first_name', 'last_name', 'email', 'password_hash', 'password_expire', 'enable', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -137,11 +132,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'AccountId' => 1, 'FirstName' => 2, 'LastName' => 3, 'Email' => 4, 'PasswordHash' => 5, 'PasswordExpire' => 6, 'Enable' => 7, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'accountId' => 1, 'firstName' => 2, 'lastName' => 3, 'email' => 4, 'passwordHash' => 5, 'passwordExpire' => 6, 'enable' => 7, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_ACCOUNT_ID => 1, UserTableMap::COL_FIRST_NAME => 2, UserTableMap::COL_LAST_NAME => 3, UserTableMap::COL_EMAIL => 4, UserTableMap::COL_PASSWORD_HASH => 5, UserTableMap::COL_PASSWORD_EXPIRE => 6, UserTableMap::COL_ENABLE => 7, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'account_id' => 1, 'first_name' => 2, 'last_name' => 3, 'email' => 4, 'password_hash' => 5, 'password_expire' => 6, 'enable' => 7, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'FirstName' => 1, 'LastName' => 2, 'Email' => 3, 'PasswordHash' => 4, 'PasswordExpire' => 5, 'Enable' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'firstName' => 1, 'lastName' => 2, 'email' => 3, 'passwordHash' => 4, 'passwordExpire' => 5, 'enable' => 6, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_FIRST_NAME => 1, UserTableMap::COL_LAST_NAME => 2, UserTableMap::COL_EMAIL => 3, UserTableMap::COL_PASSWORD_HASH => 4, UserTableMap::COL_PASSWORD_EXPIRE => 5, UserTableMap::COL_ENABLE => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'first_name' => 1, 'last_name' => 2, 'email' => 3, 'password_hash' => 4, 'password_expire' => 5, 'enable' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -162,7 +157,6 @@ class UserTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('account_id', 'AccountId', 'INTEGER', 'account', 'id', true, null, null);
         $this->addColumn('first_name', 'FirstName', 'VARCHAR', true, 50, null);
         $this->addColumn('last_name', 'LastName', 'VARCHAR', true, 50, null);
         $this->addColumn('email', 'Email', 'VARCHAR', true, 50, null);
@@ -176,13 +170,14 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Account', '\\Account', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('UserAccounts', '\\UserAccounts', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':account_id',
+    0 => ':user_id',
     1 => ':id',
   ),
-), null, null, null, false);
+), null, null, 'UserAccountss', false);
+        $this->addRelation('Account', '\\Account', RelationMap::MANY_TO_MANY, array(), null, null, 'Accounts');
     } // buildRelations()
 
     /**
@@ -327,7 +322,6 @@ class UserTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(UserTableMap::COL_ID);
-            $criteria->addSelectColumn(UserTableMap::COL_ACCOUNT_ID);
             $criteria->addSelectColumn(UserTableMap::COL_FIRST_NAME);
             $criteria->addSelectColumn(UserTableMap::COL_LAST_NAME);
             $criteria->addSelectColumn(UserTableMap::COL_EMAIL);
@@ -336,7 +330,6 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_ENABLE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.account_id');
             $criteria->addSelectColumn($alias . '.first_name');
             $criteria->addSelectColumn($alias . '.last_name');
             $criteria->addSelectColumn($alias . '.email');

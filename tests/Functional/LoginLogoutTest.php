@@ -9,11 +9,13 @@ class LoginLogoutTest extends BaseTestCase
   */
   static public function setUpBeforeClass()
   {
+    $account = \AccountQuery::create()->findPk(1);
+
     $user = new \User;
     $user->setEmail(new \EmailAddress('test@example.com'));
     $user->setFirstName('Test');
     $user->setLastName('User');
-    $user->setAccountId(1);
+    $user->addAccount($account);
     $user->setPassword('this-is-correct');
     $user->save();
   }
@@ -38,11 +40,6 @@ class LoginLogoutTest extends BaseTestCase
   public function testPostLoginInvalidCredentials($username, $password)
   {
     $response = $this->runApp('POST', '/login', ['username' => $username, 'password' => $password]);
-
-    $my_file = __DIR__ . '/../../error_log.txt';
-    $handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
-    fwrite($handle, $response->getStatusCode());
-    fwrite($handle, (string)$response->getBody());
 
     $this->assertEquals(401, $response->getStatusCode());
     $this->assertContains('Username or password incorrect.', (string)$response->getBody());

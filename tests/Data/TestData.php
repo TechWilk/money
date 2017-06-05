@@ -15,7 +15,7 @@ class TestData
     $account->save();
 
     $user = new \User();
-    $user->setAccount($account);
+    $user->addAccount($account);
     $user->setFirstName('Bob');
     $user->setLastName('Jones');
     $user->setEmail(new \EmailAddress('bob@example.com'));

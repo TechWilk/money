@@ -108,16 +108,32 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `account_id` INTEGER NOT NULL,
     `first_name` VARCHAR(50) NOT NULL,
     `last_name` VARCHAR(50) NOT NULL,
     `email` VARCHAR(50) NOT NULL,
     `password_hash` VARCHAR(80) NOT NULL,
     `password_expire` DATETIME,
     `enable` TINYINT(1) DEFAULT 1 NOT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `user_fi_474870` (`account_id`),
-    CONSTRAINT `user_fk_474870`
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- user_accounts
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_accounts`;
+
+CREATE TABLE `user_accounts`
+(
+    `user_id` INTEGER NOT NULL,
+    `account_id` INTEGER NOT NULL,
+    `alias` VARCHAR(50),
+    PRIMARY KEY (`user_id`,`account_id`),
+    INDEX `user_accounts_fi_474870` (`account_id`),
+    CONSTRAINT `user_accounts_fk_29554a`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `user` (`id`),
+    CONSTRAINT `user_accounts_fk_474870`
         FOREIGN KEY (`account_id`)
         REFERENCES `account` (`id`)
 ) ENGINE=InnoDB;

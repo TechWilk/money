@@ -54,17 +54,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAccountQuery rightJoinWithCategory() Adds a RIGHT JOIN clause and with to the query using the Category relation
  * @method     ChildAccountQuery innerJoinWithCategory() Adds a INNER JOIN clause and with to the query using the Category relation
  *
- * @method     ChildAccountQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
- * @method     ChildAccountQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
- * @method     ChildAccountQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ * @method     ChildAccountQuery leftJoinUserAccounts($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserAccounts relation
+ * @method     ChildAccountQuery rightJoinUserAccounts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserAccounts relation
+ * @method     ChildAccountQuery innerJoinUserAccounts($relationAlias = null) Adds a INNER JOIN clause to the query using the UserAccounts relation
  *
- * @method     ChildAccountQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
+ * @method     ChildAccountQuery joinWithUserAccounts($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserAccounts relation
  *
- * @method     ChildAccountQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
- * @method     ChildAccountQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
- * @method     ChildAccountQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
+ * @method     ChildAccountQuery leftJoinWithUserAccounts() Adds a LEFT JOIN clause and with to the query using the UserAccounts relation
+ * @method     ChildAccountQuery rightJoinWithUserAccounts() Adds a RIGHT JOIN clause and with to the query using the UserAccounts relation
+ * @method     ChildAccountQuery innerJoinWithUserAccounts() Adds a INNER JOIN clause and with to the query using the UserAccounts relation
  *
- * @method     \TransactionQuery|\CategoryQuery|\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TransactionQuery|\CategoryQuery|\UserAccountsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildAccount findOne(ConnectionInterface $con = null) Return the first ChildAccount matching the query
  * @method     ChildAccount findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAccount matching the query, or a new ChildAccount object populated from the query conditions when no match is found
@@ -482,40 +482,40 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \User object
+     * Filter the query by a related \UserAccounts object
      *
-     * @param \User|ObjectCollection $user the related object to use as filter
+     * @param \UserAccounts|ObjectCollection $userAccounts the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildAccountQuery The current query, for fluid interface
      */
-    public function filterByUser($user, $comparison = null)
+    public function filterByUserAccounts($userAccounts, $comparison = null)
     {
-        if ($user instanceof \User) {
+        if ($userAccounts instanceof \UserAccounts) {
             return $this
-                ->addUsingAlias(AccountTableMap::COL_ID, $user->getAccountId(), $comparison);
-        } elseif ($user instanceof ObjectCollection) {
+                ->addUsingAlias(AccountTableMap::COL_ID, $userAccounts->getAccountId(), $comparison);
+        } elseif ($userAccounts instanceof ObjectCollection) {
             return $this
-                ->useUserQuery()
-                ->filterByPrimaryKeys($user->getPrimaryKeys())
+                ->useUserAccountsQuery()
+                ->filterByPrimaryKeys($userAccounts->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
+            throw new PropelException('filterByUserAccounts() only accepts arguments of type \UserAccounts or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the User relation
+     * Adds a JOIN clause to the query using the UserAccounts relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
-    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinUserAccounts($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('User');
+        $relationMap = $tableMap->getRelation('UserAccounts');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -530,14 +530,14 @@ abstract class AccountQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'User');
+            $this->addJoinObject($join, 'UserAccounts');
         }
 
         return $this;
     }
 
     /**
-     * Use the User relation User object
+     * Use the UserAccounts relation UserAccounts object
      *
      * @see useQuery()
      *
@@ -545,13 +545,30 @@ abstract class AccountQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \UserQuery A secondary query class using the current class as primary query
+     * @return \UserAccountsQuery A secondary query class using the current class as primary query
      */
-    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useUserAccountsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinUser($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
+            ->joinUserAccounts($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UserAccounts', '\UserAccountsQuery');
+    }
+
+    /**
+     * Filter the query by a related User object
+     * using the user_accounts table as cross reference
+     *
+     * @param User $user the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildAccountQuery The current query, for fluid interface
+     */
+    public function filterByUser($user, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useUserAccountsQuery()
+            ->filterByUser($user, $comparison)
+            ->endUse();
     }
 
     /**

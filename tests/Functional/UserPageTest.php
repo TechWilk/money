@@ -21,12 +21,14 @@ class UserPageTest extends BaseTestCase
 
     public function testCreateUserForTests()
     {
+        $a = \AccountQuery::create()->findPk(1);
+
         $u = new \User();
         $u->setFirstName('Tim');
         $u->setLastName('Smith');
         $u->setEmail(new \EmailAddress('tim@example.com'));
         $u->setPassword('MegaSecurePassword');
-        $u->setAccountId(1);
+        $u->addAccount($a);
         $u->setEnable(true);
 
         $this->assertTrue($u->save() > 0);

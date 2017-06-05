@@ -5,27 +5,31 @@ $app->post('/user', function ($request, $response, $args) {
 
     $this->logger->info("Create user POST '/user'");
 
-    if (UserQuery::create()->find()->count() == 0)
-    {
-        $a = new Account();
-        $a->setName('WILKINSON');
-        $a->save();
+    $data = $request->getParsedBody();
 
-        $u = new User();
-        $u->addAccount($a);
-        $u->setFirstName('Christopher');
-        $u->setLastName('Wilkinson');
-        $u->setEmail('c@wilk.tech');
-        $u->setPasswordHash(password_hash('something',PASSWORD_BCRYPT));
-        $u->save();
+    $data['first-name'] = trim($data['first-name']);
+    $data['last-name'] = trim($data['last-name']);
+    $data['email'] = new EmailAddress($data['email']);
+
+    $u = new User();
+    $u->setFirstName($data['first-name']);
+    $u->setLastName($data['last-name']);
+    $u->setEmail($data['email']);
+    if ($data['password'] != $data['password-confirm'] || strlen($data['password']) <= 5)
+    {
+        $message = 'Passwords do not match, or are too short. Must be above 5 chars long.';
+        return $this->view->render($response->withStatus(422), 'user-new.twig', [ "user" => $u, 'message' => $message ] );
     }
-    return $this->view->render($response, 'dashboard.twig', [ "user" => $u, ] );
+    $u->setPassword($data['password']);
+    $u->save();
+
+    return $response->withStatus(303)->withHeader('Location', $this->router->pathFor('user', [ 'id' => $u->getId() ] ));
 })->setName('user-new-post');
 
 $app->get('/user/new', function ($request, $response, $args) {
     
     return $this->view->render($response, 'user-new.twig', [ ] );
-})->setName('user-new');
+})->setName('user-new-post');
 
 
 $app->post('/user/{id}/password', function ($request, $response, $args) {
@@ -39,13 +43,13 @@ $app->post('/user/{id}/password', function ($request, $response, $args) {
     if (!$u->checkPassword($data['old']))
     {
         $message = 'Old password incorrect.';
-        return $this->view->render($response, 'user.twig', [ "user" => $u, 'message' => $message ] );
+        return $this->view->render($response->withStatus(422), 'user.twig', [ "user" => $u, 'message' => $message ] );
     }
 
     if ($data['new'] != $data['confirm'] || strlen($data['new']) <= 5 )
     {
         $message = 'New passwords do not match, or are too short. Must be above 5 chars long.';
-        return $this->view->render($response, 'user.twig', [ "user" => $u, 'message' => $message ] );
+        return $this->view->render($response->withStatus(422), 'user.twig', [ "user" => $u, 'message' => $message ] );
     }
 
     $u->setPassword($data['new']);
@@ -53,7 +57,7 @@ $app->post('/user/{id}/password', function ($request, $response, $args) {
 
     $message = 'Changed successfully';
 
-    return $this->view->render($response, 'user.twig', [ "user" => $u, 'message' => $message ] );
+    return $this->view->render($response->withStatus(201), 'user.twig', [ "user" => $u, 'message' => $message ] );
 })->setName('user-password-post');
 
 

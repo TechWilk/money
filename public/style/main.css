@@ -240,6 +240,31 @@ footer {
 footer {
   padding: 3rem 0;
 }
+header .logo {
+  font-size: 3rem;
+  display: inline-block;
+}
+header nav {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 1rem;
+}
+header nav ul li {
+  display: inline-block;
+}
+header nav ul li a {
+  display: block;
+  padding: 1rem;
+  cursor: pointer;
+}
+header nav ul li a:hover {
+  background-color: #b2b2b2;
+  color: #fff;
+}
+header .account {
+  float: right;
+  padding: 1rem;
+}
 .transaction {
   padding: 2rem;
   border: solid 2px #eee;

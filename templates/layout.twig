@@ -10,7 +10,7 @@
   </head>
   <body>
     <header>
-      <h1>Money</h1>
+      <div class="logo">Money</div>
       <nav>
         <ul>
           <li><a href="{{ path_for('home') }}">Home</a></li>
@@ -20,7 +20,7 @@
           <li><a href="{{ path_for('user', { 'id': currentuser.id } ) }}">My Account</a></li>
         </ul>
       </nav>
-      <p>You are logged in as {{ currentuser.name }}. <a href="{{ path_for('logout') }}">Logout</a></p>
+      <p class="account">You are logged in as {{ currentuser.name }}. <a href="{{ path_for('logout') }}">Logout</a></p>
     </header>
     <main>
     {% block content %}{% endblock %}

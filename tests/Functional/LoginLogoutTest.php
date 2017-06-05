@@ -10,7 +10,7 @@ class LoginLogoutTest extends BaseTestCase
   static public function setUpBeforeClass()
   {
     $user = new \User;
-    $user->setEmail('test@example.com');
+    $user->setEmail(new \EmailAddress('test@example.com'));
     $user->setFirstName('Test');
     $user->setLastName('User');
     $user->setAccountId(1);

@@ -16,7 +16,24 @@ use Map\UserTableMap;
 class User extends BaseUser
 {
   /**
-  * Set the value of [password] column.
+  * Set the value of [email] column.
+  *
+  * @param \EmailAddress $v new value
+  * @return $this|\User The current object (for fluent API support)
+  */
+  public function setEmail(\EmailAddress $v)
+  {
+      if ($this->email !== $v) {
+          $this->email = $v;
+          $this->modifiedColumns[UserTableMap::COL_EMAIL] = true;
+      }
+
+      return $this;
+  } // setEmail()
+
+
+  /**
+  * Set the value of [password_hash] column.
   *
   * @param string $v new value
   * @return $this|\User The current object (for fluent API support)
@@ -40,7 +57,7 @@ class User extends BaseUser
 
 
   /**
-  * Check a plain text password against the value of [password] column.
+  * Check a plain text password against the value of [password_hash] column.
   *
   * @param string $v plain text password
   * @return $this|\User The current object (for fluent API support)

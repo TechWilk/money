@@ -18,7 +18,7 @@ class TestData
     $user->setAccount($account);
     $user->setFirstName('Bob');
     $user->setLastName('Jones');
-    $user->setEmail('bob@example.com');
+    $user->setEmail(new \EmailAddress('bob@example.com'));
     $user->setEnable(true);
     $user->setPassword('really-secure');
     $user->save();

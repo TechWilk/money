@@ -94,7 +94,7 @@ abstract class User implements ActiveRecordInterface
     /**
      * The value for the email field.
      *
-     * @var        string
+     * @var        \EmailAddress
      */
     protected $email;
 
@@ -414,7 +414,7 @@ abstract class User implements ActiveRecordInterface
     /**
      * Get the [email] column value.
      *
-     * @return string
+     * @return \EmailAddress
      */
     public function getEmail()
     {
@@ -558,15 +558,11 @@ abstract class User implements ActiveRecordInterface
     /**
      * Set the value of [email] column.
      *
-     * @param string $v new value
+     * @param \EmailAddress $v new value
      * @return $this|\User The current object (for fluent API support)
      */
-    public function setEmail($v)
+    public function setEmail(\EmailAddress $v)
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
         if ($this->email !== $v) {
             $this->email = $v;
             $this->modifiedColumns[UserTableMap::COL_EMAIL] = true;
@@ -696,7 +692,7 @@ abstract class User implements ActiveRecordInterface
             $this->last_name = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->email = (null !== $col) ? (string) $col : null;
+            $this->email = (null !== $col) ? new \EmailAddress($col) : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UserTableMap::translateFieldName('PasswordHash', TableMap::TYPE_PHPNAME, $indexType)];
             $this->password_hash = (null !== $col) ? (string) $col : null;

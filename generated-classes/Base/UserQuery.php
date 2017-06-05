@@ -65,7 +65,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneByAccountId(int $account_id) Return the first ChildUser filtered by the account_id column
  * @method     ChildUser findOneByFirstName(string $first_name) Return the first ChildUser filtered by the first_name column
  * @method     ChildUser findOneByLastName(string $last_name) Return the first ChildUser filtered by the last_name column
- * @method     ChildUser findOneByEmail(string $email) Return the first ChildUser filtered by the email column
+ * @method     ChildUser findOneByEmail(\EmailAddress $email) Return the first ChildUser filtered by the email column
  * @method     ChildUser findOneByPasswordHash(string $password_hash) Return the first ChildUser filtered by the password_hash column
  * @method     ChildUser findOneByPasswordExpire(string $password_expire) Return the first ChildUser filtered by the password_expire column
  * @method     ChildUser findOneByEnable(boolean $enable) Return the first ChildUser filtered by the enable column *
@@ -77,7 +77,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneByAccountId(int $account_id) Return the first ChildUser filtered by the account_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByFirstName(string $first_name) Return the first ChildUser filtered by the first_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByLastName(string $last_name) Return the first ChildUser filtered by the last_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByEmail(string $email) Return the first ChildUser filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByEmail(\EmailAddress $email) Return the first ChildUser filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPasswordHash(string $password_hash) Return the first ChildUser filtered by the password_hash column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPasswordExpire(string $password_expire) Return the first ChildUser filtered by the password_expire column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByEnable(boolean $enable) Return the first ChildUser filtered by the enable column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -87,7 +87,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findByAccountId(int $account_id) Return ChildUser objects filtered by the account_id column
  * @method     ChildUser[]|ObjectCollection findByFirstName(string $first_name) Return ChildUser objects filtered by the first_name column
  * @method     ChildUser[]|ObjectCollection findByLastName(string $last_name) Return ChildUser objects filtered by the last_name column
- * @method     ChildUser[]|ObjectCollection findByEmail(string $email) Return ChildUser objects filtered by the email column
+ * @method     ChildUser[]|ObjectCollection findByEmail(\EmailAddress $email) Return ChildUser objects filtered by the email column
  * @method     ChildUser[]|ObjectCollection findByPasswordHash(string $password_hash) Return ChildUser objects filtered by the password_hash column
  * @method     ChildUser[]|ObjectCollection findByPasswordExpire(string $password_expire) Return ChildUser objects filtered by the password_expire column
  * @method     ChildUser[]|ObjectCollection findByEnable(boolean $enable) Return ChildUser objects filtered by the enable column

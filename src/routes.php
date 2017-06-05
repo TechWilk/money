@@ -23,6 +23,35 @@ $app->post('/user', function ($request, $response, $args) {
 })->setName('user-new');
 
 
+$app->post('/user/{id}/password', function ($request, $response, $args) {
+
+    $this->logger->info("Reset user password POST '/user/".$args['id']."/password'");
+
+    $u = UserQuery::create()->findPk($args['id']);
+
+    $data = $request->getParsedBody();
+
+    if (!$u->checkPassword($data['old']))
+    {
+        $message = 'Old password incorrect.';
+        return $this->view->render($response, 'user.twig', [ "user" => $u, 'message' => $message ] );
+    }
+
+    if ($data['new'] != $data['confirm'] || strlen($data['new']) <= 5 )
+    {
+        $message = 'New passwords do not match, or are too short. Must be above 5 chars long.';
+        return $this->view->render($response, 'user.twig', [ "user" => $u, 'message' => $message ] );
+    }
+
+    $u->setPassword($data['new']);
+    $u->save();
+
+    $message = 'Changed successfully';
+
+    return $this->view->render($response, 'user.twig', [ "user" => $u, 'message' => $message ] );
+})->setName('user-password-post');
+
+
 $app->get('/user/{id}', function ($request, $response, $args) {
 
     $this->logger->info("Fetch user GET '/user/".$args['id']."'");

@@ -13,4 +13,21 @@
     <h2>{{ user.account.name }}</h2>
     <p>ID: {{ user.account.id }}</p>
 </div>
+
+<form class="reset-password" action="{{ path_for('user-password-post', { 'id': user.id } ) }}" method="post">
+    <label for="old">Old password:</label>
+    <input type="password" name="old" id="old">
+
+    <label for="new">New password:</label>
+    <input type="password" name="new" id="new">
+
+    <label for="confirm">New password (again):</label>
+    <input type="password" name="confirm" id="confirm">
+
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+
+    <button type="submit">Change</button>
+</form>
 {% endblock %}

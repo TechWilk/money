@@ -35,6 +35,24 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      */
     public function runApp($requestMethod, $requestUri, $requestData = null)
     {
+        if (isset($requestData) && $requestMethod == 'GET')
+        {
+            if (is_array($requestData))
+            {
+                $requestUri .= '?';
+                foreach ($requestData as $key => $data)
+                {
+                    $requestUri .= $key . '=' . $data;
+
+                    if ($data != end($requestData))
+                    {
+                        $requestUri .= '&';
+                    }
+                }
+                
+            }
+        }
+
         // Create a mock environment for testing with
         $environment = Environment::mock(
             [
@@ -47,7 +65,8 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $request = Request::createFromEnvironment($environment);
 
         // Add request data, if it exists
-        if (isset($requestData)) {
+        if (isset($requestData) && $requestMethod != 'GET')
+        {
             $request = $request->withParsedBody($requestData);
         }
 

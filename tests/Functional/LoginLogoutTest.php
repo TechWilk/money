@@ -86,18 +86,33 @@ class LoginLogoutTest extends BaseTestCase
   }
 
 
-   /**
-   * @depends testPostLoginSuccessful
-    * Test user is rediected if there are already logged in.
-    */
-    public function testGetLoginAfterSuccessfulAuth()
-    {
-      $response = $this->runApp('POST', '/login', ['username' => 'test@example.com', 'password' => 'this-is-correct']);
-      $response = $this->runApp('GET', '/login');
+  /**
+  * @depends testPostLoginSuccessful
+  * Test user is rediected if there are already logged in.
+  */
+  public function testGetLoginAfterSuccessfulAuth()
+  {
+    $response = $this->runApp('POST', '/login', ['username' => 'test@example.com', 'password' => 'this-is-correct']);
+    $response = $this->runApp('GET', '/login');
 
-      $this->assertEquals(302, $response->getStatusCode());
-      $this->assertTrue(isset($_SESSION['userId']));
-    }
+    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertTrue(isset($_SESSION['userId']));
+  }
+
+  /**
+  * @depends testPostLoginSuccessful
+  * Test user is rediected to the page they tried to visit before being prompted to login.
+  */
+  public function testGetLoginRedirectSuccessful()
+  {
+    $response = $this->runApp('GET', '/transactions');
+    $this->assertEquals(302, $response->getStatusCode());
+
+    $response = $this->runApp('POST', '/login', ['username' => 'test@example.com', 'password' => 'this-is-correct']);
+
+    $this->assertEquals(303, $response->getStatusCode());
+    $this->assertTrue(isset($_SESSION['userId']));
+  }
 
 
 
@@ -107,9 +122,10 @@ class LoginLogoutTest extends BaseTestCase
   */
   public function testPostLogoutNotAccepted()
   {
+    $response = $this->runApp('POST', '/login', ['username' => 'test@example.com', 'password' => 'this-is-correct']);
     $response = $this->runApp('POST', '/logout', ['test']);
 
-    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals(405, $response->getStatusCode());
     //$this->assertContains('Method not allowed', (string)$response->getBody());
   }
 
@@ -119,6 +135,7 @@ class LoginLogoutTest extends BaseTestCase
   */
   public function testGetLogoutAccepted()
   {
+    $response = $this->runApp('POST', '/login', ['username' => 'test@example.com', 'password' => 'this-is-correct']);
     $response = $this->runApp('GET', '/logout');
 
     $this->assertEquals(302, $response->getStatusCode());

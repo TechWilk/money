@@ -40,16 +40,17 @@ class HashtagsPageTest extends BaseTestCase
 
         $hashtags = json_decode((string)$response->getBody(), true);
         
-        $this->assertContains(['test',1], $hashtags);
+        $this->assertContains(['test',2], $hashtags);
         $this->assertContains(['something',1], $hashtags);
+        $this->assertContains(['different',4], $hashtags);
     }
 
     public function providerTestGetHashtagsJsonWithQueryParameter()
     {
         return [
-        [ 'test', [ ['test', 1] ] ],
-        [ 'te', [ ['test', 1] ] ],
-        [ 't', [ ['test', 1], ['something', 1] ] ],
+        [ 'test', [ ['test', 2] ] ],
+        [ 'te', [ ['test', 2] ] ],
+        [ 't', [ ['test', 2], ['something', 1], ['different',4] ] ],
         ];
     }
 

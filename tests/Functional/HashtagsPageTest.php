@@ -28,4 +28,60 @@ class HashtagsPageTest extends BaseTestCase
         $this->assertEquals(405, $response->getStatusCode());
         $this->assertContains('Method not allowed', (string)$response->getBody());
     }
+
+    /**
+     * Test that the hashtags route returns a rendered response containing the text 'All Hashtags' and 'Jump to'
+     */
+    public function testGetHashtagsJsonAll()
+    {
+        $response = $this->runApp('GET', '/tags.json');
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $hashtags = json_decode((string)$response->getBody(), true);
+        
+        $this->assertContains(['test',1], $hashtags);
+        $this->assertContains(['something',1], $hashtags);
+    }
+
+    public function providerTestGetHashtagsJsonWithQueryParameter()
+    {
+        return [
+        [ 'test', [ ['test', 1] ] ],
+        [ 'te', [ ['test', 1] ] ],
+        [ 't', [ ['test', 1], ['something', 1] ] ],
+        ];
+    }
+
+    /**
+    * @param string $email
+    * @param string $email
+    *
+    * @dataProvider providerTestGetHashtagsJsonWithQueryParameter
+    */
+    public function testGetHashtagsJsonWithQueryParameter($q, $expected)
+    {
+        $response = $this->runApp('GET', '/tags.json', [ 'q' => $q ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $hashtags = json_decode((string)$response->getBody(), true);
+        
+        foreach($expected as $contents)
+        {
+            $this->assertContains($contents, $hashtags);
+        }
+    }
+
+
+    public function testGetHashtagsJsonWithInvalidQueryParameter()
+    {
+        $response = $this->runApp('GET', '/tags.json', [ 'q' => 'ubadfuip32hafnidfo' ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $hashtags = json_decode((string)$response->getBody(), true);
+        
+        $this->assertEmpty($hashtags);
+    }
 }

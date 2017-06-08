@@ -13,7 +13,7 @@
     <h3>Accounts</h3>
     {% for account in user.accounts %}
     <div class="account">
-        <h4>{{ account.name }}</h4>
+        <h4><a href="{{ path_for('transactions', { 'account': account.name }) }}">{{ account.name }}</a></h4>
         <p>ID: {{ account.id }}</p>
     </div>
     {% else %}

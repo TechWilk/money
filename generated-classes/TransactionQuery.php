@@ -1,6 +1,7 @@
 <?php
 
 use Base\TransactionQuery as BaseTransactionQuery;
+use Psr\Container\ContainerInterface;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'transaction' table.
@@ -14,5 +15,12 @@ use Base\TransactionQuery as BaseTransactionQuery;
  */
 class TransactionQuery extends BaseTransactionQuery
 {
+
+  public function forCurrentUser(ContainerInterface $container)
+    {
+      $auth = new Authentication($container);
+      
+      return $this->useAccountQuery()->filterByUser($auth->currentUser())->endUse();
+    }
 
 }

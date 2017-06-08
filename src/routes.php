@@ -132,7 +132,7 @@ $app->get('/transactions/tag/{tag}', function ($request, $response, $args) {
 
     $this->logger->info("Fetch tag GET '/tag/".$args['tag']."'");
 
-    $transactions = TransactionQuery::create()->useTransactionHashtagQuery()->useHashtagQuery()->filterByTag(strtolower($args['tag']))->endUse()->endUse()->orderByDate('desc')->find();
+    $transactions = TransactionQuery::create()->forCurrentUser($this)->useTransactionHashtagQuery()->useHashtagQuery()->filterByTag(strtolower($args['tag']))->endUse()->endUse()->orderByDate('desc')->find();
 
     return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'tagName' => $args['tag'], ] );
 })->setName('tag');
@@ -156,7 +156,7 @@ $app->post('/transaction[/{id}]', function ($request, $response, $args) {
 
     if (isset($args['id']))
     {
-        $t = TransactionQuery::create()->findPK($args['id']);
+        $t = TransactionQuery::create()->forCurrentUser($this)->findPK($args['id']);
     }
 
     $t->setDate(new DateTime($transaction_data['date']));
@@ -193,8 +193,7 @@ $app->get('/transaction/{id}/edit', function ($request, $response, $args) {
     $categories = CategoryQuery::create()->find();
     $accounts = AccountQuery::create()->find();
 
-    $q = new TransactionQuery();
-    $t = $q->findPK($args['id']);
+    $t = TransactionQuery::create()->forCurrentUser($this)->findPK($args['id']);
 
     return $this->view->render($response, 'transaction-new.twig', [ "transaction" => $t, 'categories' => $categories, 'accounts' => $accounts, ] );
 })->setName('transaction-edit');
@@ -203,8 +202,7 @@ $app->get('/transaction/{id}', function ($request, $response, $args) {
     // Sample log message
     $this->logger->info("Fetch transaction GET '/transaction/".$args['id']."'");
 
-    $q = new TransactionQuery();
-    $t = $q->findPK($args['id']);
+    $t = TransactionQuery::create()->forCurrentUser($this)->findPK($args['id']);
 
     return $this->view->render($response, 'transaction.twig', [ "transaction" => $t, ] );
 })->setName('transaction');
@@ -214,11 +212,11 @@ $app->get('/transactions[/{account}]', function ($request, $response, $args) {
     // Sample log message
     $this->logger->info("Fetch transactions GET '/transactions");
 
-    $transactions = TransactionQuery::create()->orderByDate('desc')->find();
+    $transactions = TransactionQuery::create()->forCurrentUser($this)->orderByDate('desc')->find();
     if (isset($args['account']))
     {
         $account = AccountQuery::create()->filterByName($args['account'])->findOne();
-        $transactions = TransactionQuery::create()->filterByAccount($account)->orderByDate('desc')->find();
+        $transactions = TransactionQuery::create()->forCurrentUser($this)->filterByAccount($account)->orderByDate('desc')->find();
         return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'account' => $account, ] );
     }
 
@@ -233,7 +231,7 @@ $app->get('/transactions/{year}/{month}', function ($request, $response, $args) 
     {
         $minDate = new DateTime("first day of ".$args['month']." ".$args['year']);
         $maxDate = new DateTime("last day of ".$args['month']." ".$args['year']);
-        $transactions = TransactionQuery::create()->filterByDate(['min' => $minDate, 'max' => $maxDate])->orderByDate('desc')->find();
+        $transactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => $minDate, 'max' => $maxDate])->orderByDate('desc')->find();
     }
     catch (\Exception $e)
     {
@@ -247,7 +245,7 @@ $app->get('/transactions/{year}/{month}', function ($request, $response, $args) 
 /*
 $app->get('/fixHashtags', function ($request, $response, $args) {
 
-    $transactions = TransactionQuery::create()->find();
+    $transactions = TransactionQuery::create()->forCurrentUser($this)->find();
     foreach ($transactions as $transaction)
     {
         preg_match_all("/#(\\w+)/", $transaction->getDescription(), $hashtags);
@@ -384,8 +382,8 @@ $app->get('/', function ($request, $response, $args) {
         'newest' => $newestHashtags,
     ];
 
-    $yearTransactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of January this year"), 'max' => new DateTime("last day of December this year")])->orderByDate('desc')->find();
-    $lastYearTransactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of January last year"), 'max' => new DateTime("last day of December last year")])->orderByDate('desc')->find();
+    $yearTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of January this year"), 'max' => new DateTime("last day of December this year")])->orderByDate('desc')->find();
+    $lastYearTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of January last year"), 'max' => new DateTime("last day of December last year")])->orderByDate('desc')->find();
 
     // this year
     $thisYearIncoming = 0;
@@ -422,7 +420,7 @@ $app->get('/', function ($request, $response, $args) {
     $months = [];
     foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
     {
-        $transactionsInMonth = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of $month this year"), 'max' => new DateTime("last day of $month this year")])->orderByDate('desc')->find();
+        $transactionsInMonth = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of $month this year"), 'max' => new DateTime("last day of $month this year")])->orderByDate('desc')->find();
         if ($transactionsInMonth->count() != 0)
         {
             $months[$month]['transactions'] = $transactionsInMonth;
@@ -445,7 +443,7 @@ $app->get('/', function ($request, $response, $args) {
     $monthsLastYear = [];
     foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
     {
-        $transactionsInMonth = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of $month last year"), 'max' => new DateTime("last day of $month last year")])->orderByDate('desc')->find();
+        $transactionsInMonth = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of $month last year"), 'max' => new DateTime("last day of $month last year")])->orderByDate('desc')->find();
         if ($transactionsInMonth->count() != 0)
         {
             $monthsLastYear[$month]['transactions'] = $transactionsInMonth;
@@ -478,8 +476,8 @@ $app->get('/', function ($request, $response, $args) {
         ],
     ];
 
-    $monthTransactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of this month"), 'max' => new DateTime("last day of this month")])->orderByDate('desc')->find();
-    $lastMonthTransactions = TransactionQuery::create()->filterByDate(['min' => new DateTime("first day of last month"), 'max' => new DateTime("last day of last month")])->orderByDate('desc')->find();
+    $monthTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of this month"), 'max' => new DateTime("last day of this month")])->orderByDate('desc')->find();
+    $lastMonthTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of last month"), 'max' => new DateTime("last day of last month")])->orderByDate('desc')->find();
 
     // this month
     $thisMonthIncoming = 0;

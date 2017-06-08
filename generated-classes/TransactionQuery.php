@@ -17,10 +17,10 @@ class TransactionQuery extends BaseTransactionQuery
 {
 
   public function forCurrentUser(ContainerInterface $container)
-    {
-      $auth = new Authentication($container);
-      
-      return $this->useAccountQuery()->filterByUser($auth->currentUser())->endUse();
-    }
+  {
+    $auth = new Authentication($container);
+    
+    return $this->useAccountQuery()->filterByUser($auth->currentUser())->endUse();
+  }
 
 }

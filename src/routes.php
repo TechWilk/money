@@ -181,7 +181,7 @@ $app->get('/transaction/new', function ($request, $response, $args) {
     $this->logger->info("Fetch transaction/new GET '/reading/new'");
 
     $categories = CategoryQuery::create()->find();
-    $accounts = AccountQuery::create()->find();
+    $accounts = AccountQuery::create()->filterByCurrentUser($this)->find();
 
     return $this->view->render($response, 'transaction-new.twig', [ 'categories' => $categories, 'accounts' => $accounts, ]);
 })->setName('transaction-new');
@@ -215,7 +215,7 @@ $app->get('/transactions[/{account}]', function ($request, $response, $args) {
     $transactions = TransactionQuery::create()->forCurrentUser($this)->orderByDate('desc')->find();
     if (isset($args['account']))
     {
-        $account = AccountQuery::create()->filterByName($args['account'])->findOne();
+        $account = AccountQuery::create()->filterByCurrentUser($this)->filterByName($args['account'])->findOne();
         $transactions = TransactionQuery::create()->forCurrentUser($this)->filterByAccount($account)->orderByDate('desc')->find();
         return $this->view->render($response, 'transactions.twig', [ "transactions" => $transactions, 'account' => $account, ] );
     }

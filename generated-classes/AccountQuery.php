@@ -1,6 +1,7 @@
 <?php
 
 use Base\AccountQuery as BaseAccountQuery;
+use Psr\Container\ContainerInterface;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'account' table.
@@ -14,5 +15,12 @@ use Base\AccountQuery as BaseAccountQuery;
  */
 class AccountQuery extends BaseAccountQuery
 {
+
+  public function filterByCurrentUser(ContainerInterface $container)
+  {
+    $auth = new Authentication($container);
+    
+    return $this->filterByUser($auth->currentUser());
+  }
 
 }

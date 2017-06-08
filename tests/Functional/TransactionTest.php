@@ -11,6 +11,7 @@ class TransactionTest extends BaseTestCase
      */
     public function testGetTransactionNew()
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
         $response = $this->runApp('GET', '/transaction/new');
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -40,6 +41,7 @@ class TransactionTest extends BaseTestCase
      */
     public function testPostTransaction($date, $value, $direction, $description, $account)
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
         $response = $this->runApp('POST', '/transaction', [ 
             'date' => $date,
             'value' => $value,

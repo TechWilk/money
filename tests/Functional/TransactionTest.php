@@ -53,6 +53,8 @@ class TransactionTest extends BaseTestCase
 
     public function testPostExistingTransaction()
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
+
         $date = (new \DateTime())->format('Y-m-d');
         $value = 5.89;
         $direction = 'outgoings';
@@ -72,6 +74,8 @@ class TransactionTest extends BaseTestCase
 
     public function testGetExistingTransactionDetails()
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
+
         $response = $this->runApp('GET', '/transaction/1');
 
         $this->assertEquals(200, $response->getStatusCode());

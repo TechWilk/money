@@ -11,6 +11,7 @@ class HomepageTest extends BaseTestCase
      */
     public function testGetHomepageWithoutName()
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
         $response = $this->runApp('GET', '/');
 
         $this->assertEquals(200, $response->getStatusCode());

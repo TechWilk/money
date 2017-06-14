@@ -12,8 +12,6 @@ $container['view'] = function ($c) {
     $view = new \Slim\Views\Twig($settings['template_path'], [
         'cache' => false, // or 'path/to/cache'
     ]);
-
-    $view->getExtension('Twig_Extension_Core')->setNumberFormat(2, '.', ',');
     
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
@@ -29,6 +27,7 @@ $container['view'] = function ($c) {
     $view->addExtension(new \TechWilk\Twig\Extension\Hashtagify($urlGenerator));
 
     $env = $view->getEnvironment();
+    $env->getExtension('Twig_Extension_Core')->setNumberFormat(2, '.', ',');
     //$env->addGlobal('site', new Site);
     $env->addGlobal('currenturl',$c->get('request')->getUri());
     $env->addGlobal('currentpath',$c->get('request')->getUri()->getBasePath().'/'.$c->get('request')->getUri()->getPath());

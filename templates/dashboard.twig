@@ -9,11 +9,11 @@
 <div class="year">
     <h3>Last Year</h3>
     <div class="summary">
-        <p>In: <span>£{{ years.last.income }}</span></p>
-        <p>Out: <span>£{{ years.last.outgoings }}</span></p>
+        <p>In: <span>£{{ years.last.income|number_format }}</span></p>
+        <p>Out: <span>£{{ years.last.outgoings|number_format }}</span></p>
         <p>Net:
             <span class="{{ years.last.income - years.last.outgoings < 0 ? 'negative' : '' }}">
-                £{{ years.last.income - years.last.outgoings }}
+                £{{ (years.last.income - years.last.outgoings)|number_format }}
             </span>
         </p>
     </div>
@@ -25,11 +25,11 @@
             </h4>
         </a>
         <div class="summary">
-            <p>In: <span>£{{ month.income }}</span></p>
-            <p>Out: <span>£{{ month.outgoings }}</span></p>
+            <p>In: <span>£{{ month.income|number_format }}</span></p>
+            <p>Out: <span>£{{ month.outgoings|number_format }}</span></p>
             <p>Net:
                 <span class="{{ month.income - month.outgoings < 0 ? 'negative' : '' }}">
-                    £{{ month.income - month.outgoings }}
+                    £{{ (month.income - month.outgoings)|number_format }}
                 </span>
             </p>
         </div>
@@ -40,11 +40,11 @@
 <div class="year">
     <h3>This Year</h3>
     <div class="summary">
-        <p>In: <span>£{{ years.this.income }}</span></p>
-        <p>Out: <span>£{{ years.this.outgoings }}</span></p>
+        <p>In: <span>£{{ years.this.income|number_format }}</span></p>
+        <p>Out: <span>£{{ years.this.outgoings|number_format }}</span></p>
         <p>Net:
             <span class="{{ years.this.income - years.this.outgoings < 0 ? 'negative' : '' }}">
-                £{{ years.this.income - years.this.outgoings }}
+                £{{ (years.this.income - years.this.outgoings)|number_format }}
             </span>
         </p>    
     </div>
@@ -56,11 +56,11 @@
             </h4>
         </a>
         <div class="summary">
-            <p>In: <span>£{{ month.income }}</span></p>
-            <p>Out: <span>£{{ month.outgoings }}</span></p>
+            <p>In: <span>£{{ month.income|number_format }}</span></p>
+            <p>Out: <span>£{{ month.outgoings|number_format }}</span></p>
             <p>Net:
                 <span class="{{ month.income - month.outgoings < 0 ? 'negative' : '' }}">
-                    £{{ month.income - month.outgoings }}
+                    £{{ (month.income - month.outgoings)|number_format }}
                 </span>
             </p>
         </div>
@@ -95,8 +95,8 @@
 
 <h2>This month</h2>
 <div class="summary">
-    <p>Income: £{{ months.this.income }}</p>
-    <p>Outgoing: £{{ months.this.outgoings }}</p>
+    <p>Income: £{{ months.this.income|number_format }}</p>
+    <p>Outgoing: £{{ months.this.outgoings|number_format }}</p>
 </div>
 {% for transaction in months.this.transactions %}
 {% include 'transaction-slim.twig' %}
@@ -104,8 +104,8 @@
 
 <h2>Last month</h2>
 <div class="summary">
-    <p>Income: £{{ months.last.income }}</p>
-    <p>Outgoing: £{{ months.last.outgoings }}</p>
+    <p>Income: £{{ months.last.income|number_format }}</p>
+    <p>Outgoing: £{{ months.last.outgoings|number_format }}</p>
 </div>
 {% for transaction in months.last.transactions %}
 {% include 'transaction-slim.twig' %}

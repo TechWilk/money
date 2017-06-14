@@ -5,7 +5,7 @@
 <p>Data of a transaction</p>
 
 <div class="transaction {{ transaction.value > 0 ? 'income' : 'outgoings' }} {{ transaction.account.name | lower }}">
-    <h2 class="value">{{ transaction.account.name }}: £{{ transaction.value }}</h2>
+    <h2 class="value">{{ transaction.account.name }}: £{{ transaction.value|number_format }}</h2>
     <p>{{ transaction.date | date('j F Y (D)') }}</p>
     <p>{{ transaction.description | hashtagify }}</p>
     <p><a href="{{ path_for('transaction-edit', { 'id': transaction.id }) }}">edit</a></p>

@@ -10,7 +10,7 @@
 #}
 <div class="transaction {{ transaction.value > 0 ? 'income' : 'outgoings' }} {{ transaction.account.name | lower }}">
   <a href="{{ path_for('transaction', { 'id': transaction.id } ) }}">
-    <h3>£{{ transaction.value }}</h3>
+    <h3>£{{ transaction.value|number_format }}</h3>
   </a>
   <p>
     <a href="{{ path_for('transactions', { 'account': transaction.account.name } ) }}">

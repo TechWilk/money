@@ -2,18 +2,18 @@
 
 namespace Base;
 
-use \Category as ChildCategory;
-use \CategoryQuery as ChildCategoryQuery;
-use \Exception;
-use \PDO;
+use Category as ChildCategory;
+use CategoryQuery as ChildCategoryQuery;
+use Exception;
 use Map\CategoryTableMap;
-use Propel\Runtime\Propel;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
 
 /**
  * Base class that represents a query for the 'category' table.
@@ -23,61 +23,46 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildCategoryQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildCategoryQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method     ChildCategoryQuery orderByAccountId($order = Criteria::ASC) Order by the account_id column
- *
  * @method     ChildCategoryQuery groupById() Group by the id column
  * @method     ChildCategoryQuery groupByName() Group by the name column
  * @method     ChildCategoryQuery groupByAccountId() Group by the account_id column
- *
  * @method     ChildCategoryQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildCategoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildCategoryQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildCategoryQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildCategoryQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildCategoryQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildCategoryQuery leftJoinAccount($relationAlias = null) Adds a LEFT JOIN clause to the query using the Account relation
  * @method     ChildCategoryQuery rightJoinAccount($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Account relation
  * @method     ChildCategoryQuery innerJoinAccount($relationAlias = null) Adds a INNER JOIN clause to the query using the Account relation
- *
  * @method     ChildCategoryQuery joinWithAccount($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Account relation
- *
  * @method     ChildCategoryQuery leftJoinWithAccount() Adds a LEFT JOIN clause and with to the query using the Account relation
  * @method     ChildCategoryQuery rightJoinWithAccount() Adds a RIGHT JOIN clause and with to the query using the Account relation
  * @method     ChildCategoryQuery innerJoinWithAccount() Adds a INNER JOIN clause and with to the query using the Account relation
- *
  * @method     ChildCategoryQuery leftJoinBreakdown($relationAlias = null) Adds a LEFT JOIN clause to the query using the Breakdown relation
  * @method     ChildCategoryQuery rightJoinBreakdown($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Breakdown relation
  * @method     ChildCategoryQuery innerJoinBreakdown($relationAlias = null) Adds a INNER JOIN clause to the query using the Breakdown relation
- *
  * @method     ChildCategoryQuery joinWithBreakdown($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Breakdown relation
- *
  * @method     ChildCategoryQuery leftJoinWithBreakdown() Adds a LEFT JOIN clause and with to the query using the Breakdown relation
  * @method     ChildCategoryQuery rightJoinWithBreakdown() Adds a RIGHT JOIN clause and with to the query using the Breakdown relation
  * @method     ChildCategoryQuery innerJoinWithBreakdown() Adds a INNER JOIN clause and with to the query using the Breakdown relation
- *
  * @method     \AccountQuery|\BreakdownQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildCategory findOne(ConnectionInterface $con = null) Return the first ChildCategory matching the query
  * @method     ChildCategory findOneOrCreate(ConnectionInterface $con = null) Return the first ChildCategory matching the query, or a new ChildCategory object populated from the query conditions when no match is found
- *
  * @method     ChildCategory findOneById(int $id) Return the first ChildCategory filtered by the id column
  * @method     ChildCategory findOneByName(string $name) Return the first ChildCategory filtered by the name column
  * @method     ChildCategory findOneByAccountId(int $account_id) Return the first ChildCategory filtered by the account_id column *
 
  * @method     ChildCategory requirePk($key, ConnectionInterface $con = null) Return the ChildCategory by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildCategory requireOne(ConnectionInterface $con = null) Return the first ChildCategory matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildCategory requireOneById(int $id) Return the first ChildCategory filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildCategory requireOneByName(string $name) Return the first ChildCategory filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildCategory requireOneByAccountId(int $account_id) Return the first ChildCategory filtered by the account_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildCategory[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildCategory objects based on current ModelCriteria
  * @method     ChildCategory[]|ObjectCollection findById(int $id) Return ChildCategory objects filtered by the id column
  * @method     ChildCategory[]|ObjectCollection findByName(string $name) Return ChildCategory objects filtered by the name column
  * @method     ChildCategory[]|ObjectCollection findByAccountId(int $account_id) Return ChildCategory objects filtered by the account_id column
  * @method     ChildCategory[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class CategoryQuery extends ModelCriteria
 {
@@ -86,9 +71,9 @@ abstract class CategoryQuery extends ModelCriteria
     /**
      * Initializes internal state of \Base\CategoryQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\Category', $modelAlias = null)
     {
@@ -98,8 +83,8 @@ abstract class CategoryQuery extends ModelCriteria
     /**
      * Returns a new ChildCategoryQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildCategoryQuery
      */
@@ -128,7 +113,7 @@ abstract class CategoryQuery extends ModelCriteria
      * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param mixed               $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildCategory|array|mixed the result, formatted by the current formatter
@@ -136,7 +121,7 @@ abstract class CategoryQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -165,8 +150,8 @@ abstract class CategoryQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -198,8 +183,8 @@ abstract class CategoryQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildCategory|array|mixed the result, formatted by the current formatter
      */
@@ -218,9 +203,10 @@ abstract class CategoryQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -239,33 +225,31 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-
         return $this->addUsingAlias(CategoryTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
-
         return $this->addUsingAlias(CategoryTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the id column
+     * Filter the query on the id column.
      *
      * Example usage:
      * <code>
@@ -274,11 +258,11 @@ abstract class CategoryQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param     mixed $id The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $id         The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
@@ -306,7 +290,7 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the name column
+     * Filter the query on the name column.
      *
      * Example usage:
      * <code>
@@ -314,8 +298,8 @@ abstract class CategoryQuery extends ModelCriteria
      * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE name LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $name The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $name       The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
@@ -331,7 +315,7 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the account_id column
+     * Filter the query on the account_id column.
      *
      * Example usage:
      * <code>
@@ -342,11 +326,11 @@ abstract class CategoryQuery extends ModelCriteria
      *
      * @see       filterByAccount()
      *
-     * @param     mixed $accountId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $accountId  The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
@@ -374,10 +358,10 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Account object
+     * Filter the query by a related \Account object.
      *
-     * @param \Account|ObjectCollection $account The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \Account|ObjectCollection $account    The related object(s) to use as filter
+     * @param string                    $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -401,10 +385,10 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Account relation
+     * Adds a JOIN clause to the query using the Account relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
@@ -433,13 +417,13 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Use the Account relation Account object
+     * Use the Account relation Account object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \AccountQuery A secondary query class using the current class as primary query
      */
@@ -451,10 +435,10 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Breakdown object
+     * Filter the query by a related \Breakdown object.
      *
-     * @param \Breakdown|ObjectCollection $breakdown the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \Breakdown|ObjectCollection $breakdown  the related object to use as filter
+     * @param string                      $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildCategoryQuery The current query, for fluid interface
      */
@@ -474,10 +458,10 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Breakdown relation
+     * Adds a JOIN clause to the query using the Breakdown relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
@@ -506,13 +490,13 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Use the Breakdown relation Breakdown object
+     * Use the Breakdown relation Breakdown object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \BreakdownQuery A secondary query class using the current class as primary query
      */
@@ -524,9 +508,9 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildCategory $category Object to remove from the list of results
+     * @param ChildCategory $category Object to remove from the list of results
      *
      * @return $this|ChildCategoryQuery The current query, for fluid interface
      */
@@ -543,6 +527,7 @@ abstract class CategoryQuery extends ModelCriteria
      * Deletes all rows from the category table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -567,13 +552,15 @@ abstract class CategoryQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -599,5 +586,4 @@ abstract class CategoryQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // CategoryQuery

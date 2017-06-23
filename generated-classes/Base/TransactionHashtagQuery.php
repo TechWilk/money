@@ -2,18 +2,18 @@
 
 namespace Base;
 
-use \TransactionHashtag as ChildTransactionHashtag;
-use \TransactionHashtagQuery as ChildTransactionHashtagQuery;
-use \Exception;
-use \PDO;
+use Exception;
 use Map\TransactionHashtagTableMap;
-use Propel\Runtime\Propel;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
+use TransactionHashtag as ChildTransactionHashtag;
+use TransactionHashtagQuery as ChildTransactionHashtagQuery;
 
 /**
  * Base class that represents a query for the 'transaction_hashtag' table.
@@ -22,57 +22,42 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildTransactionHashtagQuery orderByTransactionId($order = Criteria::ASC) Order by the transaction_id column
  * @method     ChildTransactionHashtagQuery orderByHashtagId($order = Criteria::ASC) Order by the hashtag_id column
- *
  * @method     ChildTransactionHashtagQuery groupByTransactionId() Group by the transaction_id column
  * @method     ChildTransactionHashtagQuery groupByHashtagId() Group by the hashtag_id column
- *
  * @method     ChildTransactionHashtagQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildTransactionHashtagQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildTransactionHashtagQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildTransactionHashtagQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildTransactionHashtagQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildTransactionHashtagQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildTransactionHashtagQuery leftJoinTransaction($relationAlias = null) Adds a LEFT JOIN clause to the query using the Transaction relation
  * @method     ChildTransactionHashtagQuery rightJoinTransaction($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Transaction relation
  * @method     ChildTransactionHashtagQuery innerJoinTransaction($relationAlias = null) Adds a INNER JOIN clause to the query using the Transaction relation
- *
  * @method     ChildTransactionHashtagQuery joinWithTransaction($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Transaction relation
- *
  * @method     ChildTransactionHashtagQuery leftJoinWithTransaction() Adds a LEFT JOIN clause and with to the query using the Transaction relation
  * @method     ChildTransactionHashtagQuery rightJoinWithTransaction() Adds a RIGHT JOIN clause and with to the query using the Transaction relation
  * @method     ChildTransactionHashtagQuery innerJoinWithTransaction() Adds a INNER JOIN clause and with to the query using the Transaction relation
- *
  * @method     ChildTransactionHashtagQuery leftJoinHashtag($relationAlias = null) Adds a LEFT JOIN clause to the query using the Hashtag relation
  * @method     ChildTransactionHashtagQuery rightJoinHashtag($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Hashtag relation
  * @method     ChildTransactionHashtagQuery innerJoinHashtag($relationAlias = null) Adds a INNER JOIN clause to the query using the Hashtag relation
- *
  * @method     ChildTransactionHashtagQuery joinWithHashtag($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Hashtag relation
- *
  * @method     ChildTransactionHashtagQuery leftJoinWithHashtag() Adds a LEFT JOIN clause and with to the query using the Hashtag relation
  * @method     ChildTransactionHashtagQuery rightJoinWithHashtag() Adds a RIGHT JOIN clause and with to the query using the Hashtag relation
  * @method     ChildTransactionHashtagQuery innerJoinWithHashtag() Adds a INNER JOIN clause and with to the query using the Hashtag relation
- *
  * @method     \TransactionQuery|\HashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildTransactionHashtag findOne(ConnectionInterface $con = null) Return the first ChildTransactionHashtag matching the query
  * @method     ChildTransactionHashtag findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTransactionHashtag matching the query, or a new ChildTransactionHashtag object populated from the query conditions when no match is found
- *
  * @method     ChildTransactionHashtag findOneByTransactionId(int $transaction_id) Return the first ChildTransactionHashtag filtered by the transaction_id column
  * @method     ChildTransactionHashtag findOneByHashtagId(int $hashtag_id) Return the first ChildTransactionHashtag filtered by the hashtag_id column *
 
  * @method     ChildTransactionHashtag requirePk($key, ConnectionInterface $con = null) Return the ChildTransactionHashtag by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransactionHashtag requireOne(ConnectionInterface $con = null) Return the first ChildTransactionHashtag matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildTransactionHashtag requireOneByTransactionId(int $transaction_id) Return the first ChildTransactionHashtag filtered by the transaction_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransactionHashtag requireOneByHashtagId(int $hashtag_id) Return the first ChildTransactionHashtag filtered by the hashtag_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildTransactionHashtag[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildTransactionHashtag objects based on current ModelCriteria
  * @method     ChildTransactionHashtag[]|ObjectCollection findByTransactionId(int $transaction_id) Return ChildTransactionHashtag objects filtered by the transaction_id column
  * @method     ChildTransactionHashtag[]|ObjectCollection findByHashtagId(int $hashtag_id) Return ChildTransactionHashtag objects filtered by the hashtag_id column
  * @method     ChildTransactionHashtag[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class TransactionHashtagQuery extends ModelCriteria
 {
@@ -81,9 +66,9 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     /**
      * Initializes internal state of \Base\TransactionHashtagQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\TransactionHashtag', $modelAlias = null)
     {
@@ -93,8 +78,8 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     /**
      * Returns a new ChildTransactionHashtagQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildTransactionHashtagQuery
      */
@@ -131,7 +116,7 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -160,8 +145,8 @@ abstract class TransactionHashtagQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -194,8 +179,8 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildTransactionHashtag|array|mixed the result, formatted by the current formatter
      */
@@ -214,9 +199,10 @@ abstract class TransactionHashtagQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -235,9 +221,9 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildTransactionHashtagQuery The current query, for fluid interface
      */
@@ -250,9 +236,9 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildTransactionHashtagQuery The current query, for fluid interface
      */
@@ -272,7 +258,7 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the transaction_id column
+     * Filter the query on the transaction_id column.
      *
      * Example usage:
      * <code>
@@ -283,11 +269,11 @@ abstract class TransactionHashtagQuery extends ModelCriteria
      *
      * @see       filterByTransaction()
      *
-     * @param     mixed $transactionId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $transactionId The value to use as filter.
+     *                              Use scalar values for equality.
+     *                              Use array values for in_array() equivalent.
+     *                              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison    Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTransactionHashtagQuery The current query, for fluid interface
      */
@@ -315,7 +301,7 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the hashtag_id column
+     * Filter the query on the hashtag_id column.
      *
      * Example usage:
      * <code>
@@ -326,11 +312,11 @@ abstract class TransactionHashtagQuery extends ModelCriteria
      *
      * @see       filterByHashtag()
      *
-     * @param     mixed $hashtagId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $hashtagId  The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTransactionHashtagQuery The current query, for fluid interface
      */
@@ -358,10 +344,10 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Transaction object
+     * Filter the query by a related \Transaction object.
      *
      * @param \Transaction|ObjectCollection $transaction The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string                        $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -385,10 +371,10 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Transaction relation
+     * Adds a JOIN clause to the query using the Transaction relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildTransactionHashtagQuery The current query, for fluid interface
      */
@@ -417,13 +403,13 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Use the Transaction relation Transaction object
+     * Use the Transaction relation Transaction object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TransactionQuery A secondary query class using the current class as primary query
      */
@@ -435,10 +421,10 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Hashtag object
+     * Filter the query by a related \Hashtag object.
      *
-     * @param \Hashtag|ObjectCollection $hashtag The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \Hashtag|ObjectCollection $hashtag    The related object(s) to use as filter
+     * @param string                    $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -462,10 +448,10 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Hashtag relation
+     * Adds a JOIN clause to the query using the Hashtag relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildTransactionHashtagQuery The current query, for fluid interface
      */
@@ -494,13 +480,13 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Use the Hashtag relation Hashtag object
+     * Use the Hashtag relation Hashtag object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \HashtagQuery A secondary query class using the current class as primary query
      */
@@ -512,9 +498,9 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildTransactionHashtag $transactionHashtag Object to remove from the list of results
+     * @param ChildTransactionHashtag $transactionHashtag Object to remove from the list of results
      *
      * @return $this|ChildTransactionHashtagQuery The current query, for fluid interface
      */
@@ -523,7 +509,7 @@ abstract class TransactionHashtagQuery extends ModelCriteria
         if ($transactionHashtag) {
             $this->addCond('pruneCond0', $this->getAliasedColName(TransactionHashtagTableMap::COL_TRANSACTION_ID), $transactionHashtag->getTransactionId(), Criteria::NOT_EQUAL);
             $this->addCond('pruneCond1', $this->getAliasedColName(TransactionHashtagTableMap::COL_HASHTAG_ID), $transactionHashtag->getHashtagId(), Criteria::NOT_EQUAL);
-            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
+            $this->combine(['pruneCond0', 'pruneCond1'], Criteria::LOGICAL_OR);
         }
 
         return $this;
@@ -533,6 +519,7 @@ abstract class TransactionHashtagQuery extends ModelCriteria
      * Deletes all rows from the transaction_hashtag table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -557,13 +544,15 @@ abstract class TransactionHashtagQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -589,5 +578,4 @@ abstract class TransactionHashtagQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // TransactionHashtagQuery

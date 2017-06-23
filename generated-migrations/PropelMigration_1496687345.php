@@ -5,7 +5,7 @@ use Propel\Generator\Manager\MigrationManager;
 /**
  * Data object containing the SQL and PHP code to migrate the database
  * up to version 1496687345.
- * Generated on 2017-06-05 18:29:05 by user
+ * Generated on 2017-06-05 18:29:05 by user.
  */
 class PropelMigration_1496687345
 {
@@ -32,14 +32,14 @@ class PropelMigration_1496687345
     }
 
     /**
-     * Get the SQL statements for the Up migration
+     * Get the SQL statements for the Up migration.
      *
      * @return array list of the SQL strings to execute for the Up migration
      *               the keys being the datasources
      */
     public function getUpSQL()
     {
-        return array (
+        return [
   'money' => '
 # This is a fix for InnoDB in MySQL >= 4.1.x
 # It "suspends judgement" for fkey relationships until are tables are set.
@@ -77,18 +77,18 @@ CREATE TABLE `user_accounts`
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
-);
+];
     }
 
     /**
-     * Get the SQL statements for the Down migration
+     * Get the SQL statements for the Down migration.
      *
      * @return array list of the SQL strings to execute for the Down migration
      *               the keys being the datasources
      */
     public function getDownSQL()
     {
-        return array (
+        return [
   'money' => '
 # This is a fix for InnoDB in MySQL >= 4.1.x
 # It "suspends judgement" for fkey relationships until are tables are set.
@@ -115,7 +115,6 @@ ALTER TABLE `user` ADD CONSTRAINT `user_fk_474870`
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
-);
+];
     }
-
 }

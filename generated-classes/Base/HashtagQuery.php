@@ -2,18 +2,18 @@
 
 namespace Base;
 
-use \Hashtag as ChildHashtag;
-use \HashtagQuery as ChildHashtagQuery;
-use \Exception;
-use \PDO;
+use Exception;
+use Hashtag as ChildHashtag;
+use HashtagQuery as ChildHashtagQuery;
 use Map\HashtagTableMap;
-use Propel\Runtime\Propel;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
 
 /**
  * Base class that represents a query for the 'hashtag' table.
@@ -22,47 +22,35 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildHashtagQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildHashtagQuery orderByTag($order = Criteria::ASC) Order by the tag column
- *
  * @method     ChildHashtagQuery groupById() Group by the id column
  * @method     ChildHashtagQuery groupByTag() Group by the tag column
- *
  * @method     ChildHashtagQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildHashtagQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildHashtagQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildHashtagQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildHashtagQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildHashtagQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildHashtagQuery leftJoinTransactionHashtag($relationAlias = null) Adds a LEFT JOIN clause to the query using the TransactionHashtag relation
  * @method     ChildHashtagQuery rightJoinTransactionHashtag($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TransactionHashtag relation
  * @method     ChildHashtagQuery innerJoinTransactionHashtag($relationAlias = null) Adds a INNER JOIN clause to the query using the TransactionHashtag relation
- *
  * @method     ChildHashtagQuery joinWithTransactionHashtag($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the TransactionHashtag relation
- *
  * @method     ChildHashtagQuery leftJoinWithTransactionHashtag() Adds a LEFT JOIN clause and with to the query using the TransactionHashtag relation
  * @method     ChildHashtagQuery rightJoinWithTransactionHashtag() Adds a RIGHT JOIN clause and with to the query using the TransactionHashtag relation
  * @method     ChildHashtagQuery innerJoinWithTransactionHashtag() Adds a INNER JOIN clause and with to the query using the TransactionHashtag relation
- *
  * @method     \TransactionHashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildHashtag findOne(ConnectionInterface $con = null) Return the first ChildHashtag matching the query
  * @method     ChildHashtag findOneOrCreate(ConnectionInterface $con = null) Return the first ChildHashtag matching the query, or a new ChildHashtag object populated from the query conditions when no match is found
- *
  * @method     ChildHashtag findOneById(int $id) Return the first ChildHashtag filtered by the id column
  * @method     ChildHashtag findOneByTag(string $tag) Return the first ChildHashtag filtered by the tag column *
 
  * @method     ChildHashtag requirePk($key, ConnectionInterface $con = null) Return the ChildHashtag by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHashtag requireOne(ConnectionInterface $con = null) Return the first ChildHashtag matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildHashtag requireOneById(int $id) Return the first ChildHashtag filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHashtag requireOneByTag(string $tag) Return the first ChildHashtag filtered by the tag column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildHashtag[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildHashtag objects based on current ModelCriteria
  * @method     ChildHashtag[]|ObjectCollection findById(int $id) Return ChildHashtag objects filtered by the id column
  * @method     ChildHashtag[]|ObjectCollection findByTag(string $tag) Return ChildHashtag objects filtered by the tag column
  * @method     ChildHashtag[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class HashtagQuery extends ModelCriteria
 {
@@ -71,9 +59,9 @@ abstract class HashtagQuery extends ModelCriteria
     /**
      * Initializes internal state of \Base\HashtagQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\Hashtag', $modelAlias = null)
     {
@@ -83,8 +71,8 @@ abstract class HashtagQuery extends ModelCriteria
     /**
      * Returns a new ChildHashtagQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildHashtagQuery
      */
@@ -113,7 +101,7 @@ abstract class HashtagQuery extends ModelCriteria
      * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param mixed               $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildHashtag|array|mixed the result, formatted by the current formatter
@@ -121,7 +109,7 @@ abstract class HashtagQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -150,8 +138,8 @@ abstract class HashtagQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -183,8 +171,8 @@ abstract class HashtagQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildHashtag|array|mixed the result, formatted by the current formatter
      */
@@ -203,9 +191,10 @@ abstract class HashtagQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -224,33 +213,31 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildHashtagQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-
         return $this->addUsingAlias(HashtagTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildHashtagQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
-
         return $this->addUsingAlias(HashtagTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the id column
+     * Filter the query on the id column.
      *
      * Example usage:
      * <code>
@@ -259,11 +246,11 @@ abstract class HashtagQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param     mixed $id The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $id         The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildHashtagQuery The current query, for fluid interface
      */
@@ -291,7 +278,7 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the tag column
+     * Filter the query on the tag column.
      *
      * Example usage:
      * <code>
@@ -299,8 +286,8 @@ abstract class HashtagQuery extends ModelCriteria
      * $query->filterByTag('%fooValue%', Criteria::LIKE); // WHERE tag LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $tag The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $tag        The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildHashtagQuery The current query, for fluid interface
      */
@@ -316,10 +303,10 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TransactionHashtag object
+     * Filter the query by a related \TransactionHashtag object.
      *
      * @param \TransactionHashtag|ObjectCollection $transactionHashtag the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string                               $comparison         Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildHashtagQuery The current query, for fluid interface
      */
@@ -339,10 +326,10 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the TransactionHashtag relation
+     * Adds a JOIN clause to the query using the TransactionHashtag relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildHashtagQuery The current query, for fluid interface
      */
@@ -371,13 +358,13 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Use the TransactionHashtag relation TransactionHashtag object
+     * Use the TransactionHashtag relation TransactionHashtag object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TransactionHashtagQuery A secondary query class using the current class as primary query
      */
@@ -390,10 +377,10 @@ abstract class HashtagQuery extends ModelCriteria
 
     /**
      * Filter the query by a related Transaction object
-     * using the transaction_hashtag table as cross reference
+     * using the transaction_hashtag table as cross reference.
      *
      * @param Transaction $transaction the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string      $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildHashtagQuery The current query, for fluid interface
      */
@@ -406,9 +393,9 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildHashtag $hashtag Object to remove from the list of results
+     * @param ChildHashtag $hashtag Object to remove from the list of results
      *
      * @return $this|ChildHashtagQuery The current query, for fluid interface
      */
@@ -425,6 +412,7 @@ abstract class HashtagQuery extends ModelCriteria
      * Deletes all rows from the hashtag table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -449,13 +437,15 @@ abstract class HashtagQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -481,5 +471,4 @@ abstract class HashtagQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // HashtagQuery

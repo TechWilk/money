@@ -2,18 +2,18 @@
 
 namespace Base;
 
-use \UserAccounts as ChildUserAccounts;
-use \UserAccountsQuery as ChildUserAccountsQuery;
-use \Exception;
-use \PDO;
+use Exception;
 use Map\UserAccountsTableMap;
-use Propel\Runtime\Propel;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
+use UserAccounts as ChildUserAccounts;
+use UserAccountsQuery as ChildUserAccountsQuery;
 
 /**
  * Base class that represents a query for the 'user_accounts' table.
@@ -23,61 +23,46 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserAccountsQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  * @method     ChildUserAccountsQuery orderByAccountId($order = Criteria::ASC) Order by the account_id column
  * @method     ChildUserAccountsQuery orderByAlias($order = Criteria::ASC) Order by the alias column
- *
  * @method     ChildUserAccountsQuery groupByUserId() Group by the user_id column
  * @method     ChildUserAccountsQuery groupByAccountId() Group by the account_id column
  * @method     ChildUserAccountsQuery groupByAlias() Group by the alias column
- *
  * @method     ChildUserAccountsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserAccountsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildUserAccountsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildUserAccountsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildUserAccountsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildUserAccountsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildUserAccountsQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
  * @method     ChildUserAccountsQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
  * @method     ChildUserAccountsQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
- *
  * @method     ChildUserAccountsQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
- *
  * @method     ChildUserAccountsQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
  * @method     ChildUserAccountsQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
  * @method     ChildUserAccountsQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
- *
  * @method     ChildUserAccountsQuery leftJoinAccount($relationAlias = null) Adds a LEFT JOIN clause to the query using the Account relation
  * @method     ChildUserAccountsQuery rightJoinAccount($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Account relation
  * @method     ChildUserAccountsQuery innerJoinAccount($relationAlias = null) Adds a INNER JOIN clause to the query using the Account relation
- *
  * @method     ChildUserAccountsQuery joinWithAccount($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Account relation
- *
  * @method     ChildUserAccountsQuery leftJoinWithAccount() Adds a LEFT JOIN clause and with to the query using the Account relation
  * @method     ChildUserAccountsQuery rightJoinWithAccount() Adds a RIGHT JOIN clause and with to the query using the Account relation
  * @method     ChildUserAccountsQuery innerJoinWithAccount() Adds a INNER JOIN clause and with to the query using the Account relation
- *
  * @method     \UserQuery|\AccountQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildUserAccounts findOne(ConnectionInterface $con = null) Return the first ChildUserAccounts matching the query
  * @method     ChildUserAccounts findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserAccounts matching the query, or a new ChildUserAccounts object populated from the query conditions when no match is found
- *
  * @method     ChildUserAccounts findOneByUserId(int $user_id) Return the first ChildUserAccounts filtered by the user_id column
  * @method     ChildUserAccounts findOneByAccountId(int $account_id) Return the first ChildUserAccounts filtered by the account_id column
  * @method     ChildUserAccounts findOneByAlias(string $alias) Return the first ChildUserAccounts filtered by the alias column *
 
  * @method     ChildUserAccounts requirePk($key, ConnectionInterface $con = null) Return the ChildUserAccounts by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserAccounts requireOne(ConnectionInterface $con = null) Return the first ChildUserAccounts matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildUserAccounts requireOneByUserId(int $user_id) Return the first ChildUserAccounts filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserAccounts requireOneByAccountId(int $account_id) Return the first ChildUserAccounts filtered by the account_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUserAccounts requireOneByAlias(string $alias) Return the first ChildUserAccounts filtered by the alias column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildUserAccounts[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUserAccounts objects based on current ModelCriteria
  * @method     ChildUserAccounts[]|ObjectCollection findByUserId(int $user_id) Return ChildUserAccounts objects filtered by the user_id column
  * @method     ChildUserAccounts[]|ObjectCollection findByAccountId(int $account_id) Return ChildUserAccounts objects filtered by the account_id column
  * @method     ChildUserAccounts[]|ObjectCollection findByAlias(string $alias) Return ChildUserAccounts objects filtered by the alias column
  * @method     ChildUserAccounts[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class UserAccountsQuery extends ModelCriteria
 {
@@ -86,9 +71,9 @@ abstract class UserAccountsQuery extends ModelCriteria
     /**
      * Initializes internal state of \Base\UserAccountsQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\UserAccounts', $modelAlias = null)
     {
@@ -98,8 +83,8 @@ abstract class UserAccountsQuery extends ModelCriteria
     /**
      * Returns a new ChildUserAccountsQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildUserAccountsQuery
      */
@@ -136,7 +121,7 @@ abstract class UserAccountsQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -165,8 +150,8 @@ abstract class UserAccountsQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -199,8 +184,8 @@ abstract class UserAccountsQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildUserAccounts|array|mixed the result, formatted by the current formatter
      */
@@ -219,9 +204,10 @@ abstract class UserAccountsQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -240,9 +226,9 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -255,9 +241,9 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -277,7 +263,7 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the user_id column
+     * Filter the query on the user_id column.
      *
      * Example usage:
      * <code>
@@ -288,11 +274,11 @@ abstract class UserAccountsQuery extends ModelCriteria
      *
      * @see       filterByUser()
      *
-     * @param     mixed $userId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $userId     The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -320,7 +306,7 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the account_id column
+     * Filter the query on the account_id column.
      *
      * Example usage:
      * <code>
@@ -331,11 +317,11 @@ abstract class UserAccountsQuery extends ModelCriteria
      *
      * @see       filterByAccount()
      *
-     * @param     mixed $accountId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $accountId  The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -363,7 +349,7 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the alias column
+     * Filter the query on the alias column.
      *
      * Example usage:
      * <code>
@@ -371,8 +357,8 @@ abstract class UserAccountsQuery extends ModelCriteria
      * $query->filterByAlias('%fooValue%', Criteria::LIKE); // WHERE alias LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $alias The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $alias      The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -388,10 +374,10 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \User object
+     * Filter the query by a related \User object.
      *
-     * @param \User|ObjectCollection $user The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \User|ObjectCollection $user       The related object(s) to use as filter
+     * @param string                 $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -415,10 +401,10 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the User relation
+     * Adds a JOIN clause to the query using the User relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -447,13 +433,13 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Use the User relation User object
+     * Use the User relation User object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \UserQuery A secondary query class using the current class as primary query
      */
@@ -465,10 +451,10 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Account object
+     * Filter the query by a related \Account object.
      *
-     * @param \Account|ObjectCollection $account The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \Account|ObjectCollection $account    The related object(s) to use as filter
+     * @param string                    $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -492,10 +478,10 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Account relation
+     * Adds a JOIN clause to the query using the Account relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -524,13 +510,13 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Use the Account relation Account object
+     * Use the Account relation Account object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \AccountQuery A secondary query class using the current class as primary query
      */
@@ -542,9 +528,9 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildUserAccounts $userAccounts Object to remove from the list of results
+     * @param ChildUserAccounts $userAccounts Object to remove from the list of results
      *
      * @return $this|ChildUserAccountsQuery The current query, for fluid interface
      */
@@ -553,7 +539,7 @@ abstract class UserAccountsQuery extends ModelCriteria
         if ($userAccounts) {
             $this->addCond('pruneCond0', $this->getAliasedColName(UserAccountsTableMap::COL_USER_ID), $userAccounts->getUserId(), Criteria::NOT_EQUAL);
             $this->addCond('pruneCond1', $this->getAliasedColName(UserAccountsTableMap::COL_ACCOUNT_ID), $userAccounts->getAccountId(), Criteria::NOT_EQUAL);
-            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
+            $this->combine(['pruneCond0', 'pruneCond1'], Criteria::LOGICAL_OR);
         }
 
         return $this;
@@ -563,6 +549,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      * Deletes all rows from the user_accounts table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -587,13 +574,15 @@ abstract class UserAccountsQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -619,5 +608,4 @@ abstract class UserAccountsQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // UserAccountsQuery

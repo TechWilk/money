@@ -2,18 +2,18 @@
 
 namespace Base;
 
-use \Transaction as ChildTransaction;
-use \TransactionQuery as ChildTransactionQuery;
-use \Exception;
-use \PDO;
+use Exception;
 use Map\TransactionTableMap;
-use Propel\Runtime\Propel;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
+use Transaction as ChildTransaction;
+use TransactionQuery as ChildTransactionQuery;
 
 /**
  * Base class that represents a query for the 'transaction' table.
@@ -25,56 +25,41 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTransactionQuery orderByValue($order = Criteria::ASC) Order by the value column
  * @method     ChildTransactionQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildTransactionQuery orderByAccountId($order = Criteria::ASC) Order by the account_id column
- *
  * @method     ChildTransactionQuery groupById() Group by the id column
  * @method     ChildTransactionQuery groupByDate() Group by the date column
  * @method     ChildTransactionQuery groupByValue() Group by the value column
  * @method     ChildTransactionQuery groupByDescription() Group by the description column
  * @method     ChildTransactionQuery groupByAccountId() Group by the account_id column
- *
  * @method     ChildTransactionQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildTransactionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildTransactionQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildTransactionQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildTransactionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildTransactionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildTransactionQuery leftJoinAccount($relationAlias = null) Adds a LEFT JOIN clause to the query using the Account relation
  * @method     ChildTransactionQuery rightJoinAccount($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Account relation
  * @method     ChildTransactionQuery innerJoinAccount($relationAlias = null) Adds a INNER JOIN clause to the query using the Account relation
- *
  * @method     ChildTransactionQuery joinWithAccount($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Account relation
- *
  * @method     ChildTransactionQuery leftJoinWithAccount() Adds a LEFT JOIN clause and with to the query using the Account relation
  * @method     ChildTransactionQuery rightJoinWithAccount() Adds a RIGHT JOIN clause and with to the query using the Account relation
  * @method     ChildTransactionQuery innerJoinWithAccount() Adds a INNER JOIN clause and with to the query using the Account relation
- *
  * @method     ChildTransactionQuery leftJoinBreakdown($relationAlias = null) Adds a LEFT JOIN clause to the query using the Breakdown relation
  * @method     ChildTransactionQuery rightJoinBreakdown($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Breakdown relation
  * @method     ChildTransactionQuery innerJoinBreakdown($relationAlias = null) Adds a INNER JOIN clause to the query using the Breakdown relation
- *
  * @method     ChildTransactionQuery joinWithBreakdown($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Breakdown relation
- *
  * @method     ChildTransactionQuery leftJoinWithBreakdown() Adds a LEFT JOIN clause and with to the query using the Breakdown relation
  * @method     ChildTransactionQuery rightJoinWithBreakdown() Adds a RIGHT JOIN clause and with to the query using the Breakdown relation
  * @method     ChildTransactionQuery innerJoinWithBreakdown() Adds a INNER JOIN clause and with to the query using the Breakdown relation
- *
  * @method     ChildTransactionQuery leftJoinTransactionHashtag($relationAlias = null) Adds a LEFT JOIN clause to the query using the TransactionHashtag relation
  * @method     ChildTransactionQuery rightJoinTransactionHashtag($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TransactionHashtag relation
  * @method     ChildTransactionQuery innerJoinTransactionHashtag($relationAlias = null) Adds a INNER JOIN clause to the query using the TransactionHashtag relation
- *
  * @method     ChildTransactionQuery joinWithTransactionHashtag($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the TransactionHashtag relation
- *
  * @method     ChildTransactionQuery leftJoinWithTransactionHashtag() Adds a LEFT JOIN clause and with to the query using the TransactionHashtag relation
  * @method     ChildTransactionQuery rightJoinWithTransactionHashtag() Adds a RIGHT JOIN clause and with to the query using the TransactionHashtag relation
  * @method     ChildTransactionQuery innerJoinWithTransactionHashtag() Adds a INNER JOIN clause and with to the query using the TransactionHashtag relation
- *
  * @method     \AccountQuery|\BreakdownQuery|\TransactionHashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildTransaction findOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query
  * @method     ChildTransaction findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTransaction matching the query, or a new ChildTransaction object populated from the query conditions when no match is found
- *
  * @method     ChildTransaction findOneById(int $id) Return the first ChildTransaction filtered by the id column
  * @method     ChildTransaction findOneByDate(string $date) Return the first ChildTransaction filtered by the date column
  * @method     ChildTransaction findOneByValue(double $value) Return the first ChildTransaction filtered by the value column
@@ -83,13 +68,11 @@ use Propel\Runtime\Exception\PropelException;
 
  * @method     ChildTransaction requirePk($key, ConnectionInterface $con = null) Return the ChildTransaction by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildTransaction requireOneById(int $id) Return the first ChildTransaction filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByDate(string $date) Return the first ChildTransaction filtered by the date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByValue(double $value) Return the first ChildTransaction filtered by the value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByDescription(string $description) Return the first ChildTransaction filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByAccountId(int $account_id) Return the first ChildTransaction filtered by the account_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildTransaction[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildTransaction objects based on current ModelCriteria
  * @method     ChildTransaction[]|ObjectCollection findById(int $id) Return ChildTransaction objects filtered by the id column
  * @method     ChildTransaction[]|ObjectCollection findByDate(string $date) Return ChildTransaction objects filtered by the date column
@@ -97,7 +80,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTransaction[]|ObjectCollection findByDescription(string $description) Return ChildTransaction objects filtered by the description column
  * @method     ChildTransaction[]|ObjectCollection findByAccountId(int $account_id) Return ChildTransaction objects filtered by the account_id column
  * @method     ChildTransaction[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class TransactionQuery extends ModelCriteria
 {
@@ -106,9 +88,9 @@ abstract class TransactionQuery extends ModelCriteria
     /**
      * Initializes internal state of \Base\TransactionQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\Transaction', $modelAlias = null)
     {
@@ -118,8 +100,8 @@ abstract class TransactionQuery extends ModelCriteria
     /**
      * Returns a new ChildTransactionQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildTransactionQuery
      */
@@ -148,7 +130,7 @@ abstract class TransactionQuery extends ModelCriteria
      * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param mixed               $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildTransaction|array|mixed the result, formatted by the current formatter
@@ -156,7 +138,7 @@ abstract class TransactionQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -185,8 +167,8 @@ abstract class TransactionQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -218,8 +200,8 @@ abstract class TransactionQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildTransaction|array|mixed the result, formatted by the current formatter
      */
@@ -238,9 +220,10 @@ abstract class TransactionQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -259,33 +242,31 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-
         return $this->addUsingAlias(TransactionTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
-
         return $this->addUsingAlias(TransactionTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the id column
+     * Filter the query on the id column.
      *
      * Example usage:
      * <code>
@@ -294,11 +275,11 @@ abstract class TransactionQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param     mixed $id The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $id         The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -326,7 +307,7 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the date column
+     * Filter the query on the date column.
      *
      * Example usage:
      * <code>
@@ -335,13 +316,13 @@ abstract class TransactionQuery extends ModelCriteria
      * $query->filterByDate(array('max' => 'yesterday')); // WHERE date > '2011-03-13'
      * </code>
      *
-     * @param     mixed $date The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $date       The value to use as filter.
+     *                           Values can be integers (unix timestamps), DateTime objects, or strings.
+     *                           Empty strings are treated as NULL.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -369,7 +350,7 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the value column
+     * Filter the query on the value column.
      *
      * Example usage:
      * <code>
@@ -378,11 +359,11 @@ abstract class TransactionQuery extends ModelCriteria
      * $query->filterByValue(array('min' => 12)); // WHERE value > 12
      * </code>
      *
-     * @param     mixed $value The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $value      The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -410,7 +391,7 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the description column
+     * Filter the query on the description column.
      *
      * Example usage:
      * <code>
@@ -418,8 +399,8 @@ abstract class TransactionQuery extends ModelCriteria
      * $query->filterByDescription('%fooValue%', Criteria::LIKE); // WHERE description LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $description The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $description The value to use as filter.
+     * @param string $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -435,7 +416,7 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the account_id column
+     * Filter the query on the account_id column.
      *
      * Example usage:
      * <code>
@@ -446,11 +427,11 @@ abstract class TransactionQuery extends ModelCriteria
      *
      * @see       filterByAccount()
      *
-     * @param     mixed $accountId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $accountId  The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -478,10 +459,10 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Account object
+     * Filter the query by a related \Account object.
      *
-     * @param \Account|ObjectCollection $account The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \Account|ObjectCollection $account    The related object(s) to use as filter
+     * @param string                    $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -505,10 +486,10 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Account relation
+     * Adds a JOIN clause to the query using the Account relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -537,13 +518,13 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Use the Account relation Account object
+     * Use the Account relation Account object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \AccountQuery A secondary query class using the current class as primary query
      */
@@ -555,10 +536,10 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Breakdown object
+     * Filter the query by a related \Breakdown object.
      *
-     * @param \Breakdown|ObjectCollection $breakdown the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \Breakdown|ObjectCollection $breakdown  the related object to use as filter
+     * @param string                      $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildTransactionQuery The current query, for fluid interface
      */
@@ -578,10 +559,10 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Breakdown relation
+     * Adds a JOIN clause to the query using the Breakdown relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -610,13 +591,13 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Use the Breakdown relation Breakdown object
+     * Use the Breakdown relation Breakdown object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \BreakdownQuery A secondary query class using the current class as primary query
      */
@@ -628,10 +609,10 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TransactionHashtag object
+     * Filter the query by a related \TransactionHashtag object.
      *
      * @param \TransactionHashtag|ObjectCollection $transactionHashtag the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string                               $comparison         Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildTransactionQuery The current query, for fluid interface
      */
@@ -651,10 +632,10 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the TransactionHashtag relation
+     * Adds a JOIN clause to the query using the TransactionHashtag relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -683,13 +664,13 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Use the TransactionHashtag relation TransactionHashtag object
+     * Use the TransactionHashtag relation TransactionHashtag object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TransactionHashtagQuery A secondary query class using the current class as primary query
      */
@@ -702,10 +683,10 @@ abstract class TransactionQuery extends ModelCriteria
 
     /**
      * Filter the query by a related Hashtag object
-     * using the transaction_hashtag table as cross reference
+     * using the transaction_hashtag table as cross reference.
      *
-     * @param Hashtag $hashtag the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param Hashtag $hashtag    the related object to use as filter
+     * @param string  $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildTransactionQuery The current query, for fluid interface
      */
@@ -718,9 +699,9 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildTransaction $transaction Object to remove from the list of results
+     * @param ChildTransaction $transaction Object to remove from the list of results
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
@@ -737,6 +718,7 @@ abstract class TransactionQuery extends ModelCriteria
      * Deletes all rows from the transaction table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -761,13 +743,15 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -793,5 +777,4 @@ abstract class TransactionQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // TransactionQuery

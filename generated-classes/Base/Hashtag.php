@@ -2,17 +2,12 @@
 
 namespace Base;
 
-use \Hashtag as ChildHashtag;
-use \HashtagQuery as ChildHashtagQuery;
-use \Transaction as ChildTransaction;
-use \TransactionHashtag as ChildTransactionHashtag;
-use \TransactionHashtagQuery as ChildTransactionHashtagQuery;
-use \TransactionQuery as ChildTransactionQuery;
-use \Exception;
-use \PDO;
+use Exception;
+use Hashtag as ChildHashtag;
+use HashtagQuery as ChildHashtagQuery;
 use Map\HashtagTableMap;
 use Map\TransactionHashtagTableMap;
-use Propel\Runtime\Propel;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
@@ -24,70 +19,74 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Propel;
+use Transaction as ChildTransaction;
+use TransactionHashtag as ChildTransactionHashtag;
+use TransactionHashtagQuery as ChildTransactionHashtagQuery;
+use TransactionQuery as ChildTransactionQuery;
 
 /**
  * Base class that represents a row from the 'hashtag' table.
- *
- *
- *
- * @package    propel.generator..Base
  */
 abstract class Hashtag implements ActiveRecordInterface
 {
     /**
-     * TableMap class name
+     * TableMap class name.
      */
     const TABLE_MAP = '\\Map\\HashtagTableMap';
 
-
     /**
      * attribute to determine if this object has previously been saved.
-     * @var boolean
+     *
+     * @var bool
      */
     protected $new = true;
 
     /**
      * attribute to determine whether this object has been deleted.
-     * @var boolean
+     *
+     * @var bool
      */
     protected $deleted = false;
 
     /**
      * The columns that have been modified in current object.
      * Tracking modified columns allows us to only update modified columns.
+     *
      * @var array
      */
-    protected $modifiedColumns = array();
+    protected $modifiedColumns = [];
 
     /**
      * The (virtual) columns that are added at runtime
-     * The formatters can add supplementary columns based on a resultset
+     * The formatters can add supplementary columns based on a resultset.
+     *
      * @var array
      */
-    protected $virtualColumns = array();
+    protected $virtualColumns = [];
 
     /**
      * The value for the id field.
      *
-     * @var        int
+     * @var int
      */
     protected $id;
 
     /**
      * The value for the tag field.
      *
-     * @var        string
+     * @var string
      */
     protected $tag;
 
     /**
-     * @var        ObjectCollection|ChildTransactionHashtag[] Collection to store aggregation of ChildTransactionHashtag objects.
+     * @var ObjectCollection|ChildTransactionHashtag[] Collection to store aggregation of ChildTransactionHashtag objects.
      */
     protected $collTransactionHashtags;
     protected $collTransactionHashtagsPartial;
 
     /**
-     * @var        ObjectCollection|ChildTransaction[] Cross Collection to store aggregation of ChildTransaction objects.
+     * @var ObjectCollection|ChildTransaction[] Cross Collection to store aggregation of ChildTransaction objects.
      */
     protected $collTransactions;
 
@@ -100,18 +99,20 @@ abstract class Hashtag implements ActiveRecordInterface
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
-     * @var boolean
+     * @var bool
      */
     protected $alreadyInSave = false;
 
     /**
      * An array of objects scheduled for deletion.
+     *
      * @var ObjectCollection|ChildTransaction[]
      */
     protected $transactionsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
+     *
      * @var ObjectCollection|ChildTransactionHashtag[]
      */
     protected $transactionHashtagsScheduledForDeletion = null;
@@ -126,18 +127,19 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Returns whether the object has been modified.
      *
-     * @return boolean True if the object has been modified.
+     * @return bool True if the object has been modified.
      */
     public function isModified()
     {
-        return !!$this->modifiedColumns;
+        return (bool) $this->modifiedColumns;
     }
 
     /**
      * Has specified column been modified?
      *
-     * @param  string  $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
-     * @return boolean True if $col has been modified.
+     * @param string $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
+     *
+     * @return bool True if $col has been modified.
      */
     public function isColumnModified($col)
     {
@@ -146,6 +148,7 @@ abstract class Hashtag implements ActiveRecordInterface
 
     /**
      * Get the columns that have been modified in this object.
+     *
      * @return array A unique list of the modified column names for this object.
      */
     public function getModifiedColumns()
@@ -158,7 +161,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * be false, if the object was retrieved from storage or was created
      * and then saved.
      *
-     * @return boolean true, if the object has never been persisted.
+     * @return bool true, if the object has never been persisted.
      */
     public function isNew()
     {
@@ -169,16 +172,17 @@ abstract class Hashtag implements ActiveRecordInterface
      * Setter for the isNew attribute.  This method will be called
      * by Propel-generated children and objects.
      *
-     * @param boolean $b the state of the object.
+     * @param bool $b the state of the object.
      */
     public function setNew($b)
     {
-        $this->new = (boolean) $b;
+        $this->new = (bool) $b;
     }
 
     /**
      * Whether this object has been deleted.
-     * @return boolean The deleted state of this object.
+     *
+     * @return bool The deleted state of this object.
      */
     public function isDeleted()
     {
@@ -187,17 +191,21 @@ abstract class Hashtag implements ActiveRecordInterface
 
     /**
      * Specify whether this object has been deleted.
-     * @param  boolean $b The deleted state of this object.
+     *
+     * @param bool $b The deleted state of this object.
+     *
      * @return void
      */
     public function setDeleted($b)
     {
-        $this->deleted = (boolean) $b;
+        $this->deleted = (bool) $b;
     }
 
     /**
      * Sets the modified state for the object to be false.
-     * @param  string $col If supplied, only the specified column is reset.
+     *
+     * @param string $col If supplied, only the specified column is reset.
+     *
      * @return void
      */
     public function resetModified($col = null)
@@ -207,7 +215,7 @@ abstract class Hashtag implements ActiveRecordInterface
                 unset($this->modifiedColumns[$col]);
             }
         } else {
-            $this->modifiedColumns = array();
+            $this->modifiedColumns = [];
         }
     }
 
@@ -216,8 +224,9 @@ abstract class Hashtag implements ActiveRecordInterface
      * <code>obj</code> is an instance of <code>Hashtag</code>, delegates to
      * <code>equals(Hashtag)</code>.  Otherwise, returns <code>false</code>.
      *
-     * @param  mixed   $obj The object to compare to.
-     * @return boolean Whether equal to the object specified.
+     * @param mixed $obj The object to compare to.
+     *
+     * @return bool Whether equal to the object specified.
      */
     public function equals($obj)
     {
@@ -237,7 +246,7 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Get the associative array of the virtual columns in this object
+     * Get the associative array of the virtual columns in this object.
      *
      * @return array
      */
@@ -247,10 +256,11 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Checks the existence of a virtual column in this object
+     * Checks the existence of a virtual column in this object.
      *
-     * @param  string  $name The virtual column name
-     * @return boolean
+     * @param string $name The virtual column name
+     *
+     * @return bool
      */
     public function hasVirtualColumn($name)
     {
@@ -258,12 +268,13 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Get the value of a virtual column in this object
+     * Get the value of a virtual column in this object.
      *
-     * @param  string $name The virtual column name
-     * @return mixed
+     * @param string $name The virtual column name
      *
      * @throws PropelException
+     *
+     * @return mixed
      */
     public function getVirtualColumn($name)
     {
@@ -275,7 +286,7 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of a virtual column in this object
+     * Set the value of a virtual column in this object.
      *
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
@@ -292,13 +303,14 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Logs a message using Propel::log().
      *
-     * @param  string  $msg
-     * @param  int     $priority One of the Propel::LOG_* logging levels
-     * @return boolean
+     * @param string $msg
+     * @param int    $priority One of the Propel::LOG_* logging levels
+     *
+     * @return bool
      */
     protected function log($msg, $priority = Propel::LOG_INFO)
     {
-        return Propel::log(get_class($this) . ': ' . $msg, $priority);
+        return Propel::log(get_class($this).': '.$msg, $priority);
     }
 
     /**
@@ -307,11 +319,12 @@ abstract class Hashtag implements ActiveRecordInterface
      * $book = BookQuery::create()->findPk(9012);
      * echo $book->exportTo('JSON');
      *  => {"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
+     * </code>.
      *
-     * @param  mixed   $parser                 A AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param  boolean $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
-     * @return string  The exported data
+     * @param mixed $parser                 A AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param bool  $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
+     *
+     * @return string The exported data
      */
     public function exportTo($parser, $includeLazyLoadColumns = true)
     {
@@ -319,12 +332,12 @@ abstract class Hashtag implements ActiveRecordInterface
             $parser = AbstractParser::getParser($parser);
         }
 
-        return $parser->fromArray($this->toArray(TableMap::TYPE_PHPNAME, $includeLazyLoadColumns, array(), true));
+        return $parser->fromArray($this->toArray(TableMap::TYPE_PHPNAME, $includeLazyLoadColumns, [], true));
     }
 
     /**
      * Clean up internal collections prior to serializing
-     * Avoids recursive loops that turn into segmentation faults when serializing
+     * Avoids recursive loops that turn into segmentation faults when serializing.
      */
     public function __sleep()
     {
@@ -334,7 +347,7 @@ abstract class Hashtag implements ActiveRecordInterface
         $propertyNames = [];
         $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
 
-        foreach($serializableProperties as $property) {
+        foreach ($serializableProperties as $property) {
             $propertyNames[] = $property->getName();
         }
 
@@ -365,6 +378,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
+     *
      * @return $this|\Hashtag The current object (for fluent API support)
      */
     public function setId($v)
@@ -379,12 +393,15 @@ abstract class Hashtag implements ActiveRecordInterface
         }
 
         return $this;
-    } // setId()
+    }
+
+ // setId()
 
     /**
      * Set the value of [tag] column.
      *
      * @param string $v new value
+     *
      * @return $this|\Hashtag The current object (for fluent API support)
      */
     public function setTag($v)
@@ -399,7 +416,9 @@ abstract class Hashtag implements ActiveRecordInterface
         }
 
         return $this;
-    } // setTag()
+    }
+
+ // setTag()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -407,13 +426,15 @@ abstract class Hashtag implements ActiveRecordInterface
      * This method can be used in conjunction with isModified() to indicate whether an object is both
      * modified _and_ has some values set which are non-default.
      *
-     * @return boolean Whether the columns in this object are only been set with default values.
+     * @return bool Whether the columns in this object are only been set with default values.
      */
     public function hasOnlyDefaultValues()
     {
         // otherwise, everything was equal, so return TRUE
         return true;
-    } // hasOnlyDefaultValues()
+    }
+
+ // hasOnlyDefaultValues()
 
     /**
      * Hydrates (populates) the object variables with values from the database resultset.
@@ -423,20 +444,20 @@ abstract class Hashtag implements ActiveRecordInterface
      * for results of JOIN queries where the resultset row includes columns from two or
      * more tables.
      *
-     * @param array   $row       The row returned by DataFetcher->fetch().
-     * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
-     * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
-     * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array  $row       The row returned by DataFetcher->fetch().
+     * @param int    $startcol  0-based offset column which indicates which restultset column to start with.
+     * @param bool   $rehydrate Whether this object is being re-hydrated from the database.
+     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+     One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
-     * @return int             next starting column
      * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
+     *
+     * @return int next starting column
      */
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : HashtagTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
@@ -451,7 +472,6 @@ abstract class Hashtag implements ActiveRecordInterface
             }
 
             return $startcol + 2; // 2 = HashtagTableMap::NUM_HYDRATE_COLUMNS.
-
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Hashtag'), 0, $e);
         }
@@ -472,26 +492,30 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-    } // ensureConsistency
+    }
+
+ // ensureConsistency
 
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
      *
      * This will only work if the object has been saved and has a valid primary key set.
      *
-     * @param      boolean $deep (optional) Whether to also de-associated any related objects.
-     * @param      ConnectionInterface $con (optional) The ConnectionInterface connection to use.
-     * @return void
+     * @param bool                $deep (optional) Whether to also de-associated any related objects.
+     * @param ConnectionInterface $con  (optional) The ConnectionInterface connection to use.
+     *
      * @throws PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+     *
+     * @return void
      */
     public function reload($deep = false, ConnectionInterface $con = null)
     {
         if ($this->isDeleted()) {
-            throw new PropelException("Cannot reload a deleted object.");
+            throw new PropelException('Cannot reload a deleted object.');
         }
 
         if ($this->isNew()) {
-            throw new PropelException("Cannot reload an unsaved object.");
+            throw new PropelException('Cannot reload an unsaved object.');
         }
 
         if ($con === null) {
@@ -520,16 +544,19 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Removes this object from datastore and sets delete attribute.
      *
-     * @param      ConnectionInterface $con
-     * @return void
+     * @param ConnectionInterface $con
+     *
      * @throws PropelException
+     *
+     * @return void
+     *
      * @see Hashtag::setDeleted()
      * @see Hashtag::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
         if ($this->isDeleted()) {
-            throw new PropelException("This object has already been deleted.");
+            throw new PropelException('This object has already been deleted.');
         }
 
         if ($con === null) {
@@ -556,15 +583,18 @@ abstract class Hashtag implements ActiveRecordInterface
      * method.  This method wraps all precipitate database operations in a
      * single transaction.
      *
-     * @param      ConnectionInterface $con
-     * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
+     * @param ConnectionInterface $con
+     *
      * @throws PropelException
+     *
+     * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
+     *
      * @see doSave()
      */
     public function save(ConnectionInterface $con = null)
     {
         if ($this->isDeleted()) {
-            throw new PropelException("You cannot save an object that has been deleted.");
+            throw new PropelException('You cannot save an object that has been deleted.');
         }
 
         if ($this->alreadyInSave) {
@@ -606,9 +636,12 @@ abstract class Hashtag implements ActiveRecordInterface
      * If the object is new, it inserts it; otherwise an update is performed.
      * All related objects are also updated in this method.
      *
-     * @param      ConnectionInterface $con
-     * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
+     * @param ConnectionInterface $con
+     *
      * @throws PropelException
+     *
+     * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
+     *
      * @see save()
      */
     protected function doSave(ConnectionInterface $con)
@@ -630,7 +663,7 @@ abstract class Hashtag implements ActiveRecordInterface
 
             if ($this->transactionsScheduledForDeletion !== null) {
                 if (!$this->transactionsScheduledForDeletion->isEmpty()) {
-                    $pks = array();
+                    $pks = [];
                     foreach ($this->transactionsScheduledForDeletion as $entry) {
                         $entryPk = [];
 
@@ -645,7 +678,6 @@ abstract class Hashtag implements ActiveRecordInterface
 
                     $this->transactionsScheduledForDeletion = null;
                 }
-
             }
 
             if ($this->collTransactions) {
@@ -655,7 +687,6 @@ abstract class Hashtag implements ActiveRecordInterface
                     }
                 }
             }
-
 
             if ($this->transactionHashtagsScheduledForDeletion !== null) {
                 if (!$this->transactionHashtagsScheduledForDeletion->isEmpty()) {
@@ -675,36 +706,38 @@ abstract class Hashtag implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
-
         }
 
         return $affectedRows;
-    } // doSave()
+    }
+
+ // doSave()
 
     /**
      * Insert the row in the database.
      *
-     * @param      ConnectionInterface $con
+     * @param ConnectionInterface $con
      *
      * @throws PropelException
+     *
      * @see doSave()
      */
     protected function doInsert(ConnectionInterface $con)
     {
-        $modifiedColumns = array();
+        $modifiedColumns = [];
         $index = 0;
 
         $this->modifiedColumns[HashtagTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . HashtagTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.HashtagTableMap::COL_ID.')');
         }
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(HashtagTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'id';
+            $modifiedColumns[':p'.$index++] = 'id';
         }
         if ($this->isColumnModified(HashtagTableMap::COL_TAG)) {
-            $modifiedColumns[':p' . $index++]  = 'tag';
+            $modifiedColumns[':p'.$index++] = 'tag';
         }
 
         $sql = sprintf(
@@ -744,9 +777,10 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Update the row in the database.
      *
-     * @param      ConnectionInterface $con
+     * @param ConnectionInterface $con
      *
-     * @return Integer Number of updated rows
+     * @return int Number of updated rows
+     *
      * @see doSave()
      */
     protected function doUpdate(ConnectionInterface $con)
@@ -760,11 +794,12 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Retrieves a field from the object by name passed in as a string.
      *
-     * @param      string $name name
-     * @param      string $type The type of fieldname the $name is of:
+     * @param string $name name
+     * @param string $type The type of fieldname the $name is of:
      *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                     Defaults to TableMap::TYPE_PHPNAME.
+     *
      * @return mixed Value of field.
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
@@ -779,7 +814,8 @@ abstract class Hashtag implements ActiveRecordInterface
      * Retrieves a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param      int $pos position in xml schema
+     * @param int $pos position in xml schema
+     *
      * @return mixed Value of field at $pos
      */
     public function getByPosition($pos)
@@ -792,7 +828,7 @@ abstract class Hashtag implements ActiveRecordInterface
                 return $this->getTag();
                 break;
             default:
-                return null;
+                return;
                 break;
         } // switch()
     }
@@ -803,27 +839,26 @@ abstract class Hashtag implements ActiveRecordInterface
      * You can specify the key type of the array by passing one of the class
      * type constants.
      *
-     * @param     string  $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-     *                    TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     *                    Defaults to TableMap::TYPE_PHPNAME.
-     * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
-     * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
+     * @param string $keyType                (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     *                                       TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     *                                       Defaults to TableMap::TYPE_PHPNAME.
+     * @param bool   $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+     * @param array  $alreadyDumpedObjects   List of objects to skip to avoid recursion
+     * @param bool   $includeForeignObjects  (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = [], $includeForeignObjects = false)
     {
-
         if (isset($alreadyDumpedObjects['Hashtag'][$this->hashCode()])) {
             return '*RECURSION*';
         }
         $alreadyDumpedObjects['Hashtag'][$this->hashCode()] = true;
         $keys = HashtagTableMap::getFieldNames($keyType);
-        $result = array(
+        $result = [
             $keys[0] => $this->getId(),
             $keys[1] => $this->getTag(),
-        );
+        ];
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -831,7 +866,6 @@ abstract class Hashtag implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collTransactionHashtags) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'transactionHashtags';
@@ -853,12 +887,13 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Sets a field from the object by name passed in as a string.
      *
-     * @param  string $name
-     * @param  mixed  $value field value
-     * @param  string $type The type of fieldname the $name is of:
-     *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     *                Defaults to TableMap::TYPE_PHPNAME.
+     * @param string $name
+     * @param mixed  $value field value
+     * @param string $type  The type of fieldname the $name is of:
+     *                      one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     *                      TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     *                      Defaults to TableMap::TYPE_PHPNAME.
+     *
      * @return $this|\Hashtag
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
@@ -872,8 +907,9 @@ abstract class Hashtag implements ActiveRecordInterface
      * Sets a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param  int $pos position in xml schema
-     * @param  mixed $value field value
+     * @param int   $pos   position in xml schema
+     * @param mixed $value field value
+     *
      * @return $this|\Hashtag
      */
     public function setByPosition($pos, $value)
@@ -903,8 +939,9 @@ abstract class Hashtag implements ActiveRecordInterface
      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      * The default key type is the column's TableMap::TYPE_PHPNAME.
      *
-     * @param      array  $arr     An array to populate the object from.
-     * @param      string $keyType The type of keys the array uses.
+     * @param array  $arr     An array to populate the object from.
+     * @param string $keyType The type of keys the array uses.
+     *
      * @return void
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
@@ -919,21 +956,21 @@ abstract class Hashtag implements ActiveRecordInterface
         }
     }
 
-     /**
+    /**
      * Populate the current object from a string, using a given parser format
      * <code>
      * $book = new Book();
      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
+     * </code>.
      *
      * You can specify the key type of the array by additionally passing one
      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      * The default key type is the column's TableMap::TYPE_PHPNAME.
      *
-     * @param mixed $parser A AbstractParser instance,
-     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param string $data The source data to import from
+     * @param mixed  $parser  A AbstractParser instance,
+     *                        or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param string $data    The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
      * @return $this|\Hashtag The current object, for fluid interface
@@ -1010,6 +1047,7 @@ abstract class Hashtag implements ActiveRecordInterface
 
     /**
      * Returns the primary key for this object (row).
+     *
      * @return int
      */
     public function getPrimaryKey()
@@ -1020,7 +1058,8 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Generic method to set the primary key (id column).
      *
-     * @param       int $key Primary key.
+     * @param int $key Primary key.
+     *
      * @return void
      */
     public function setPrimaryKey($key)
@@ -1030,7 +1069,8 @@ abstract class Hashtag implements ActiveRecordInterface
 
     /**
      * Returns true if the primary key for this object is null.
-     * @return boolean
+     *
+     * @return bool
      */
     public function isPrimaryKeyNull()
     {
@@ -1043,9 +1083,10 @@ abstract class Hashtag implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Hashtag (or compatible) type.
-     * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
+     * @param object $copyObj  An object of \Hashtag (or compatible) type.
+     * @param bool   $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+     * @param bool   $makeNew  Whether to reset autoincrement PKs and make the object new.
+     *
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
@@ -1062,12 +1103,11 @@ abstract class Hashtag implements ActiveRecordInterface
                     $copyObj->addTransactionHashtag($relObj->copy($deepCopy));
                 }
             }
-
         } // if ($deepCopy)
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setId(null); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1079,9 +1119,11 @@ abstract class Hashtag implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Hashtag Clone of current object.
+     * @param bool $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+     *
      * @throws PropelException
+     *
+     * @return \Hashtag Clone of current object.
      */
     public function copy($deepCopy = false)
     {
@@ -1093,30 +1135,32 @@ abstract class Hashtag implements ActiveRecordInterface
         return $copyObj;
     }
 
-
     /**
      * Initializes a collection based on the name of a relation.
      * Avoids crafting an 'init[$relationName]s' method name
      * that wouldn't work when StandardEnglishPluralizer is used.
      *
-     * @param      string $relationName The name of the relation to initialize
+     * @param string $relationName The name of the relation to initialize
+     *
      * @return void
      */
     public function initRelation($relationName)
     {
         if ('TransactionHashtag' == $relationName) {
             $this->initTransactionHashtags();
+
             return;
         }
     }
 
     /**
-     * Clears out the collTransactionHashtags collection
+     * Clears out the collTransactionHashtags collection.
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
+     *
      * @see        addTransactionHashtags()
      */
     public function clearTransactionHashtags()
@@ -1139,8 +1183,8 @@ abstract class Hashtag implements ActiveRecordInterface
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                               the collection even if it is not empty
      *
      * @return void
      */
@@ -1152,7 +1196,7 @@ abstract class Hashtag implements ActiveRecordInterface
 
         $collectionClassName = TransactionHashtagTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collTransactionHashtags = new $collectionClassName;
+        $this->collTransactionHashtags = new $collectionClassName();
         $this->collTransactionHashtags->setModel('\TransactionHashtag');
     }
 
@@ -1165,15 +1209,17 @@ abstract class Hashtag implements ActiveRecordInterface
      * If this ChildHashtag is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildTransactionHashtag[] List of ChildTransactionHashtag objects
+     * @param Criteria            $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con      optional connection object
+     *
      * @throws PropelException
+     *
+     * @return ObjectCollection|ChildTransactionHashtag[] List of ChildTransactionHashtag objects
      */
     public function getTransactionHashtags(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         $partial = $this->collTransactionHashtagsPartial && !$this->isNew();
-        if (null === $this->collTransactionHashtags || null !== $criteria  || $partial) {
+        if (null === $this->collTransactionHashtags || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collTransactionHashtags) {
                 // return empty collection
                 $this->initTransactionHashtags();
@@ -1220,15 +1266,15 @@ abstract class Hashtag implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $transactionHashtags A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
+     * @param Collection          $transactionHashtags A Propel collection.
+     * @param ConnectionInterface $con                 Optional connection object
+     *
      * @return $this|ChildHashtag The current object (for fluent API support)
      */
     public function setTransactionHashtags(Collection $transactionHashtags, ConnectionInterface $con = null)
     {
         /** @var ChildTransactionHashtag[] $transactionHashtagsToDelete */
         $transactionHashtagsToDelete = $this->getTransactionHashtags(new Criteria(), $con)->diff($transactionHashtags);
-
 
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
@@ -1253,11 +1299,13 @@ abstract class Hashtag implements ActiveRecordInterface
     /**
      * Returns the number of related TransactionHashtag objects.
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related TransactionHashtag objects.
+     * @param Criteria            $criteria
+     * @param bool                $distinct
+     * @param ConnectionInterface $con
+     *
      * @throws PropelException
+     *
+     * @return int Count of related TransactionHashtag objects.
      */
     public function countTransactionHashtags(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
@@ -1288,7 +1336,8 @@ abstract class Hashtag implements ActiveRecordInterface
      * Method called to associate a ChildTransactionHashtag object to this object
      * through the ChildTransactionHashtag foreign key attribute.
      *
-     * @param  ChildTransactionHashtag $l ChildTransactionHashtag
+     * @param ChildTransactionHashtag $l ChildTransactionHashtag
+     *
      * @return $this|\Hashtag The current object (for fluent API support)
      */
     public function addTransactionHashtag(ChildTransactionHashtag $l)
@@ -1314,12 +1363,13 @@ abstract class Hashtag implements ActiveRecordInterface
      */
     protected function doAddTransactionHashtag(ChildTransactionHashtag $transactionHashtag)
     {
-        $this->collTransactionHashtags[]= $transactionHashtag;
+        $this->collTransactionHashtags[] = $transactionHashtag;
         $transactionHashtag->setHashtag($this);
     }
 
     /**
-     * @param  ChildTransactionHashtag $transactionHashtag The ChildTransactionHashtag object to remove.
+     * @param ChildTransactionHashtag $transactionHashtag The ChildTransactionHashtag object to remove.
+     *
      * @return $this|ChildHashtag The current object (for fluent API support)
      */
     public function removeTransactionHashtag(ChildTransactionHashtag $transactionHashtag)
@@ -1331,13 +1381,12 @@ abstract class Hashtag implements ActiveRecordInterface
                 $this->transactionHashtagsScheduledForDeletion = clone $this->collTransactionHashtags;
                 $this->transactionHashtagsScheduledForDeletion->clear();
             }
-            $this->transactionHashtagsScheduledForDeletion[]= clone $transactionHashtag;
+            $this->transactionHashtagsScheduledForDeletion[] = clone $transactionHashtag;
             $transactionHashtag->setHashtag(null);
         }
 
         return $this;
     }
-
 
     /**
      * If this collection has already been initialized with
@@ -1350,9 +1399,10 @@ abstract class Hashtag implements ActiveRecordInterface
      * api reasonable.  You can provide public methods for those you
      * actually need in Hashtag.
      *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @param Criteria            $criteria     optional Criteria object to narrow the query
+     * @param ConnectionInterface $con          optional connection object
+     * @param string              $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     *
      * @return ObjectCollection|ChildTransactionHashtag[] List of ChildTransactionHashtag objects
      */
     public function getTransactionHashtagsJoinTransaction(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
@@ -1364,12 +1414,13 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collTransactions collection
+     * Clears out the collTransactions collection.
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
+     *
      * @see        addTransactions()
      */
     public function clearTransactions()
@@ -1390,7 +1441,7 @@ abstract class Hashtag implements ActiveRecordInterface
     {
         $collectionClassName = TransactionHashtagTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collTransactions = new $collectionClassName;
+        $this->collTransactions = new $collectionClassName();
         $this->collTransactionsPartial = true;
         $this->collTransactions->setModel('\Transaction');
     }
@@ -1415,8 +1466,8 @@ abstract class Hashtag implements ActiveRecordInterface
      * If this ChildHashtag is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      ConnectionInterface $con Optional connection object
+     * @param Criteria            $criteria Optional query object to filter the query
+     * @param ConnectionInterface $con      Optional connection object
      *
      * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
      */
@@ -1430,7 +1481,6 @@ abstract class Hashtag implements ActiveRecordInterface
                     $this->initTransactions();
                 }
             } else {
-
                 $query = ChildTransactionQuery::create(null, $criteria)
                     ->filterByHashtag($this);
                 $collTransactions = $query->find($con);
@@ -1461,8 +1511,9 @@ abstract class Hashtag implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param  Collection $transactions A Propel collection.
-     * @param  ConnectionInterface $con Optional connection object
+     * @param Collection          $transactions A Propel collection.
+     * @param ConnectionInterface $con          Optional connection object
+     *
      * @return $this|ChildHashtag The current object (for fluent API support)
      */
     public function setTransactions(Collection $transactions, ConnectionInterface $con = null)
@@ -1492,9 +1543,9 @@ abstract class Hashtag implements ActiveRecordInterface
      * Gets the number of Transaction objects related by a many-to-many relationship
      * to the current object by way of the transaction_hashtag cross-reference table.
      *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      boolean $distinct Set to true to force count distinct
-     * @param      ConnectionInterface $con Optional connection object
+     * @param Criteria            $criteria Optional query object to filter the query
+     * @param bool                $distinct Set to true to force count distinct
+     * @param ConnectionInterface $con      Optional connection object
      *
      * @return int the number of related Transaction objects
      */
@@ -1505,7 +1556,6 @@ abstract class Hashtag implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collTransactions) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getTransactions());
                 }
@@ -1529,6 +1579,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * through the transaction_hashtag cross reference table.
      *
      * @param ChildTransaction $transaction
+     *
      * @return ChildHashtag The current object (for fluent API support)
      */
     public function addTransaction(ChildTransaction $transaction)
@@ -1547,7 +1598,6 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     *
      * @param ChildTransaction $transaction
      */
     protected function doAddTransaction(ChildTransaction $transaction)
@@ -1568,7 +1618,6 @@ abstract class Hashtag implements ActiveRecordInterface
         } elseif (!$transaction->getHashtags()->contains($this)) {
             $transaction->getHashtags()->push($this);
         }
-
     }
 
     /**
@@ -1576,6 +1625,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * through the transaction_hashtag cross reference table.
      *
      * @param ChildTransaction $transaction
+     *
      * @return ChildHashtag The current object (for fluent API support)
      */
     public function removeTransaction(ChildTransaction $transaction)
@@ -1602,7 +1652,6 @@ abstract class Hashtag implements ActiveRecordInterface
             $this->transactionsScheduledForDeletion->push($transaction);
         }
 
-
         return $this;
     }
 
@@ -1628,7 +1677,7 @@ abstract class Hashtag implements ActiveRecordInterface
      * This method is used to reset all php object references (not the actual reference in the database).
      * Necessary for object serialisation.
      *
-     * @param      boolean $deep Whether to also clear the references on all referrer objects.
+     * @param bool $deep Whether to also clear the references on all referrer objects.
      */
     public function clearAllReferences($deep = false)
     {
@@ -1650,7 +1699,7 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Return the string representation of this object
+     * Return the string representation of this object.
      *
      * @return string
      */
@@ -1660,20 +1709,24 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Code to be run before persisting the object
-     * @param  ConnectionInterface $con
-     * @return boolean
+     * Code to be run before persisting the object.
+     *
+     * @param ConnectionInterface $con
+     *
+     * @return bool
      */
     public function preSave(ConnectionInterface $con = null)
     {
         if (is_callable('parent::preSave')) {
             return parent::preSave($con);
         }
+
         return true;
     }
 
     /**
-     * Code to be run after persisting the object
+     * Code to be run after persisting the object.
+     *
      * @param ConnectionInterface $con
      */
     public function postSave(ConnectionInterface $con = null)
@@ -1684,20 +1737,24 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Code to be run before inserting to database
-     * @param  ConnectionInterface $con
-     * @return boolean
+     * Code to be run before inserting to database.
+     *
+     * @param ConnectionInterface $con
+     *
+     * @return bool
      */
     public function preInsert(ConnectionInterface $con = null)
     {
         if (is_callable('parent::preInsert')) {
             return parent::preInsert($con);
         }
+
         return true;
     }
 
     /**
-     * Code to be run after inserting to database
+     * Code to be run after inserting to database.
+     *
      * @param ConnectionInterface $con
      */
     public function postInsert(ConnectionInterface $con = null)
@@ -1708,20 +1765,24 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Code to be run before updating the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
+     * Code to be run before updating the object in database.
+     *
+     * @param ConnectionInterface $con
+     *
+     * @return bool
      */
     public function preUpdate(ConnectionInterface $con = null)
     {
         if (is_callable('parent::preUpdate')) {
             return parent::preUpdate($con);
         }
+
         return true;
     }
 
     /**
-     * Code to be run after updating the object in database
+     * Code to be run after updating the object in database.
+     *
      * @param ConnectionInterface $con
      */
     public function postUpdate(ConnectionInterface $con = null)
@@ -1732,20 +1793,24 @@ abstract class Hashtag implements ActiveRecordInterface
     }
 
     /**
-     * Code to be run before deleting the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
+     * Code to be run before deleting the object in database.
+     *
+     * @param ConnectionInterface $con
+     *
+     * @return bool
      */
     public function preDelete(ConnectionInterface $con = null)
     {
         if (is_callable('parent::preDelete')) {
             return parent::preDelete($con);
         }
+
         return true;
     }
 
     /**
-     * Code to be run after deleting the object in database
+     * Code to be run after deleting the object in database.
+     *
      * @param ConnectionInterface $con
      */
     public function postDelete(ConnectionInterface $con = null)
@@ -1754,7 +1819,6 @@ abstract class Hashtag implements ActiveRecordInterface
             parent::postDelete($con);
         }
     }
-
 
     /**
      * Derived method to catches calls to undefined methods.
@@ -1796,5 +1860,4 @@ abstract class Hashtag implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

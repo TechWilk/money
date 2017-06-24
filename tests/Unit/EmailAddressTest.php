@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit;
+namespace TechWilk\Money\Tests\Unit;
 
-use EmailAddress;
+use TechWilk\Money\EmailAddress;
 
 class EmailAddressTest extends BaseTestCase
 {

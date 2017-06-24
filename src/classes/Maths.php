@@ -1,5 +1,7 @@
 <?php
 
+namespace TechWilk\Money;
+
 class Maths
 {
     public static function calculateString($string)

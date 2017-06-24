@@ -1,15 +1,18 @@
 <?php
 
-namespace Tests\Unit;
+namespace TechWilk\Money\Tests\Unit;
 
 use Slim\App;
+use TechWilk\Money;
+use TechWilk\Money\Tests\Data\Database;
+use TechWilk\Money\Tests\Data\TestData;
 
 error_reporting(-1);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 date_default_timezone_set('Europe/London');
 
-new \Tests\Data\Database(new \Tests\Data\TestData());
+new Database(new TestData());
 
 /**
  * This is an example class that shows how you could set up a method that

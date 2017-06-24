@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit;
+namespace TechWilk\Money\Tests\Unit;
 
-use Maths;
+use TechWilk\Money\Maths;
 
 class MathsTest extends BaseTestCase
 {

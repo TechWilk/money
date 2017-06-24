@@ -1,6 +1,8 @@
 <?php
 
-namespace Tests\Functional;
+namespace TechWilk\Money\Tests\Functional;
+
+use TechWilk\Money;
 
 class TransactionTest extends BaseTestCase
 {

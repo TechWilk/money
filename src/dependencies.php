@@ -1,7 +1,14 @@
 <?php
 
+namespace TechWilk\Money;
+
+use Monolog;
+use Slim;
 use Aptoma\Twig\Extension\MarkdownEngine;
 use Aptoma\Twig\Extension\MarkdownExtension;
+use TechWilk\Twig\Extension\Hashtagify;
+use TechWilk\Twig\Extension\HashtagifyUrlGenerator;
+use Twig_Extensions_Extension_Date;
 
 // DIC configuration
 
@@ -10,7 +17,7 @@ $container = $app->getContainer();
 // TWIG view renderer
 $container['view'] = function ($c) {
     $settings = $c->get('settings')['renderer'];
-    $view = new \Slim\Views\Twig($settings['template_path'], [
+    $view = new Slim\Views\Twig($settings['template_path'], [
         'cache' => false, // or 'path/to/cache'
     ]);
 
@@ -24,8 +31,8 @@ $container['view'] = function ($c) {
     $view->addExtension(new \DPolac\TwigLambda\LambdaExtension());
     $view->addExtension(new Twig_Extensions_Extension_Date());
 
-    $urlGenerator = new \TechWilk\Twig\Extension\HashtagifyUrlGenerator\SlimHashtagifyUrlGenerator($c['router'], 'tag', 'tag');
-    $view->addExtension(new \TechWilk\Twig\Extension\Hashtagify($urlGenerator));
+    $urlGenerator = new HashtagifyUrlGenerator\SlimHashtagifyUrlGenerator($c['router'], 'tag', 'tag');
+    $view->addExtension(new Hashtagify($urlGenerator));
 
     $env = $view->getEnvironment();
     $env->getExtension('Twig_Extension_Core')->setNumberFormat(2, '.', ',');

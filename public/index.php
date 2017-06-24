@@ -17,11 +17,6 @@ require __DIR__.'/../vendor/autoload.php';
 // setup Propel (autoload configured though composer)
 require_once '../generated-conf/config.php';
 
-// autoload any custom classes in src/classes
-//spl_autoload_register(function ($classname) {
-//    require ("../src/classes/" . $classname . ".php");
-//});
-
 session_start();
 
 // Instantiate the app

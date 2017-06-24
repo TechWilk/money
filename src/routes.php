@@ -222,51 +222,6 @@ $app->get('/transactions/{year}/{month}', function ($request, $response, $args) 
     return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions, 'date' => $args['month'].' '.$args['year']]);
 })->setName('month');
 
-/*
-$app->get('/fixHashtags', function ($request, $response, $args) {
-
-    $transactions = TransactionQuery::create()->forCurrentUser($this)->find();
-    foreach ($transactions as $transaction)
-    {
-        preg_match_all("/#(\\w+)/", $transaction->getDescription(), $hashtags);
-        $hashtags = array_map('strtolower', $hashtags[1]);
-        foreach ($hashtags as $tag)
-        {
-            var_dump($tag);
-            //exit;
-            $h = new Hashtag();
-            if (HashtagQuery::create()->filterByTag($tag)->count() == 0)
-            {
-                $h->setTag($tag);
-                $h->save();
-
-            }
-            else
-            {
-                $h = HashtagQuery::create()->filterByTag($tag)->findOne();
-            }
-            var_dump($h);
-            $hasHashtag = false;
-            foreach ($transaction->getHashtags() as $currentHashtag)
-            {
-                var_dump($currentHashtag);
-                if ($currentHashtag->getTag() == $h->getTag())
-                {
-                    $hasHashtag = true;
-                }
-            }
-            if (!$hasHashtag)
-            {
-                $transaction->addHashtag($h);
-                $transaction->save();
-            }
-        }
-    }
-
-    return $response->withStatus(302)->withHeader('Location', $this->router->pathFor('home'));
-});
-*/
-
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // AUTH
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

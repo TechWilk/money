@@ -67,7 +67,6 @@ class User extends BaseUser
    * @param string $v plain text password
    *
    * @return bool Whether password is correct
-
    */
   public function checkPassword($v)
   {

@@ -2,7 +2,6 @@
 
 namespace TechWilk\Money\Map;
 
-use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -11,9 +10,9 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
+use Propel\Runtime\Propel;
 use TechWilk\Money\Breakdown;
 use TechWilk\Money\BreakdownQuery;
-
 
 /**
  * This class defines the structure of the 'breakdown' table.
@@ -24,7 +23,6 @@ use TechWilk\Money\BreakdownQuery;
  * For example, the createSelectSql() method checks the type of a given column used in an
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
- *
  */
 class BreakdownTableMap extends TableMap
 {
@@ -32,109 +30,110 @@ class BreakdownTableMap extends TableMap
     use TableMapTrait;
 
     /**
-     * The (dot-path) name of this class
+     * The (dot-path) name of this class.
      */
     const CLASS_NAME = 'TechWilk.Money.Map.BreakdownTableMap';
 
     /**
-     * The default database name for this class
+     * The default database name for this class.
      */
     const DATABASE_NAME = 'money';
 
     /**
-     * The table name for this class
+     * The table name for this class.
      */
     const TABLE_NAME = 'breakdown';
 
     /**
-     * The related Propel class for this table
+     * The related Propel class for this table.
      */
     const OM_CLASS = '\\TechWilk\\Money\\Breakdown';
 
     /**
-     * A class that can be returned by this tableMap
+     * A class that can be returned by this tableMap.
      */
     const CLASS_DEFAULT = 'TechWilk.Money.Breakdown';
 
     /**
-     * The total number of columns
+     * The total number of columns.
      */
     const NUM_COLUMNS = 5;
 
     /**
-     * The number of lazy-loaded columns
+     * The number of lazy-loaded columns.
      */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /**
-     * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
+     * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS).
      */
     const NUM_HYDRATE_COLUMNS = 5;
 
     /**
-     * the column name for the id field
+     * the column name for the id field.
      */
     const COL_ID = 'breakdown.id';
 
     /**
-     * the column name for the transaction_id field
+     * the column name for the transaction_id field.
      */
     const COL_TRANSACTION_ID = 'breakdown.transaction_id';
 
     /**
-     * the column name for the description field
+     * the column name for the description field.
      */
     const COL_DESCRIPTION = 'breakdown.description';
 
     /**
-     * the column name for the value field
+     * the column name for the value field.
      */
     const COL_VALUE = 'breakdown.value';
 
     /**
-     * the column name for the category_id field
+     * the column name for the category_id field.
      */
     const COL_CATEGORY_ID = 'breakdown.category_id';
 
     /**
-     * The default string format for model objects of the related table
+     * The default string format for model objects of the related table.
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * holds an array of fieldnames
+     * holds an array of fieldnames.
      *
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'TransactionId', 'Description', 'Value', 'CategoryId', ),
-        self::TYPE_CAMELNAME     => array('id', 'transactionId', 'description', 'value', 'categoryId', ),
-        self::TYPE_COLNAME       => array(BreakdownTableMap::COL_ID, BreakdownTableMap::COL_TRANSACTION_ID, BreakdownTableMap::COL_DESCRIPTION, BreakdownTableMap::COL_VALUE, BreakdownTableMap::COL_CATEGORY_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'transaction_id', 'description', 'value', 'category_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
-    );
+    protected static $fieldNames = [
+        self::TYPE_PHPNAME       => ['Id', 'TransactionId', 'Description', 'Value', 'CategoryId'],
+        self::TYPE_CAMELNAME     => ['id', 'transactionId', 'description', 'value', 'categoryId'],
+        self::TYPE_COLNAME       => [self::COL_ID, self::COL_TRANSACTION_ID, self::COL_DESCRIPTION, self::COL_VALUE, self::COL_CATEGORY_ID],
+        self::TYPE_FIELDNAME     => ['id', 'transaction_id', 'description', 'value', 'category_id'],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4],
+    ];
 
     /**
-     * holds an array of keys for quick access to the fieldnames array
+     * holds an array of keys for quick access to the fieldnames array.
      *
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'TransactionId' => 1, 'Description' => 2, 'Value' => 3, 'CategoryId' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'transactionId' => 1, 'description' => 2, 'value' => 3, 'categoryId' => 4, ),
-        self::TYPE_COLNAME       => array(BreakdownTableMap::COL_ID => 0, BreakdownTableMap::COL_TRANSACTION_ID => 1, BreakdownTableMap::COL_DESCRIPTION => 2, BreakdownTableMap::COL_VALUE => 3, BreakdownTableMap::COL_CATEGORY_ID => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'transaction_id' => 1, 'description' => 2, 'value' => 3, 'category_id' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
-    );
+    protected static $fieldKeys = [
+        self::TYPE_PHPNAME       => ['Id' => 0, 'TransactionId' => 1, 'Description' => 2, 'Value' => 3, 'CategoryId' => 4],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'transactionId' => 1, 'description' => 2, 'value' => 3, 'categoryId' => 4],
+        self::TYPE_COLNAME       => [self::COL_ID => 0, self::COL_TRANSACTION_ID => 1, self::COL_DESCRIPTION => 2, self::COL_VALUE => 3, self::COL_CATEGORY_ID => 4],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'transaction_id' => 1, 'description' => 2, 'value' => 3, 'category_id' => 4],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4],
+    ];
 
     /**
      * Initialize the table attributes and columns
-     * Relations are not initialized by this method since they are lazy loaded
+     * Relations are not initialized by this method since they are lazy loaded.
+     *
+     * @throws PropelException
      *
      * @return void
-     * @throws PropelException
      */
     public function initialize()
     {
@@ -151,28 +150,30 @@ class BreakdownTableMap extends TableMap
         $this->addColumn('description', 'Description', 'VARCHAR', true, 50, null);
         $this->addColumn('value', 'Value', 'FLOAT', true, null, null);
         $this->addForeignKey('category_id', 'CategoryId', 'INTEGER', 'category', 'id', true, null, null);
-    } // initialize()
+    }
+
+ // initialize()
 
     /**
-     * Build the RelationMap objects for this table relationships
+     * Build the RelationMap objects for this table relationships.
      */
     public function buildRelations()
     {
-        $this->addRelation('Transaction', '\\TechWilk\\Money\\Transaction', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
+        $this->addRelation('Transaction', '\\TechWilk\\Money\\Transaction', RelationMap::MANY_TO_ONE, [
+  0 => [
     0 => ':transaction_id',
     1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('Category', '\\TechWilk\\Money\\Category', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
+  ],
+], null, null, null, false);
+        $this->addRelation('Category', '\\TechWilk\\Money\\Category', RelationMap::MANY_TO_ONE, [
+  0 => [
     0 => ':category_id',
     1 => ':id',
-  ),
-), null, null, null, false);
-    } // buildRelations()
+  ],
+], null, null, null, false);
+    }
+
+ // buildRelations()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -183,7 +184,7 @@ class BreakdownTableMap extends TableMap
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *                          TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
      */
@@ -191,7 +192,7 @@ class BreakdownTableMap extends TableMap
     {
         // If the PK cannot be derived from the row, return NULL.
         if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
-            return null;
+            return;
         }
 
         return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
@@ -205,7 +206,7 @@ class BreakdownTableMap extends TableMap
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *                          TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
@@ -226,12 +227,13 @@ class BreakdownTableMap extends TableMap
      * relative to a location on the PHP include_path.
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
-     * @param boolean $withPrefix Whether or not to return the path with the class name
+     * @param bool $withPrefix Whether or not to return the path with the class name
+     *
      * @return string path.to.ClassName
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? BreakdownTableMap::CLASS_DEFAULT : BreakdownTableMap::OM_CLASS;
+        return $withPrefix ? self::CLASS_DEFAULT : self::OM_CLASS;
     }
 
     /**
@@ -240,30 +242,31 @@ class BreakdownTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Breakdown object, last column rank)
+     *
+     * @return array (Breakdown object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = BreakdownTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = BreakdownTableMap::getInstanceFromPool($key))) {
+        $key = self::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = self::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + BreakdownTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + self::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = BreakdownTableMap::OM_CLASS;
+            $cls = self::OM_CLASS;
             /** @var Breakdown $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            BreakdownTableMap::addInstanceToPool($obj, $key);
+            self::addInstanceToPool($obj, $key);
         }
 
-        return array($obj, $col);
+        return [$obj, $col];
     }
 
     /**
@@ -271,20 +274,22 @@ class BreakdownTableMap extends TableMap
      * objects that inherit from the default.
      *
      * @param DataFetcherInterface $dataFetcher
-     * @return array
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return array
      */
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
-        $results = array();
+        $results = [];
 
         // set the class once to avoid overhead in the loop
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = BreakdownTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = BreakdownTableMap::getInstanceFromPool($key))) {
+            $key = self::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = self::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -294,12 +299,13 @@ class BreakdownTableMap extends TableMap
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                BreakdownTableMap::addInstanceToPool($obj, $key);
+                self::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -309,36 +315,39 @@ class BreakdownTableMap extends TableMap
      *
      * @param Criteria $criteria object containing the columns to add.
      * @param string   $alias    optional table alias
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(BreakdownTableMap::COL_ID);
-            $criteria->addSelectColumn(BreakdownTableMap::COL_TRANSACTION_ID);
-            $criteria->addSelectColumn(BreakdownTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(BreakdownTableMap::COL_VALUE);
-            $criteria->addSelectColumn(BreakdownTableMap::COL_CATEGORY_ID);
+            $criteria->addSelectColumn(self::COL_ID);
+            $criteria->addSelectColumn(self::COL_TRANSACTION_ID);
+            $criteria->addSelectColumn(self::COL_DESCRIPTION);
+            $criteria->addSelectColumn(self::COL_VALUE);
+            $criteria->addSelectColumn(self::COL_CATEGORY_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.transaction_id');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.value');
-            $criteria->addSelectColumn($alias . '.category_id');
+            $criteria->addSelectColumn($alias.'.id');
+            $criteria->addSelectColumn($alias.'.transaction_id');
+            $criteria->addSelectColumn($alias.'.description');
+            $criteria->addSelectColumn($alias.'.value');
+            $criteria->addSelectColumn($alias.'.category_id');
         }
     }
 
     /**
      * Returns the TableMap related to this object.
      * This method is not needed for general use but a specific application could have a need.
-     * @return TableMap
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(BreakdownTableMap::DATABASE_NAME)->getTable(BreakdownTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(self::DATABASE_NAME)->getTable(self::TABLE_NAME);
     }
 
     /**
@@ -346,57 +355,60 @@ class BreakdownTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(BreakdownTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(BreakdownTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new BreakdownTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(self::DATABASE_NAME);
+        if (!$dbMap->hasTable(self::TABLE_NAME)) {
+            $dbMap->addTableObject(new self());
         }
     }
 
-    /**
-     * Performs a DELETE on the database, given a Breakdown or Criteria object OR a primary key value.
-     *
-     * @param mixed               $values Criteria or Breakdown object or primary key or array of primary keys
-     *              which is used to create the DELETE statement
-     * @param  ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     */
+     /**
+      * Performs a DELETE on the database, given a Breakdown or Criteria object OR a primary key value.
+      *
+      * @param mixed               $values Criteria or Breakdown object or primary key or array of primary keys
+      *              which is used to create the DELETE statement
+      * @param  ConnectionInterface $con the connection to use
+      *
+      * @throws PropelException Any exceptions caught during processing will be
+      *                         rethrown wrapped into a PropelException.
+      *
+      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+      *                         if supported by native driver or if emulated using Propel.
+      */
      public static function doDelete($values, ConnectionInterface $con = null)
      {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(BreakdownTableMap::DATABASE_NAME);
-        }
+         if (null === $con) {
+             $con = Propel::getServiceContainer()->getWriteConnection(self::DATABASE_NAME);
+         }
 
-        if ($values instanceof Criteria) {
-            // rename for clarity
+         if ($values instanceof Criteria) {
+             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TechWilk\Money\Breakdown) { // it's a model object
+         } elseif ($values instanceof \TechWilk\Money\Breakdown) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
-        } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(BreakdownTableMap::DATABASE_NAME);
-            $criteria->add(BreakdownTableMap::COL_ID, (array) $values, Criteria::IN);
-        }
+         } else { // it's a primary key, or an array of pks
+            $criteria = new Criteria(self::DATABASE_NAME);
+             $criteria->add(self::COL_ID, (array) $values, Criteria::IN);
+         }
 
-        $query = BreakdownQuery::create()->mergeWith($criteria);
+         $query = BreakdownQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) {
-            BreakdownTableMap::clearInstancePool();
-        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
+         if ($values instanceof Criteria) {
+             self::clearInstancePool();
+         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                BreakdownTableMap::removeInstanceFromPool($singleval);
+                self::removeInstanceFromPool($singleval);
             }
-        }
+         }
 
-        return $query->delete($con);
-    }
+         return $query->delete($con);
+     }
 
     /**
      * Deletes all rows from the breakdown table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
@@ -408,15 +420,17 @@ class BreakdownTableMap extends TableMap
      * Performs an INSERT on the database, given a Breakdown or Criteria object.
      *
      * @param mixed               $criteria Criteria or Breakdown object containing data that is used to create the INSERT statement.
-     * @param ConnectionInterface $con the ConnectionInterface connection to use
-     * @return mixed           The new primary key.
+     * @param ConnectionInterface $con      the ConnectionInterface connection to use
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return mixed The new primary key.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(BreakdownTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(self::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
@@ -425,10 +439,9 @@ class BreakdownTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Breakdown object
         }
 
-        if ($criteria->containsKey(BreakdownTableMap::COL_ID) && $criteria->keyContainsValue(BreakdownTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.BreakdownTableMap::COL_ID.')');
+        if ($criteria->containsKey(self::COL_ID) && $criteria->keyContainsValue(self::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.self::COL_ID.')');
         }
-
 
         // Set the correct dbName
         $query = BreakdownQuery::create()->mergeWith($criteria);
@@ -439,7 +452,6 @@ class BreakdownTableMap extends TableMap
             return $query->doInsert($con);
         });
     }
-
 } // BreakdownTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //

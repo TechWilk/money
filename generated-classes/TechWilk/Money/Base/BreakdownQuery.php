@@ -2,15 +2,15 @@
 
 namespace TechWilk\Money\Base;
 
-use \Exception;
-use \PDO;
-use Propel\Runtime\Propel;
+use Exception;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
 use TechWilk\Money\Breakdown as ChildBreakdown;
 use TechWilk\Money\BreakdownQuery as ChildBreakdownQuery;
 use TechWilk\Money\Map\BreakdownTableMap;
@@ -25,46 +25,34 @@ use TechWilk\Money\Map\BreakdownTableMap;
  * @method     ChildBreakdownQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildBreakdownQuery orderByValue($order = Criteria::ASC) Order by the value column
  * @method     ChildBreakdownQuery orderByCategoryId($order = Criteria::ASC) Order by the category_id column
- *
  * @method     ChildBreakdownQuery groupById() Group by the id column
  * @method     ChildBreakdownQuery groupByTransactionId() Group by the transaction_id column
  * @method     ChildBreakdownQuery groupByDescription() Group by the description column
  * @method     ChildBreakdownQuery groupByValue() Group by the value column
  * @method     ChildBreakdownQuery groupByCategoryId() Group by the category_id column
- *
  * @method     ChildBreakdownQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildBreakdownQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildBreakdownQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildBreakdownQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildBreakdownQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildBreakdownQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildBreakdownQuery leftJoinTransaction($relationAlias = null) Adds a LEFT JOIN clause to the query using the Transaction relation
  * @method     ChildBreakdownQuery rightJoinTransaction($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Transaction relation
  * @method     ChildBreakdownQuery innerJoinTransaction($relationAlias = null) Adds a INNER JOIN clause to the query using the Transaction relation
- *
  * @method     ChildBreakdownQuery joinWithTransaction($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Transaction relation
- *
  * @method     ChildBreakdownQuery leftJoinWithTransaction() Adds a LEFT JOIN clause and with to the query using the Transaction relation
  * @method     ChildBreakdownQuery rightJoinWithTransaction() Adds a RIGHT JOIN clause and with to the query using the Transaction relation
  * @method     ChildBreakdownQuery innerJoinWithTransaction() Adds a INNER JOIN clause and with to the query using the Transaction relation
- *
  * @method     ChildBreakdownQuery leftJoinCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the Category relation
  * @method     ChildBreakdownQuery rightJoinCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Category relation
  * @method     ChildBreakdownQuery innerJoinCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the Category relation
- *
  * @method     ChildBreakdownQuery joinWithCategory($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Category relation
- *
  * @method     ChildBreakdownQuery leftJoinWithCategory() Adds a LEFT JOIN clause and with to the query using the Category relation
  * @method     ChildBreakdownQuery rightJoinWithCategory() Adds a RIGHT JOIN clause and with to the query using the Category relation
  * @method     ChildBreakdownQuery innerJoinWithCategory() Adds a INNER JOIN clause and with to the query using the Category relation
- *
  * @method     \TechWilk\Money\TransactionQuery|\TechWilk\Money\CategoryQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildBreakdown findOne(ConnectionInterface $con = null) Return the first ChildBreakdown matching the query
  * @method     ChildBreakdown findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBreakdown matching the query, or a new ChildBreakdown object populated from the query conditions when no match is found
- *
  * @method     ChildBreakdown findOneById(int $id) Return the first ChildBreakdown filtered by the id column
  * @method     ChildBreakdown findOneByTransactionId(int $transaction_id) Return the first ChildBreakdown filtered by the transaction_id column
  * @method     ChildBreakdown findOneByDescription(string $description) Return the first ChildBreakdown filtered by the description column
@@ -73,13 +61,11 @@ use TechWilk\Money\Map\BreakdownTableMap;
 
  * @method     ChildBreakdown requirePk($key, ConnectionInterface $con = null) Return the ChildBreakdown by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOne(ConnectionInterface $con = null) Return the first ChildBreakdown matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildBreakdown requireOneById(int $id) Return the first ChildBreakdown filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOneByTransactionId(int $transaction_id) Return the first ChildBreakdown filtered by the transaction_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOneByDescription(string $description) Return the first ChildBreakdown filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOneByValue(double $value) Return the first ChildBreakdown filtered by the value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOneByCategoryId(int $category_id) Return the first ChildBreakdown filtered by the category_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildBreakdown[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBreakdown objects based on current ModelCriteria
  * @method     ChildBreakdown[]|ObjectCollection findById(int $id) Return ChildBreakdown objects filtered by the id column
  * @method     ChildBreakdown[]|ObjectCollection findByTransactionId(int $transaction_id) Return ChildBreakdown objects filtered by the transaction_id column
@@ -87,7 +73,6 @@ use TechWilk\Money\Map\BreakdownTableMap;
  * @method     ChildBreakdown[]|ObjectCollection findByValue(double $value) Return ChildBreakdown objects filtered by the value column
  * @method     ChildBreakdown[]|ObjectCollection findByCategoryId(int $category_id) Return ChildBreakdown objects filtered by the category_id column
  * @method     ChildBreakdown[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class BreakdownQuery extends ModelCriteria
 {
@@ -96,9 +81,9 @@ abstract class BreakdownQuery extends ModelCriteria
     /**
      * Initializes internal state of \TechWilk\Money\Base\BreakdownQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\TechWilk\\Money\\Breakdown', $modelAlias = null)
     {
@@ -108,8 +93,8 @@ abstract class BreakdownQuery extends ModelCriteria
     /**
      * Returns a new ChildBreakdownQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildBreakdownQuery
      */
@@ -138,7 +123,7 @@ abstract class BreakdownQuery extends ModelCriteria
      * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param mixed               $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildBreakdown|array|mixed the result, formatted by the current formatter
@@ -146,7 +131,7 @@ abstract class BreakdownQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -175,8 +160,8 @@ abstract class BreakdownQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -208,8 +193,8 @@ abstract class BreakdownQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildBreakdown|array|mixed the result, formatted by the current formatter
      */
@@ -228,9 +213,10 @@ abstract class BreakdownQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -249,33 +235,31 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-
         return $this->addUsingAlias(BreakdownTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
-
         return $this->addUsingAlias(BreakdownTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the id column
+     * Filter the query on the id column.
      *
      * Example usage:
      * <code>
@@ -284,11 +268,11 @@ abstract class BreakdownQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param     mixed $id The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $id         The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -316,7 +300,7 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the transaction_id column
+     * Filter the query on the transaction_id column.
      *
      * Example usage:
      * <code>
@@ -327,11 +311,11 @@ abstract class BreakdownQuery extends ModelCriteria
      *
      * @see       filterByTransaction()
      *
-     * @param     mixed $transactionId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $transactionId The value to use as filter.
+     *                              Use scalar values for equality.
+     *                              Use array values for in_array() equivalent.
+     *                              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison    Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -359,7 +343,7 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the description column
+     * Filter the query on the description column.
      *
      * Example usage:
      * <code>
@@ -367,8 +351,8 @@ abstract class BreakdownQuery extends ModelCriteria
      * $query->filterByDescription('%fooValue%', Criteria::LIKE); // WHERE description LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $description The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $description The value to use as filter.
+     * @param string $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -384,7 +368,7 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the value column
+     * Filter the query on the value column.
      *
      * Example usage:
      * <code>
@@ -393,11 +377,11 @@ abstract class BreakdownQuery extends ModelCriteria
      * $query->filterByValue(array('min' => 12)); // WHERE value > 12
      * </code>
      *
-     * @param     mixed $value The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $value      The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -425,7 +409,7 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the category_id column
+     * Filter the query on the category_id column.
      *
      * Example usage:
      * <code>
@@ -436,11 +420,11 @@ abstract class BreakdownQuery extends ModelCriteria
      *
      * @see       filterByCategory()
      *
-     * @param     mixed $categoryId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $categoryId The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -468,10 +452,10 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TechWilk\Money\Transaction object
+     * Filter the query by a related \TechWilk\Money\Transaction object.
      *
      * @param \TechWilk\Money\Transaction|ObjectCollection $transaction The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string                                       $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -495,10 +479,10 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Transaction relation
+     * Adds a JOIN clause to the query using the Transaction relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -527,13 +511,13 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Use the Transaction relation Transaction object
+     * Use the Transaction relation Transaction object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TechWilk\Money\TransactionQuery A secondary query class using the current class as primary query
      */
@@ -545,10 +529,10 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TechWilk\Money\Category object
+     * Filter the query by a related \TechWilk\Money\Category object.
      *
-     * @param \TechWilk\Money\Category|ObjectCollection $category The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \TechWilk\Money\Category|ObjectCollection $category   The related object(s) to use as filter
+     * @param string                                    $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -572,10 +556,10 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Category relation
+     * Adds a JOIN clause to the query using the Category relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -604,13 +588,13 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Use the Category relation Category object
+     * Use the Category relation Category object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TechWilk\Money\CategoryQuery A secondary query class using the current class as primary query
      */
@@ -622,9 +606,9 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildBreakdown $breakdown Object to remove from the list of results
+     * @param ChildBreakdown $breakdown Object to remove from the list of results
      *
      * @return $this|ChildBreakdownQuery The current query, for fluid interface
      */
@@ -641,6 +625,7 @@ abstract class BreakdownQuery extends ModelCriteria
      * Deletes all rows from the breakdown table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -665,13 +650,15 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -697,5 +684,4 @@ abstract class BreakdownQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // BreakdownQuery

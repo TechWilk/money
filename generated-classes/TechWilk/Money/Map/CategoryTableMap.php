@@ -2,7 +2,6 @@
 
 namespace TechWilk\Money\Map;
 
-use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -11,9 +10,9 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
+use Propel\Runtime\Propel;
 use TechWilk\Money\Category;
 use TechWilk\Money\CategoryQuery;
-
 
 /**
  * This class defines the structure of the 'category' table.
@@ -24,7 +23,6 @@ use TechWilk\Money\CategoryQuery;
  * For example, the createSelectSql() method checks the type of a given column used in an
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
- *
  */
 class CategoryTableMap extends TableMap
 {
@@ -32,99 +30,100 @@ class CategoryTableMap extends TableMap
     use TableMapTrait;
 
     /**
-     * The (dot-path) name of this class
+     * The (dot-path) name of this class.
      */
     const CLASS_NAME = 'TechWilk.Money.Map.CategoryTableMap';
 
     /**
-     * The default database name for this class
+     * The default database name for this class.
      */
     const DATABASE_NAME = 'money';
 
     /**
-     * The table name for this class
+     * The table name for this class.
      */
     const TABLE_NAME = 'category';
 
     /**
-     * The related Propel class for this table
+     * The related Propel class for this table.
      */
     const OM_CLASS = '\\TechWilk\\Money\\Category';
 
     /**
-     * A class that can be returned by this tableMap
+     * A class that can be returned by this tableMap.
      */
     const CLASS_DEFAULT = 'TechWilk.Money.Category';
 
     /**
-     * The total number of columns
+     * The total number of columns.
      */
     const NUM_COLUMNS = 3;
 
     /**
-     * The number of lazy-loaded columns
+     * The number of lazy-loaded columns.
      */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /**
-     * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
+     * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS).
      */
     const NUM_HYDRATE_COLUMNS = 3;
 
     /**
-     * the column name for the id field
+     * the column name for the id field.
      */
     const COL_ID = 'category.id';
 
     /**
-     * the column name for the name field
+     * the column name for the name field.
      */
     const COL_NAME = 'category.name';
 
     /**
-     * the column name for the account_id field
+     * the column name for the account_id field.
      */
     const COL_ACCOUNT_ID = 'category.account_id';
 
     /**
-     * The default string format for model objects of the related table
+     * The default string format for model objects of the related table.
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
 
     /**
-     * holds an array of fieldnames
+     * holds an array of fieldnames.
      *
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'AccountId', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'accountId', ),
-        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID, CategoryTableMap::COL_NAME, CategoryTableMap::COL_ACCOUNT_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'account_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
-    );
+    protected static $fieldNames = [
+        self::TYPE_PHPNAME       => ['Id', 'Name', 'AccountId'],
+        self::TYPE_CAMELNAME     => ['id', 'name', 'accountId'],
+        self::TYPE_COLNAME       => [self::COL_ID, self::COL_NAME, self::COL_ACCOUNT_ID],
+        self::TYPE_FIELDNAME     => ['id', 'name', 'account_id'],
+        self::TYPE_NUM           => [0, 1, 2],
+    ];
 
     /**
-     * holds an array of keys for quick access to the fieldnames array
+     * holds an array of keys for quick access to the fieldnames array.
      *
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'AccountId' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'accountId' => 2, ),
-        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID => 0, CategoryTableMap::COL_NAME => 1, CategoryTableMap::COL_ACCOUNT_ID => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'account_id' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
-    );
+    protected static $fieldKeys = [
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Name' => 1, 'AccountId' => 2],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'name' => 1, 'accountId' => 2],
+        self::TYPE_COLNAME       => [self::COL_ID => 0, self::COL_NAME => 1, self::COL_ACCOUNT_ID => 2],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'name' => 1, 'account_id' => 2],
+        self::TYPE_NUM           => [0, 1, 2],
+    ];
 
     /**
      * Initialize the table attributes and columns
-     * Relations are not initialized by this method since they are lazy loaded
+     * Relations are not initialized by this method since they are lazy loaded.
+     *
+     * @throws PropelException
      *
      * @return void
-     * @throws PropelException
      */
     public function initialize()
     {
@@ -139,28 +138,30 @@ class CategoryTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 50, null);
         $this->addForeignKey('account_id', 'AccountId', 'INTEGER', 'account', 'id', true, null, null);
-    } // initialize()
+    }
+
+ // initialize()
 
     /**
-     * Build the RelationMap objects for this table relationships
+     * Build the RelationMap objects for this table relationships.
      */
     public function buildRelations()
     {
-        $this->addRelation('Account', '\\TechWilk\\Money\\Account', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
+        $this->addRelation('Account', '\\TechWilk\\Money\\Account', RelationMap::MANY_TO_ONE, [
+  0 => [
     0 => ':account_id',
     1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('Breakdown', '\\TechWilk\\Money\\Breakdown', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
+  ],
+], null, null, null, false);
+        $this->addRelation('Breakdown', '\\TechWilk\\Money\\Breakdown', RelationMap::ONE_TO_MANY, [
+  0 => [
     0 => ':category_id',
     1 => ':id',
-  ),
-), null, null, 'Breakdowns', false);
-    } // buildRelations()
+  ],
+], null, null, 'Breakdowns', false);
+    }
+
+ // buildRelations()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -171,7 +172,7 @@ class CategoryTableMap extends TableMap
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *                          TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
      */
@@ -179,7 +180,7 @@ class CategoryTableMap extends TableMap
     {
         // If the PK cannot be derived from the row, return NULL.
         if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
-            return null;
+            return;
         }
 
         return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
@@ -193,7 +194,7 @@ class CategoryTableMap extends TableMap
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
-     *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *                          TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
@@ -214,12 +215,13 @@ class CategoryTableMap extends TableMap
      * relative to a location on the PHP include_path.
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
-     * @param boolean $withPrefix Whether or not to return the path with the class name
+     * @param bool $withPrefix Whether or not to return the path with the class name
+     *
      * @return string path.to.ClassName
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? CategoryTableMap::CLASS_DEFAULT : CategoryTableMap::OM_CLASS;
+        return $withPrefix ? self::CLASS_DEFAULT : self::OM_CLASS;
     }
 
     /**
@@ -228,30 +230,31 @@ class CategoryTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Category object, last column rank)
+     *
+     * @return array (Category object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = CategoryTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = CategoryTableMap::getInstanceFromPool($key))) {
+        $key = self::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = self::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + CategoryTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + self::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = CategoryTableMap::OM_CLASS;
+            $cls = self::OM_CLASS;
             /** @var Category $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            CategoryTableMap::addInstanceToPool($obj, $key);
+            self::addInstanceToPool($obj, $key);
         }
 
-        return array($obj, $col);
+        return [$obj, $col];
     }
 
     /**
@@ -259,20 +262,22 @@ class CategoryTableMap extends TableMap
      * objects that inherit from the default.
      *
      * @param DataFetcherInterface $dataFetcher
-     * @return array
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return array
      */
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
-        $results = array();
+        $results = [];
 
         // set the class once to avoid overhead in the loop
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = CategoryTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = CategoryTableMap::getInstanceFromPool($key))) {
+            $key = self::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = self::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -282,12 +287,13 @@ class CategoryTableMap extends TableMap
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                CategoryTableMap::addInstanceToPool($obj, $key);
+                self::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -297,32 +303,35 @@ class CategoryTableMap extends TableMap
      *
      * @param Criteria $criteria object containing the columns to add.
      * @param string   $alias    optional table alias
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(CategoryTableMap::COL_ID);
-            $criteria->addSelectColumn(CategoryTableMap::COL_NAME);
-            $criteria->addSelectColumn(CategoryTableMap::COL_ACCOUNT_ID);
+            $criteria->addSelectColumn(self::COL_ID);
+            $criteria->addSelectColumn(self::COL_NAME);
+            $criteria->addSelectColumn(self::COL_ACCOUNT_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.account_id');
+            $criteria->addSelectColumn($alias.'.id');
+            $criteria->addSelectColumn($alias.'.name');
+            $criteria->addSelectColumn($alias.'.account_id');
         }
     }
 
     /**
      * Returns the TableMap related to this object.
      * This method is not needed for general use but a specific application could have a need.
-     * @return TableMap
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(CategoryTableMap::DATABASE_NAME)->getTable(CategoryTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(self::DATABASE_NAME)->getTable(self::TABLE_NAME);
     }
 
     /**
@@ -330,57 +339,60 @@ class CategoryTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(CategoryTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(CategoryTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new CategoryTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(self::DATABASE_NAME);
+        if (!$dbMap->hasTable(self::TABLE_NAME)) {
+            $dbMap->addTableObject(new self());
         }
     }
 
-    /**
-     * Performs a DELETE on the database, given a Category or Criteria object OR a primary key value.
-     *
-     * @param mixed               $values Criteria or Category object or primary key or array of primary keys
-     *              which is used to create the DELETE statement
-     * @param  ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
-     * @throws PropelException Any exceptions caught during processing will be
-     *                         rethrown wrapped into a PropelException.
-     */
+     /**
+      * Performs a DELETE on the database, given a Category or Criteria object OR a primary key value.
+      *
+      * @param mixed               $values Criteria or Category object or primary key or array of primary keys
+      *              which is used to create the DELETE statement
+      * @param  ConnectionInterface $con the connection to use
+      *
+      * @throws PropelException Any exceptions caught during processing will be
+      *                         rethrown wrapped into a PropelException.
+      *
+      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+      *                         if supported by native driver or if emulated using Propel.
+      */
      public static function doDelete($values, ConnectionInterface $con = null)
      {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
-        }
+         if (null === $con) {
+             $con = Propel::getServiceContainer()->getWriteConnection(self::DATABASE_NAME);
+         }
 
-        if ($values instanceof Criteria) {
-            // rename for clarity
+         if ($values instanceof Criteria) {
+             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \TechWilk\Money\Category) { // it's a model object
+         } elseif ($values instanceof \TechWilk\Money\Category) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
-        } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(CategoryTableMap::DATABASE_NAME);
-            $criteria->add(CategoryTableMap::COL_ID, (array) $values, Criteria::IN);
-        }
+         } else { // it's a primary key, or an array of pks
+            $criteria = new Criteria(self::DATABASE_NAME);
+             $criteria->add(self::COL_ID, (array) $values, Criteria::IN);
+         }
 
-        $query = CategoryQuery::create()->mergeWith($criteria);
+         $query = CategoryQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) {
-            CategoryTableMap::clearInstancePool();
-        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
+         if ($values instanceof Criteria) {
+             self::clearInstancePool();
+         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                CategoryTableMap::removeInstanceFromPool($singleval);
+                self::removeInstanceFromPool($singleval);
             }
-        }
+         }
 
-        return $query->delete($con);
-    }
+         return $query->delete($con);
+     }
 
     /**
      * Deletes all rows from the category table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
@@ -392,15 +404,17 @@ class CategoryTableMap extends TableMap
      * Performs an INSERT on the database, given a Category or Criteria object.
      *
      * @param mixed               $criteria Criteria or Category object containing data that is used to create the INSERT statement.
-     * @param ConnectionInterface $con the ConnectionInterface connection to use
-     * @return mixed           The new primary key.
+     * @param ConnectionInterface $con      the ConnectionInterface connection to use
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return mixed The new primary key.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(CategoryTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(self::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
@@ -409,10 +423,9 @@ class CategoryTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Category object
         }
 
-        if ($criteria->containsKey(CategoryTableMap::COL_ID) && $criteria->keyContainsValue(CategoryTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.CategoryTableMap::COL_ID.')');
+        if ($criteria->containsKey(self::COL_ID) && $criteria->keyContainsValue(self::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.self::COL_ID.')');
         }
-
 
         // Set the correct dbName
         $query = CategoryQuery::create()->mergeWith($criteria);
@@ -423,7 +436,6 @@ class CategoryTableMap extends TableMap
             return $query->doInsert($con);
         });
     }
-
 } // CategoryTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //

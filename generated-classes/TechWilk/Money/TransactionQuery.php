@@ -2,8 +2,8 @@
 
 namespace TechWilk\Money;
 
-use TechWilk\Money\Base\TransactionQuery as BaseTransactionQuery;
 use Psr\Container\ContainerInterface;
+use TechWilk\Money\Base\TransactionQuery as BaseTransactionQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'transaction' table.

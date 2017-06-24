@@ -3,7 +3,6 @@
 namespace TechWilk\Money;
 
 use TechWilk\Money\Base\User as BaseUser;
-use TechWilk\Money\EmailAddress;
 use TechWilk\Money\Map\UserTableMap;
 
 /**

@@ -1,6 +1,11 @@
 <?php
 
-namespace Tests\Functional;
+namespace TechWilk\Money\Tests\Functional;
+
+use TechWilk\Money\AccountQuery;
+use TechWilk\Money\EmailAddress;
+use TechWilk\Money\User;
+use TechWilk\Money\UserQuery;
 
 class UserPageTest extends BaseTestCase
 {
@@ -20,12 +25,12 @@ class UserPageTest extends BaseTestCase
 
     public function testCreateUserForTests()
     {
-        $a = \AccountQuery::create()->findPk(1);
+        $a = AccountQuery::create()->findPk(1);
 
-        $u = new \User();
+        $u = new User();
         $u->setFirstName('Tim');
         $u->setLastName('Smith');
-        $u->setEmail(new \EmailAddress('tim@example.com'));
+        $u->setEmail(new EmailAddress('tim@example.com'));
         $u->setPassword('MegaSecurePassword');
         $u->addAccount($a);
         $u->setEnable(true);
@@ -97,7 +102,7 @@ class UserPageTest extends BaseTestCase
         $this->assertContains('Tim Smith', (string) $response->getBody());
         $this->assertContains('Changed successfully', (string) $response->getBody());
 
-        $u = \UserQuery::create()->findPk($userId);
+        $u = UserQuery::create()->findPk($userId);
         $this->assertTrue($u->checkPassword('newSecurePassword'));
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace Tests\Data;
+namespace TechWilk\Money\Tests\Data;
+
+use TechWilk\Money;
 
 class Database
 {

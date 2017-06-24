@@ -1,13 +1,15 @@
 <?php
 
-namespace Tests\Functional;
+namespace TechWilk\Money\Tests\Functional;
 
 use Slim\App;
 use Slim\Http\Environment;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use TechWilk\Money\Tests\Data\Database;
+use TechWilk\Money\Tests\Data\TestData;
 
-new \Tests\Data\Database(new \Tests\Data\TestData());
+new Database(new TestData());
 
 /**
  * This is an example class that shows how you could set up a method that

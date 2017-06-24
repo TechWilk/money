@@ -1,6 +1,10 @@
 <?php
 
-namespace Tests\Functional;
+namespace TechWilk\Money\Tests\Functional;
+
+use TechWilk\Money\AccountQuery;
+use TechWilk\Money\EmailAddress;
+use TechWilk\Money\User;
 
 class LoginLogoutTest extends BaseTestCase
 {
@@ -9,10 +13,10 @@ class LoginLogoutTest extends BaseTestCase
    */
   public static function setUpBeforeClass()
   {
-      $account = \AccountQuery::create()->findPk(1);
+      $account = AccountQuery::create()->findPk(1);
 
-      $user = new \User();
-      $user->setEmail(new \EmailAddress('test@example.com'));
+      $user = new User();
+      $user->setEmail(new EmailAddress('test@example.com'));
       $user->setFirstName('Test');
       $user->setLastName('User');
       $user->addAccount($account);

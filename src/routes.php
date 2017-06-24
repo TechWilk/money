@@ -1,5 +1,9 @@
 <?php
 
+namespace TechWilk\Money;
+
+use DateTime;
+
 // Routes
 
 $app->post('/user', function ($request, $response, $args) {
@@ -286,7 +290,7 @@ $app->post('/login', function ($request, $response, $args) {
 
     try {
         $email = new EmailAddress($data['username']);
-    } catch (InvalidArgumentException $e) {
+    } catch (\InvalidArgumentException $e) {
         return $this->view->render($response->withStatus(401), 'login.twig', ['message' => $message]);
     }
     $password = filter_var($data['password'], FILTER_SANITIZE_STRING);

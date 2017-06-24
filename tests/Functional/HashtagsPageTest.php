@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Functional;
+namespace TechWilk\Money\Tests\Functional;
 
 class HashtagsPageTest extends BaseTestCase
 {

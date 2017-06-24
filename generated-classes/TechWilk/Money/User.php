@@ -66,7 +66,7 @@ class User extends BaseUser
    *
    * @param string $v plain text password
    *
-   * @return $this|\User The current object (for fluent API support)
+   * @return bool Whether password is correct
    */
   public function checkPassword($v)
   {

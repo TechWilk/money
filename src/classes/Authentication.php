@@ -58,7 +58,6 @@ class Authentication
     {
         if (!$this->numberOfLoginAttemptsIsOk($email)) {
             throw new \Exception('Too many attempts.');
-            return false;
         }
         $users = UserQuery::create()->filterByEmail($email)->find();
         foreach ($users as $u) {

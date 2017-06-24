@@ -3,7 +3,6 @@
 namespace TechWilk\Money\Tests\Unit;
 
 use Slim\App;
-use TechWilk\Money;
 use TechWilk\Money\Tests\Data\Database;
 use TechWilk\Money\Tests\Data\TestData;
 

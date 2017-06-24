@@ -2,15 +2,15 @@
 
 namespace TechWilk\Money\Base;
 
-use \Exception;
-use \PDO;
-use Propel\Runtime\Propel;
+use Exception;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
 use TechWilk\Money\Account as ChildAccount;
 use TechWilk\Money\AccountQuery as ChildAccountQuery;
 use TechWilk\Money\Map\AccountTableMap;
@@ -22,67 +22,49 @@ use TechWilk\Money\Map\AccountTableMap;
  *
  * @method     ChildAccountQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildAccountQuery orderByName($order = Criteria::ASC) Order by the name column
- *
  * @method     ChildAccountQuery groupById() Group by the id column
  * @method     ChildAccountQuery groupByName() Group by the name column
- *
  * @method     ChildAccountQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildAccountQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildAccountQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildAccountQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildAccountQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildAccountQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildAccountQuery leftJoinTransaction($relationAlias = null) Adds a LEFT JOIN clause to the query using the Transaction relation
  * @method     ChildAccountQuery rightJoinTransaction($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Transaction relation
  * @method     ChildAccountQuery innerJoinTransaction($relationAlias = null) Adds a INNER JOIN clause to the query using the Transaction relation
- *
  * @method     ChildAccountQuery joinWithTransaction($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Transaction relation
- *
  * @method     ChildAccountQuery leftJoinWithTransaction() Adds a LEFT JOIN clause and with to the query using the Transaction relation
  * @method     ChildAccountQuery rightJoinWithTransaction() Adds a RIGHT JOIN clause and with to the query using the Transaction relation
  * @method     ChildAccountQuery innerJoinWithTransaction() Adds a INNER JOIN clause and with to the query using the Transaction relation
- *
  * @method     ChildAccountQuery leftJoinCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the Category relation
  * @method     ChildAccountQuery rightJoinCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Category relation
  * @method     ChildAccountQuery innerJoinCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the Category relation
- *
  * @method     ChildAccountQuery joinWithCategory($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Category relation
- *
  * @method     ChildAccountQuery leftJoinWithCategory() Adds a LEFT JOIN clause and with to the query using the Category relation
  * @method     ChildAccountQuery rightJoinWithCategory() Adds a RIGHT JOIN clause and with to the query using the Category relation
  * @method     ChildAccountQuery innerJoinWithCategory() Adds a INNER JOIN clause and with to the query using the Category relation
- *
  * @method     ChildAccountQuery leftJoinUserAccounts($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserAccounts relation
  * @method     ChildAccountQuery rightJoinUserAccounts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserAccounts relation
  * @method     ChildAccountQuery innerJoinUserAccounts($relationAlias = null) Adds a INNER JOIN clause to the query using the UserAccounts relation
- *
  * @method     ChildAccountQuery joinWithUserAccounts($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserAccounts relation
- *
  * @method     ChildAccountQuery leftJoinWithUserAccounts() Adds a LEFT JOIN clause and with to the query using the UserAccounts relation
  * @method     ChildAccountQuery rightJoinWithUserAccounts() Adds a RIGHT JOIN clause and with to the query using the UserAccounts relation
  * @method     ChildAccountQuery innerJoinWithUserAccounts() Adds a INNER JOIN clause and with to the query using the UserAccounts relation
- *
  * @method     \TechWilk\Money\TransactionQuery|\TechWilk\Money\CategoryQuery|\TechWilk\Money\UserAccountsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildAccount findOne(ConnectionInterface $con = null) Return the first ChildAccount matching the query
  * @method     ChildAccount findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAccount matching the query, or a new ChildAccount object populated from the query conditions when no match is found
- *
  * @method     ChildAccount findOneById(int $id) Return the first ChildAccount filtered by the id column
  * @method     ChildAccount findOneByName(string $name) Return the first ChildAccount filtered by the name column *
 
  * @method     ChildAccount requirePk($key, ConnectionInterface $con = null) Return the ChildAccount by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAccount requireOne(ConnectionInterface $con = null) Return the first ChildAccount matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildAccount requireOneById(int $id) Return the first ChildAccount filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAccount requireOneByName(string $name) Return the first ChildAccount filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildAccount[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildAccount objects based on current ModelCriteria
  * @method     ChildAccount[]|ObjectCollection findById(int $id) Return ChildAccount objects filtered by the id column
  * @method     ChildAccount[]|ObjectCollection findByName(string $name) Return ChildAccount objects filtered by the name column
  * @method     ChildAccount[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class AccountQuery extends ModelCriteria
 {
@@ -91,9 +73,9 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Initializes internal state of \TechWilk\Money\Base\AccountQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\TechWilk\\Money\\Account', $modelAlias = null)
     {
@@ -103,8 +85,8 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Returns a new ChildAccountQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildAccountQuery
      */
@@ -133,7 +115,7 @@ abstract class AccountQuery extends ModelCriteria
      * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param mixed               $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildAccount|array|mixed the result, formatted by the current formatter
@@ -141,7 +123,7 @@ abstract class AccountQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -170,8 +152,8 @@ abstract class AccountQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -203,8 +185,8 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildAccount|array|mixed the result, formatted by the current formatter
      */
@@ -223,9 +205,10 @@ abstract class AccountQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -244,33 +227,31 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-
         return $this->addUsingAlias(AccountTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
-
         return $this->addUsingAlias(AccountTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the id column
+     * Filter the query on the id column.
      *
      * Example usage:
      * <code>
@@ -279,11 +260,11 @@ abstract class AccountQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param     mixed $id The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $id         The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
@@ -311,7 +292,7 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the name column
+     * Filter the query on the name column.
      *
      * Example usage:
      * <code>
@@ -319,8 +300,8 @@ abstract class AccountQuery extends ModelCriteria
      * $query->filterByName('%fooValue%', Criteria::LIKE); // WHERE name LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $name The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $name       The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
@@ -336,10 +317,10 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TechWilk\Money\Transaction object
+     * Filter the query by a related \TechWilk\Money\Transaction object.
      *
      * @param \TechWilk\Money\Transaction|ObjectCollection $transaction the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string                                       $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildAccountQuery The current query, for fluid interface
      */
@@ -359,10 +340,10 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Transaction relation
+     * Adds a JOIN clause to the query using the Transaction relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
@@ -391,13 +372,13 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Use the Transaction relation Transaction object
+     * Use the Transaction relation Transaction object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TechWilk\Money\TransactionQuery A secondary query class using the current class as primary query
      */
@@ -409,10 +390,10 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TechWilk\Money\Category object
+     * Filter the query by a related \TechWilk\Money\Category object.
      *
-     * @param \TechWilk\Money\Category|ObjectCollection $category the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \TechWilk\Money\Category|ObjectCollection $category   the related object to use as filter
+     * @param string                                    $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildAccountQuery The current query, for fluid interface
      */
@@ -432,10 +413,10 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the Category relation
+     * Adds a JOIN clause to the query using the Category relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
@@ -464,13 +445,13 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Use the Category relation Category object
+     * Use the Category relation Category object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TechWilk\Money\CategoryQuery A secondary query class using the current class as primary query
      */
@@ -482,10 +463,10 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TechWilk\Money\UserAccounts object
+     * Filter the query by a related \TechWilk\Money\UserAccounts object.
      *
      * @param \TechWilk\Money\UserAccounts|ObjectCollection $userAccounts the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string                                        $comparison   Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildAccountQuery The current query, for fluid interface
      */
@@ -505,10 +486,10 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the UserAccounts relation
+     * Adds a JOIN clause to the query using the UserAccounts relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
@@ -537,13 +518,13 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Use the UserAccounts relation UserAccounts object
+     * Use the UserAccounts relation UserAccounts object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TechWilk\Money\UserAccountsQuery A secondary query class using the current class as primary query
      */
@@ -556,9 +537,9 @@ abstract class AccountQuery extends ModelCriteria
 
     /**
      * Filter the query by a related User object
-     * using the user_accounts table as cross reference
+     * using the user_accounts table as cross reference.
      *
-     * @param User $user the related object to use as filter
+     * @param User   $user       the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildAccountQuery The current query, for fluid interface
@@ -572,9 +553,9 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildAccount $account Object to remove from the list of results
+     * @param ChildAccount $account Object to remove from the list of results
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
@@ -591,6 +572,7 @@ abstract class AccountQuery extends ModelCriteria
      * Deletes all rows from the account table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -615,13 +597,15 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -647,5 +631,4 @@ abstract class AccountQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // AccountQuery

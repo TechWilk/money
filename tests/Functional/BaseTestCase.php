@@ -6,7 +6,6 @@ use Slim\App;
 use Slim\Http\Environment;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use TechWilk\Money;
 use TechWilk\Money\Tests\Data\Database;
 use TechWilk\Money\Tests\Data\TestData;
 

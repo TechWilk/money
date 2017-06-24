@@ -2,18 +2,18 @@
 
 namespace TechWilk\Money\Base;
 
-use \Exception;
-use \PDO;
-use Propel\Runtime\Propel;
+use Exception;
+use PDO;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Propel;
+use TechWilk\Money\Map\UserTableMap;
 use TechWilk\Money\User as ChildUser;
 use TechWilk\Money\UserQuery as ChildUserQuery;
-use TechWilk\Money\Map\UserTableMap;
 
 /**
  * Base class that represents a query for the 'user' table.
@@ -27,7 +27,6 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUserQuery orderByPasswordHash($order = Criteria::ASC) Order by the password_hash column
  * @method     ChildUserQuery orderByPasswordExpire($order = Criteria::ASC) Order by the password_expire column
  * @method     ChildUserQuery orderByEnable($order = Criteria::ASC) Order by the enable column
- *
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByFirstName() Group by the first_name column
  * @method     ChildUserQuery groupByLastName() Group by the last_name column
@@ -35,30 +34,22 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUserQuery groupByPasswordHash() Group by the password_hash column
  * @method     ChildUserQuery groupByPasswordExpire() Group by the password_expire column
  * @method     ChildUserQuery groupByEnable() Group by the enable column
- *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildUserQuery innerJoin($relation) Adds a INNER JOIN clause to the query
- *
  * @method     ChildUserQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildUserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildUserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
  * @method     ChildUserQuery leftJoinUserAccounts($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserAccounts relation
  * @method     ChildUserQuery rightJoinUserAccounts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserAccounts relation
  * @method     ChildUserQuery innerJoinUserAccounts($relationAlias = null) Adds a INNER JOIN clause to the query using the UserAccounts relation
- *
  * @method     ChildUserQuery joinWithUserAccounts($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserAccounts relation
- *
  * @method     ChildUserQuery leftJoinWithUserAccounts() Adds a LEFT JOIN clause and with to the query using the UserAccounts relation
  * @method     ChildUserQuery rightJoinWithUserAccounts() Adds a RIGHT JOIN clause and with to the query using the UserAccounts relation
  * @method     ChildUserQuery innerJoinWithUserAccounts() Adds a INNER JOIN clause and with to the query using the UserAccounts relation
- *
  * @method     \TechWilk\Money\UserAccountsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
- *
  * @method     ChildUser findOneById(int $id) Return the first ChildUser filtered by the id column
  * @method     ChildUser findOneByFirstName(string $first_name) Return the first ChildUser filtered by the first_name column
  * @method     ChildUser findOneByLastName(string $last_name) Return the first ChildUser filtered by the last_name column
@@ -69,7 +60,6 @@ use TechWilk\Money\Map\UserTableMap;
 
  * @method     ChildUser requirePk($key, ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOne(ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildUser requireOneById(int $id) Return the first ChildUser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByFirstName(string $first_name) Return the first ChildUser filtered by the first_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByLastName(string $last_name) Return the first ChildUser filtered by the last_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -77,7 +67,6 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUser requireOneByPasswordHash(string $password_hash) Return the first ChildUser filtered by the password_hash column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPasswordExpire(string $password_expire) Return the first ChildUser filtered by the password_expire column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByEnable(boolean $enable) Return the first ChildUser filtered by the enable column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- *
  * @method     ChildUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @method     ChildUser[]|ObjectCollection findById(int $id) Return ChildUser objects filtered by the id column
  * @method     ChildUser[]|ObjectCollection findByFirstName(string $first_name) Return ChildUser objects filtered by the first_name column
@@ -87,7 +76,6 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUser[]|ObjectCollection findByPasswordExpire(string $password_expire) Return ChildUser objects filtered by the password_expire column
  * @method     ChildUser[]|ObjectCollection findByEnable(boolean $enable) Return ChildUser objects filtered by the enable column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
- *
  */
 abstract class UserQuery extends ModelCriteria
 {
@@ -96,9 +84,9 @@ abstract class UserQuery extends ModelCriteria
     /**
      * Initializes internal state of \TechWilk\Money\Base\UserQuery object.
      *
-     * @param     string $dbName The database name
-     * @param     string $modelName The phpName of a model, e.g. 'Book'
-     * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
+     * @param string $dbName     The database name
+     * @param string $modelName  The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
     public function __construct($dbName = 'money', $modelName = '\\TechWilk\\Money\\User', $modelAlias = null)
     {
@@ -108,8 +96,8 @@ abstract class UserQuery extends ModelCriteria
     /**
      * Returns a new ChildUserQuery object.
      *
-     * @param     string $modelAlias The alias of a model in the query
-     * @param     Criteria $criteria Optional Criteria to build the query from
+     * @param string   $modelAlias The alias of a model in the query
+     * @param Criteria $criteria   Optional Criteria to build the query from
      *
      * @return ChildUserQuery
      */
@@ -138,7 +126,7 @@ abstract class UserQuery extends ModelCriteria
      * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param mixed               $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildUser|array|mixed the result, formatted by the current formatter
@@ -146,7 +134,7 @@ abstract class UserQuery extends ModelCriteria
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
-            return null;
+            return;
         }
 
         if ($con === null) {
@@ -175,8 +163,8 @@ abstract class UserQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -208,8 +196,8 @@ abstract class UserQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
-     * @param     ConnectionInterface $con A connection object
+     * @param mixed               $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildUser|array|mixed the result, formatted by the current formatter
      */
@@ -228,9 +216,10 @@ abstract class UserQuery extends ModelCriteria
      * Find objects by primary key
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
-     * </code>
-     * @param     array $keys Primary keys to use for the query
-     * @param     ConnectionInterface $con an optional connection object
+     * </code>.
+     *
+     * @param array               $keys Primary keys to use for the query
+     * @param ConnectionInterface $con  an optional connection object
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
@@ -249,33 +238,31 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by primary key
+     * Filter the query by primary key.
      *
-     * @param     mixed $key Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-
         return $this->addUsingAlias(UserTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
-     * Filter the query by a list of primary keys
+     * Filter the query by a list of primary keys.
      *
-     * @param     array $keys The list of primary key to use for the query
+     * @param array $keys The list of primary key to use for the query
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
-
         return $this->addUsingAlias(UserTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
-     * Filter the query on the id column
+     * Filter the query on the id column.
      *
      * Example usage:
      * <code>
@@ -284,11 +271,11 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param     mixed $id The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $id         The value to use as filter.
+     *                           Use scalar values for equality.
+     *                           Use array values for in_array() equivalent.
+     *                           Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -316,7 +303,7 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the first_name column
+     * Filter the query on the first_name column.
      *
      * Example usage:
      * <code>
@@ -324,8 +311,8 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterByFirstName('%fooValue%', Criteria::LIKE); // WHERE first_name LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $firstName The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $firstName  The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -341,7 +328,7 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the last_name column
+     * Filter the query on the last_name column.
      *
      * Example usage:
      * <code>
@@ -349,8 +336,8 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterByLastName('%fooValue%', Criteria::LIKE); // WHERE last_name LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $lastName The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $lastName   The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -366,7 +353,7 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the email column
+     * Filter the query on the email column.
      *
      * Example usage:
      * <code>
@@ -374,8 +361,8 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterByEmail('%fooValue%', Criteria::LIKE); // WHERE email LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $email The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $email      The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -391,7 +378,7 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the password_hash column
+     * Filter the query on the password_hash column.
      *
      * Example usage:
      * <code>
@@ -399,8 +386,8 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterByPasswordHash('%fooValue%', Criteria::LIKE); // WHERE password_hash LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $passwordHash The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string $passwordHash The value to use as filter.
+     * @param string $comparison   Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -416,7 +403,7 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the password_expire column
+     * Filter the query on the password_expire column.
      *
      * Example usage:
      * <code>
@@ -425,13 +412,13 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterByPasswordExpire(array('max' => 'yesterday')); // WHERE password_expire > '2011-03-13'
      * </code>
      *
-     * @param     mixed $passwordExpire The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param mixed  $passwordExpire The value to use as filter.
+     *                               Values can be integers (unix timestamps), DateTime objects, or strings.
+     *                               Empty strings are treated as NULL.
+     *                               Use scalar values for equality.
+     *                               Use array values for in_array() equivalent.
+     *                               Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $comparison     Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -459,7 +446,7 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the enable column
+     * Filter the query on the enable column.
      *
      * Example usage:
      * <code>
@@ -467,29 +454,29 @@ abstract class UserQuery extends ModelCriteria
      * $query->filterByEnable('yes'); // WHERE enable = true
      * </code>
      *
-     * @param     boolean|string $enable The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param bool|string $enable     The value to use as filter.
+     *                                Non-boolean arguments are converted using the following rules:
+     *                                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *                                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     *                                Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param string      $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
     public function filterByEnable($enable = null, $comparison = null)
     {
         if (is_string($enable)) {
-            $enable = in_array(strtolower($enable), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            $enable = in_array(strtolower($enable), ['false', 'off', '-', 'no', 'n', '0', '']) ? false : true;
         }
 
         return $this->addUsingAlias(UserTableMap::COL_ENABLE, $enable, $comparison);
     }
 
     /**
-     * Filter the query by a related \TechWilk\Money\UserAccounts object
+     * Filter the query by a related \TechWilk\Money\UserAccounts object.
      *
      * @param \TechWilk\Money\UserAccounts|ObjectCollection $userAccounts the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string                                        $comparison   Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
@@ -509,10 +496,10 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Adds a JOIN clause to the query using the UserAccounts relation
+     * Adds a JOIN clause to the query using the UserAccounts relation.
      *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -541,13 +528,13 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Use the UserAccounts relation UserAccounts object
+     * Use the UserAccounts relation UserAccounts object.
      *
      * @see useQuery()
      *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $relationAlias optional alias for the relation,
+     *                              to be used as main alias in the secondary query
+     * @param string $joinType      Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \TechWilk\Money\UserAccountsQuery A secondary query class using the current class as primary query
      */
@@ -560,10 +547,10 @@ abstract class UserQuery extends ModelCriteria
 
     /**
      * Filter the query by a related Account object
-     * using the user_accounts table as cross reference
+     * using the user_accounts table as cross reference.
      *
-     * @param Account $account the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param Account $account    the related object to use as filter
+     * @param string  $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
@@ -576,9 +563,9 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Exclude object from result
+     * Exclude object from result.
      *
-     * @param   ChildUser $user Object to remove from the list of results
+     * @param ChildUser $user Object to remove from the list of results
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
@@ -595,6 +582,7 @@ abstract class UserQuery extends ModelCriteria
      * Deletes all rows from the user table.
      *
      * @param ConnectionInterface $con the connection to use
+     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -619,13 +607,15 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Performs a DELETE on the database based on the current ModelCriteria
+     * Performs a DELETE on the database based on the current ModelCriteria.
      *
      * @param ConnectionInterface $con the connection to use
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                         if supported by native driver or if emulated using Propel.
+     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     *
+     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *             if supported by native driver or if emulated using Propel.
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -651,5 +641,4 @@ abstract class UserQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // UserQuery

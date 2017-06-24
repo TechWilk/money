@@ -1,6 +1,7 @@
 <?php
-use Aptoma\Twig\Extension\MarkdownExtension;
+
 use Aptoma\Twig\Extension\MarkdownEngine;
+use Aptoma\Twig\Extension\MarkdownExtension;
 
 // DIC configuration
 
@@ -12,7 +13,7 @@ $container['view'] = function ($c) {
     $view = new \Slim\Views\Twig($settings['template_path'], [
         'cache' => false, // or 'path/to/cache'
     ]);
-    
+
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
     $view->addExtension(new Slim\Views\TwigExtension($c['router'], $basePath));
@@ -29,17 +30,15 @@ $container['view'] = function ($c) {
     $env = $view->getEnvironment();
     $env->getExtension('Twig_Extension_Core')->setNumberFormat(2, '.', ',');
     //$env->addGlobal('site', new Site);
-    $env->addGlobal('currenturl',$c->get('request')->getUri());
-    $env->addGlobal('currentpath',$c->get('request')->getUri()->getBasePath().'/'.$c->get('request')->getUri()->getPath());
-    
-    if (isset($_SESSION['userId']))
-    {
+    $env->addGlobal('currenturl', $c->get('request')->getUri());
+    $env->addGlobal('currentpath', $c->get('request')->getUri()->getBasePath().'/'.$c->get('request')->getUri()->getPath());
+
+    if (isset($_SESSION['userId'])) {
         $u = UserQuery::create()->findPk($_SESSION['userId']);
-        if (isset($u))
-        {
-            $env->addGlobal('currentuser',$u);
+        if (isset($u)) {
+            $env->addGlobal('currentuser', $u);
         }
-    }  
+    }
 
     return $view;
 };
@@ -50,5 +49,6 @@ $container['logger'] = function ($c) {
     $logger = new Monolog\Logger($settings['name']);
     $logger->pushProcessor(new Monolog\Processor\UidProcessor());
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
+
     return $logger;
 };

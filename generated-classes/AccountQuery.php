@@ -11,16 +11,13 @@ use Psr\Container\ContainerInterface;
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
- *
  */
 class AccountQuery extends BaseAccountQuery
 {
+    public function filterByCurrentUser(ContainerInterface $container)
+    {
+        $auth = new Authentication($container);
 
-  public function filterByCurrentUser(ContainerInterface $container)
-  {
-    $auth = new Authentication($container);
-    
-    return $this->filterByUser($auth->currentUser());
-  }
-
+        return $this->filterByUser($auth->currentUser());
+    }
 }

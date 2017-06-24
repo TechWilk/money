@@ -3,10 +3,9 @@
 namespace Tests\Functional;
 
 use Slim\App;
+use Slim\Http\Environment;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Slim\Http\Environment;
-
 
 new \Tests\Data\Database(new \Tests\Data\TestData());
 
@@ -26,30 +25,26 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     protected $withMiddleware = true;
 
     /**
-     * Process the application given a request method and URI
+     * Process the application given a request method and URI.
      *
-     * @param string $requestMethod the request method (e.g. GET, POST, etc.)
-     * @param string $requestUri the request URI
-     * @param array|object|null $requestData the request data
+     * @param string            $requestMethod the request method (e.g. GET, POST, etc.)
+     * @param string            $requestUri    the request URI
+     * @param array|object|null $requestData   the request data
+     *
      * @return \Slim\Http\Response
      */
     public function runApp($requestMethod, $requestUri, $requestData = null)
     {
-        if (isset($requestData) && $requestMethod == 'GET')
-        {
-            if (is_array($requestData))
-            {
+        if (isset($requestData) && $requestMethod == 'GET') {
+            if (is_array($requestData)) {
                 $requestUri .= '?';
-                foreach ($requestData as $key => $data)
-                {
-                    $requestUri .= $key . '=' . $data;
+                foreach ($requestData as $key => $data) {
+                    $requestUri .= $key.'='.$data;
 
-                    if ($data != end($requestData))
-                    {
+                    if ($data != end($requestData)) {
                         $requestUri .= '&';
                     }
                 }
-                
             }
         }
 
@@ -57,7 +52,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $environment = Environment::mock(
             [
                 'REQUEST_METHOD' => $requestMethod,
-                'REQUEST_URI' => $requestUri
+                'REQUEST_URI'    => $requestUri,
             ]
         );
 
@@ -65,8 +60,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $request = Request::createFromEnvironment($environment);
 
         // Add request data, if it exists
-        if (isset($requestData) && $requestMethod != 'GET')
-        {
+        if (isset($requestData) && $requestMethod != 'GET') {
             $request = $request->withParsedBody($requestData);
         }
 
@@ -74,21 +68,21 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         // Use the application settings
-        $settings = require __DIR__ . '/../../src/settings.php';
+        $settings = require __DIR__.'/../../src/settings.php';
 
         // Instantiate the application
         $app = new App($settings);
 
         // Set up dependencies
-        require __DIR__ . '/../../src/dependencies.php';
+        require __DIR__.'/../../src/dependencies.php';
 
         // Register middleware
         if ($this->withMiddleware) {
-            require __DIR__ . '/../../src/middleware.php';
+            require __DIR__.'/../../src/middleware.php';
         }
 
         // Register routes
-        require __DIR__ . '/../../src/routes.php';
+        require __DIR__.'/../../src/routes.php';
 
         // Process the application
         $response = $app->process($request, $response);

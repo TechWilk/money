@@ -7,17 +7,16 @@ class UserPageTest extends BaseTestCase
     protected $withMiddleware = false;
 
     /**
-     * Test that the index route returns a rendered response containing the text 'Dashbpard', 'Totals' and 'view all'
+     * Test that the index route returns a rendered response containing the text 'Dashbpard', 'Totals' and 'view all'.
      */
     public function testGetUserPage()
     {
         $response = $this->runApp('GET', '/user/1');
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Bob Jones', (string)$response->getBody());
+        $this->assertContains('Bob Jones', (string) $response->getBody());
         //$this->assertNotContains('Hello', (string)$response->getBody());
     }
-
 
     public function testCreateUserForTests()
     {
@@ -44,7 +43,7 @@ class UserPageTest extends BaseTestCase
         $response = $this->runApp('GET', '/user/'.$userId);
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Tim Smith', (string)$response->getBody());
+        $this->assertContains('Tim Smith', (string) $response->getBody());
         //$this->assertNotContains('Hello', (string)$response->getBody());
     }
 
@@ -53,12 +52,12 @@ class UserPageTest extends BaseTestCase
      */
     public function testPostUserPasswordChangeIncorrectOldPassword($userId)
     {
-        $response = $this->runApp('POST', '/user/'.$userId.'/password', [ 'old' => 'wrong', 'new' => 'newSecurePassword', 'confirm' => 'newSecurePassword' ]);
+        $response = $this->runApp('POST', '/user/'.$userId.'/password', ['old' => 'wrong', 'new' => 'newSecurePassword', 'confirm' => 'newSecurePassword']);
 
         $this->assertEquals(422, $response->getStatusCode());
-        $this->assertContains('Tim Smith', (string)$response->getBody());
-        $this->assertContains('Old password incorrect', (string)$response->getBody());
-        $this->assertNotContains('Changed successfully', (string)$response->getBody());
+        $this->assertContains('Tim Smith', (string) $response->getBody());
+        $this->assertContains('Old password incorrect', (string) $response->getBody());
+        $this->assertNotContains('Changed successfully', (string) $response->getBody());
     }
 
     /**
@@ -66,12 +65,12 @@ class UserPageTest extends BaseTestCase
      */
     public function testPostUserPasswordChangeNewPasswordsNotMatch($userId)
     {
-        $response = $this->runApp('POST', '/user/'.$userId.'/password', [ 'old' => 'MegaSecurePassword', 'new' => 'newSecurePassword', 'confirm' => 'differentNewPassword' ]);
+        $response = $this->runApp('POST', '/user/'.$userId.'/password', ['old' => 'MegaSecurePassword', 'new' => 'newSecurePassword', 'confirm' => 'differentNewPassword']);
 
         $this->assertEquals(422, $response->getStatusCode());
-        $this->assertContains('Tim Smith', (string)$response->getBody());
-        $this->assertContains('New passwords do not match', (string)$response->getBody());
-        $this->assertNotContains('Changed successfully', (string)$response->getBody());
+        $this->assertContains('Tim Smith', (string) $response->getBody());
+        $this->assertContains('New passwords do not match', (string) $response->getBody());
+        $this->assertNotContains('Changed successfully', (string) $response->getBody());
     }
 
     /**
@@ -79,12 +78,12 @@ class UserPageTest extends BaseTestCase
      */
     public function testPostUserPasswordChangeNewPasswordsTooShort($userId)
     {
-        $response = $this->runApp('POST', '/user/'.$userId.'/password', [ 'old' => 'MegaSecurePassword', 'new' => 'short', 'confirm' => 'short' ]);
+        $response = $this->runApp('POST', '/user/'.$userId.'/password', ['old' => 'MegaSecurePassword', 'new' => 'short', 'confirm' => 'short']);
 
         $this->assertEquals(422, $response->getStatusCode());
-        $this->assertContains('Tim Smith', (string)$response->getBody());
-        $this->assertContains('too short', (string)$response->getBody());
-        $this->assertNotContains('Changed successfully', (string)$response->getBody());
+        $this->assertContains('Tim Smith', (string) $response->getBody());
+        $this->assertContains('too short', (string) $response->getBody());
+        $this->assertNotContains('Changed successfully', (string) $response->getBody());
     }
 
     /**
@@ -92,11 +91,11 @@ class UserPageTest extends BaseTestCase
      */
     public function testPostUserPasswordChangeNewPasswordSuccessful($userId)
     {
-        $response = $this->runApp('POST', '/user/'.$userId.'/password', [ 'old' => 'MegaSecurePassword', 'new' => 'newSecurePassword', 'confirm' => 'newSecurePassword' ]);
+        $response = $this->runApp('POST', '/user/'.$userId.'/password', ['old' => 'MegaSecurePassword', 'new' => 'newSecurePassword', 'confirm' => 'newSecurePassword']);
 
         $this->assertEquals(201, $response->getStatusCode());
-        $this->assertContains('Tim Smith', (string)$response->getBody());
-        $this->assertContains('Changed successfully', (string)$response->getBody());
+        $this->assertContains('Tim Smith', (string) $response->getBody());
+        $this->assertContains('Changed successfully', (string) $response->getBody());
 
         $u = \UserQuery::create()->findPk($userId);
         $this->assertTrue($u->checkPassword('newSecurePassword'));

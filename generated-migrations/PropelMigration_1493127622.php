@@ -5,16 +5,16 @@ use Propel\Generator\Manager\MigrationManager;
 $path = '/Library/WebServer/Documents/home/money/';
 
 // bootstrap the Propel runtime (and other dependencies)
-require_once ($path.'vendor/autoload.php');
+require_once $path.'vendor/autoload.php';
 
-set_include_path($path.'generated-classes' . PATH_SEPARATOR . get_include_path());
-include ($path.'generated-conf/config.php');
+set_include_path($path.'generated-classes'.PATH_SEPARATOR.get_include_path());
+include $path.'generated-conf/config.php';
 date_default_timezone_set('UTC');
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
  * up to version 1493127622.
- * Generated on 2017-04-25 13:40:22 by user
+ * Generated on 2017-04-25 13:40:22 by user.
  */
 class PropelMigration_1493127622
 {
@@ -25,26 +25,21 @@ class PropelMigration_1493127622
         $pdo = $manager->getAdapterConnection('money');
         $sql = 'DELETE FROM hashtag';
         $stmt = $pdo->prepare($sql);
-		$stmt->execute();
+        $stmt->execute();
     }
 
     public function postUp(MigrationManager $manager)
     {
         $transactions = TransactionQuery::create()->find();
-        foreach ($transactions as $transaction)
-        {
-            preg_match_all("/#(\\w+)/", $transaction->getDescription(), $hashtags);
+        foreach ($transactions as $transaction) {
+            preg_match_all('/#(\\w+)/', $transaction->getDescription(), $hashtags);
             $hashtags = array_map('strtolower', $hashtags[1]);
-            foreach ($hashtags as $tag)
-            {
+            foreach ($hashtags as $tag) {
                 $h = new Hashtag();
-                if (HashtagQuery::create()->filterByTag($tag)->count() == 0)
-                {
+                if (HashtagQuery::create()->filterByTag($tag)->count() == 0) {
                     $h->setTag($tag);
                     $h->save();
-                }
-                else
-                {
+                } else {
                     $h = HashtagQuery::create()->filterByTag($tag)->findOne();
                 }
                 $transaction->addHashtag($h);
@@ -64,14 +59,14 @@ class PropelMigration_1493127622
     }
 
     /**
-     * Get the SQL statements for the Up migration
+     * Get the SQL statements for the Up migration.
      *
      * @return array list of the SQL strings to execute for the Up migration
      *               the keys being the datasources
      */
     public function getUpSQL()
     {
-        return array (
+        return [
   'money' => '
 # This is a fix for InnoDB in MySQL >= 4.1.x
 # It "suspends judgement" for fkey relationships until are tables are set.
@@ -112,18 +107,18 @@ CREATE TABLE `transaction_hashtag`
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
-);
+];
     }
 
     /**
-     * Get the SQL statements for the Down migration
+     * Get the SQL statements for the Down migration.
      *
      * @return array list of the SQL strings to execute for the Down migration
      *               the keys being the datasources
      */
     public function getDownSQL()
     {
-        return array (
+        return [
   'money' => '
 # This is a fix for InnoDB in MySQL >= 4.1.x
 # It "suspends judgement" for fkey relationships until are tables are set.
@@ -154,7 +149,6 @@ ALTER TABLE `hashtag` ADD CONSTRAINT `hashtag_fk_98bea7`
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
-);
+];
     }
-
 }

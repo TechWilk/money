@@ -1,6 +1,6 @@
 <?php
 
-include(__DIR__ . '/database.php');
+include __DIR__.'/database.php';
 
 return [
     'propel' => [
@@ -12,17 +12,17 @@ return [
                     'dsn'        => 'mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
                     'user'       => $config['db']['user'],
                     'password'   => $config['db']['pass'],
-                    'attributes' => []
-                ]
-            ]
+                    'attributes' => [],
+                ],
+            ],
         ],
         'runtime' => [
             'defaultConnection' => 'money',
-            'connections' => ['money']
+            'connections'       => ['money'],
         ],
         'generator' => [
             'defaultConnection' => 'money',
-            'connections' => ['money']
-        ]
-    ]
+            'connections'       => ['money'],
+        ],
+    ],
 ];

@@ -2,12 +2,12 @@
 
 namespace TechWilk\Money\Tests\Data;
 
+use DateTime;
 use TechWilk\Money\Account;
-use TechWilk\Money\User;
+use TechWilk\Money\EmailAddress;
 use TechWilk\Money\Hashtag;
 use TechWilk\Money\Transaction;
-use TechWilk\Money\EmailAddress;
-use DateTime;
+use TechWilk\Money\User;
 
 class TestData
 {

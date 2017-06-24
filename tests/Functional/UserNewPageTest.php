@@ -2,8 +2,6 @@
 
 namespace TechWilk\Money\Tests\Functional;
 
-use TechWilk\Money;
-
 class UserNewPageTest extends BaseTestCase
 {
     protected $withMiddleware = false;

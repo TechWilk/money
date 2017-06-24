@@ -2,11 +2,10 @@
 
 namespace TechWilk\Money\Tests\Functional;
 
-use TechWilk\Money;
 use TechWilk\Money\AccountQuery;
+use TechWilk\Money\EmailAddress;
 use TechWilk\Money\User;
 use TechWilk\Money\UserQuery;
-use TechWilk\Money\EmailAddress;
 
 class UserPageTest extends BaseTestCase
 {

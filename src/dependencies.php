@@ -2,10 +2,10 @@
 
 namespace TechWilk\Money;
 
-use Monolog;
-use Slim;
 use Aptoma\Twig\Extension\MarkdownEngine;
 use Aptoma\Twig\Extension\MarkdownExtension;
+use Monolog;
+use Slim;
 use TechWilk\Twig\Extension\Hashtagify;
 use TechWilk\Twig\Extension\HashtagifyUrlGenerator;
 use Twig_Extensions_Extension_Date;

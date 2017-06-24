@@ -3,8 +3,8 @@
 namespace TechWilk\Money\Tests\Functional;
 
 use TechWilk\Money\AccountQuery;
-use TechWilk\Money\User;
 use TechWilk\Money\EmailAddress;
+use TechWilk\Money\User;
 
 class LoginLogoutTest extends BaseTestCase
 {

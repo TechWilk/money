@@ -2,8 +2,8 @@
 
 namespace TechWilk\Money;
 
-use TechWilk\Money\Base\AccountQuery as BaseAccountQuery;
 use Psr\Container\ContainerInterface;
+use TechWilk\Money\Base\AccountQuery as BaseAccountQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'account' table.

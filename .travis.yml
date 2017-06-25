@@ -7,7 +7,7 @@ php:
 - 5.5
 matrix:
   allow_failures:
-    - nightly
+    - php: nightly
 services:
   - mysql
 before_install:

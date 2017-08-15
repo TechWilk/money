@@ -17,18 +17,18 @@ class MathsTest extends BaseTestCase
     ];
     }
 
-  /**
-   * @param string $calculation Calculation to be performed
-   * @param mixed  $expected    Expected result of the calculation
-   *
-   * @dataProvider providerTestValidCalculations
-   */
-  public function testValidCalculations($calculation, $expected)
-  {
-      $result = Maths::calculateString($calculation);
+    /**
+     * @param string $calculation Calculation to be performed
+     * @param mixed  $expected    Expected result of the calculation
+     *
+     * @dataProvider providerTestValidCalculations
+     */
+    public function testValidCalculations($calculation, $expected)
+    {
+        $result = Maths::calculateString($calculation);
 
-      $this->assertEquals($expected, $result);
-  }
+        $this->assertEquals($expected, $result);
+    }
 
     public function providerTestInvalidCalculations()
     {
@@ -39,16 +39,16 @@ class MathsTest extends BaseTestCase
     ];
     }
 
-  /**
-   * @param string $calculation
-   * @expectedException        InvalidArgumentException
-   *
-   * @dataProvider providerTestInvalidCalculations
-   */
-  public function testInvalidCalculations($calculation)
-  {
-      $result = Maths::calculateString($calculation);
+    /**
+     * @param string $calculation
+     * @expectedException        InvalidArgumentException
+     *
+     * @dataProvider providerTestInvalidCalculations
+     */
+    public function testInvalidCalculations($calculation)
+    {
+        $result = Maths::calculateString($calculation);
 
-    //$this->assertNotEqual((string)$emailObject, $email);
-  }
+        //$this->assertNotEqual((string)$emailObject, $email);
+    }
 }

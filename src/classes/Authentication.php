@@ -21,11 +21,11 @@ class Authentication
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         /* Skip auth if uri is whitelisted. */
-    if ($this->uriInWhitelist($request)) {
-        $response = $next($request, $response);
+        if ($this->uriInWhitelist($request)) {
+            $response = $next($request, $response);
 
-        return $response;
-    }
+            return $response;
+        }
 
         if ($this->isUserLoggedIn()) {
             $response = $next($request, $response);
@@ -63,8 +63,8 @@ class Authentication
         foreach ($users as $u) {
             if ($u->checkPassword($password)) {
                 $_SESSION['userId'] = $u->getId();
-        //$u->setLastLogin(new DateTime);
-        $u->save();
+                //$u->setLastLogin(new DateTime);
+                $u->save();
 
                 return true;
             }
@@ -79,7 +79,7 @@ class Authentication
         $numberOfAllowedAttempts = 8;
         $lockOutInterval = 15; // mins
 
-    $date = new DateTime("-$lockOutInterval minutes");
+        $date = new DateTime("-$lockOutInterval minutes");
         $date->setTimezone(new DateTimeZone('UTC'));
 
         $loginFailures = LoginFailureQuery::create()->filterByUsername($username)->filterByTimestamp(['min' => $date])->count();

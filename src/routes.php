@@ -256,6 +256,7 @@ $app->post('/login', function ($request, $response, $args) {
 
     // login
     $auth = new Authentication($this);
+
     try {
         if ($auth->loginAttempt($email, $password)) {
             if (isset($_SESSION['urlRedirect'])) {

@@ -17,77 +17,77 @@ use TechWilk\Money\Map\UserTableMap;
 class User extends BaseUser
 {
     /**
-   * Set the value of [email] column.
-   *
-   * @param \EmailAddress $v new value
-   *
-   * @return $this|\User The current object (for fluent API support)
-   */
-  public function setEmail(EmailAddress $v)
-  {
-      if ($this->email !== $v) {
-          $this->email = $v;
-          $this->modifiedColumns[UserTableMap::COL_EMAIL] = true;
-      }
+     * Set the value of [email] column.
+     *
+     * @param \EmailAddress $v new value
+     *
+     * @return $this|\User The current object (for fluent API support)
+     */
+    public function setEmail(EmailAddress $v)
+    {
+        if ($this->email !== $v) {
+            $this->email = $v;
+            $this->modifiedColumns[UserTableMap::COL_EMAIL] = true;
+        }
 
-      return $this;
-  }
+        return $this;
+    }
 
- // setEmail()
+    // setEmail()
 
-  /**
-   * Set the value of [password_hash] column.
-   *
-   * @param string $v new value
-   *
-   * @return $this|\User The current object (for fluent API support)
-   */
-  public function setPassword($v)
-  {
-      if ($v !== null) {
-          $v = (string) $v;
-      }
+    /**
+     * Set the value of [password_hash] column.
+     *
+     * @param string $v new value
+     *
+     * @return $this|\User The current object (for fluent API support)
+     */
+    public function setPassword($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
 
-      if (!password_verify($v, $this->password_hash)) {
-          $bcrypt_options = [
+        if (!password_verify($v, $this->password_hash)) {
+            $bcrypt_options = [
         'cost' => 12,
       ];
-          $this->password_hash = password_hash($v, PASSWORD_BCRYPT, $bcrypt_options);
-          $this->modifiedColumns[UserTableMap::COL_PASSWORD_HASH] = true;
-      }
+            $this->password_hash = password_hash($v, PASSWORD_BCRYPT, $bcrypt_options);
+            $this->modifiedColumns[UserTableMap::COL_PASSWORD_HASH] = true;
+        }
 
-      return $this;
-  }
+        return $this;
+    }
 
- // setPassword()
+    // setPassword()
 
-  /**
-   * Check a plain text password against the value of [password_hash] column.
-   *
-   * @param string $v plain text password
-   *
-   * @return bool Whether password is correct
-   */
-  public function checkPassword($v)
-  {
-      if ($v !== null) {
-          $v = (string) $v;
-      } else {
-          return false;
-      }
+    /**
+     * Check a plain text password against the value of [password_hash] column.
+     *
+     * @param string $v plain text password
+     *
+     * @return bool Whether password is correct
+     */
+    public function checkPassword($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        } else {
+            return false;
+        }
 
-      return password_verify($v, $this->password_hash);
-  }
+        return password_verify($v, $this->password_hash);
+    }
 
- // checkPassword()
+    // checkPassword()
 
-  /**
-   * Get the [firstname] and [lastname] column value concatenated with a space.
-   *
-   * @return string
-   */
-  public function getName()
-  {
-      return $this->first_name.' '.$this->last_name;
-  }
+    /**
+     * Get the [firstname] and [lastname] column value concatenated with a space.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->first_name.' '.$this->last_name;
+    }
 }

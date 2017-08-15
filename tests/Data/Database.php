@@ -15,9 +15,9 @@ class Database
     public function __construct(TestData $testData = null)
     {
         /**
-     * PROPEL ORM CONFIG.
-     */
-    $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
+         * PROPEL ORM CONFIG.
+         */
+        $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
         $serviceContainer->checkVersion('2.0.0-dev');
         $serviceContainer->setAdapterClass($this->connectionName, $this->adaptor);
         $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();

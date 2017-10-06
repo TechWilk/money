@@ -106,7 +106,7 @@ $app->get('/tags.json', function ($request, $response, $args) {
         $tagNamesArray[$tag->getTag()] = [$tag->getTag(), $tag->countTransactions()];
     }
 
-    if (isset($query['q'])) {
+    if (!empty($query['q'])) {
         foreach ($tagNamesArray as $key => $tag) {
             if (!(strpos($tag[0], strtolower($query['q'])) !== false)) {
                 unset($tagNamesArray[$key]);

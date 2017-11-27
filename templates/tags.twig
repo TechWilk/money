@@ -45,7 +45,7 @@
     {% endfor %}
 </div>
 {% for letter, tagsWithLetter in tags | group_by(=> _.tag|first|capitalize ) %}
-<div class="letter <?= $letter ?>" id="{{ letter }}">
+<div class="letter {{ letter }}" id="{{ letter }}">
     <p>{{ letter }}</p>
     {% for tag in tagsWithLetter %}
     <div class="tag">

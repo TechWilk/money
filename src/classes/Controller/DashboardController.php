@@ -2,19 +2,15 @@
 
 namespace TechWilk\Money\Controller;
 
-use Exception;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TechWilk\Money\EmailAddress;
-use TechWilk\Money\Exception\UnknownUserException;
 
 class DashboardController extends AbstractController
 {
     public function getMainDashboard(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $this->logger->info("GET dashboard '/' route");
-        
+
         $topHashtags = HashtagQuery::create()
                         ->useTransactionHashtagQuery()
                             ->withColumn('COUNT(*)', 'Count')
@@ -24,19 +20,19 @@ class DashboardController extends AbstractController
                         ->orderByCount('desc')
                         ->limit(5);
         $newestHashtags = HashtagQuery::create()->orderById('desc')->limit(5)->find();
-    
+
         $hashtags = [
             'top'    => $topHashtags,
             'newest' => $newestHashtags,
         ];
-    
+
         $yearTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime('first day of January this year'), 'max' => new DateTime('last day of December this year')])->orderByDate('desc')->find();
         $lastYearTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime('first day of January last year'), 'max' => new DateTime('last day of December last year')])->orderByDate('desc')->find();
-    
+
         // this year
         $thisYearIncoming = 0;
         $thisYearOutgoing = 0;
-    
+
         foreach ($yearTransactions as $t) {
             if ($t->getValue() > 0) {
                 $thisYearIncoming += $t->getValue();
@@ -44,11 +40,11 @@ class DashboardController extends AbstractController
                 $thisYearOutgoing += abs($t->getValue());
             }
         }
-    
+
         // last year
         $lastYearIncoming = 0;
         $lastYearOutgoing = 0;
-    
+
         foreach ($lastYearTransactions as $t) {
             if ($t->getValue() > 0) {
                 $lastYearIncoming += $t->getValue();
@@ -56,7 +52,7 @@ class DashboardController extends AbstractController
                 $lastYearOutgoing += abs($t->getValue());
             }
         }
-    
+
         $months = [];
         foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month) {
             $transactionsInMonth = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of $month this year"), 'max' => new DateTime("last day of $month this year")])->orderByDate('desc')->find();
@@ -73,7 +69,7 @@ class DashboardController extends AbstractController
                 }
             }
         }
-    
+
         $monthsLastYear = [];
         foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month) {
             $transactionsInMonth = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime("first day of $month last year"), 'max' => new DateTime("last day of $month last year")])->orderByDate('desc')->find();
@@ -90,7 +86,7 @@ class DashboardController extends AbstractController
                 }
             }
         }
-    
+
         $years = [
             'last' => [
                 'income'    => $lastYearIncoming,
@@ -103,14 +99,14 @@ class DashboardController extends AbstractController
                 'months'    => $months,
             ],
         ];
-    
+
         $monthTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime('first day of this month'), 'max' => new DateTime('last day of this month')])->orderByDate('desc')->find();
         $lastMonthTransactions = TransactionQuery::create()->forCurrentUser($this)->filterByDate(['min' => new DateTime('first day of last month'), 'max' => new DateTime('last day of last month')])->orderByDate('desc')->find();
-    
+
         // this month
         $thisMonthIncoming = 0;
         $thisMonthOutgoing = 0;
-    
+
         foreach ($monthTransactions as $t) {
             if ($t->getValue() > 0) {
                 $thisMonthIncoming += $t->getValue();
@@ -118,11 +114,11 @@ class DashboardController extends AbstractController
                 $thisMonthOutgoing += abs($t->getValue());
             }
         }
-    
+
         // last month
         $lastMonthIncoming = 0;
         $lastMonthOutgoing = 0;
-    
+
         foreach ($lastMonthTransactions as $t) {
             if ($t->getValue() > 0) {
                 $lastMonthIncoming += $t->getValue();
@@ -130,7 +126,7 @@ class DashboardController extends AbstractController
                 $lastMonthOutgoing += abs($t->getValue());
             }
         }
-    
+
         $months = [
             'last' => [
                 'income'       => $lastMonthIncoming,
@@ -143,7 +139,7 @@ class DashboardController extends AbstractController
                 'transactions' => $monthTransactions,
             ],
         ];
-    
+
         // Render index view
         return $this->view->render($response, 'dashboard.twig', ['hashtags' => $hashtags, 'years' => $years, 'months' => $months]);
     }

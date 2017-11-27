@@ -34,11 +34,15 @@
         }
     },
     "autoload": {
-        "classmap": ["generated-classes/", "src/classes/"]
+        "psr-4": {
+             "TechWilk\\Money\\": [
+                "src/classes/",
+                "generated-classes/TechWilk/Money/"
+            ]
+        }
     },
 	"scripts": {
         "start": "php -S 0.0.0.0:8080 -t public public/index.php",
         "test": "phpunit --coverage-clover build/logs/clover.xml"
 	}
-
 }

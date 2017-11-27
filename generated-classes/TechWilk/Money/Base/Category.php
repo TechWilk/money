@@ -1184,7 +1184,7 @@ abstract class Category implements ActiveRecordInterface
      */
     public function getAccount(ConnectionInterface $con = null)
     {
-        if ($this->aAccount === null && ($this->account_id !== null)) {
+        if ($this->aAccount === null && ($this->account_id != 0)) {
             $this->aAccount = ChildAccountQuery::create()->findPk($this->account_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference

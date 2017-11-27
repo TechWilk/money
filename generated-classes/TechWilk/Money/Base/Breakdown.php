@@ -1276,7 +1276,7 @@ abstract class Breakdown implements ActiveRecordInterface
      */
     public function getTransaction(ConnectionInterface $con = null)
     {
-        if ($this->aTransaction === null && ($this->transaction_id !== null)) {
+        if ($this->aTransaction === null && ($this->transaction_id != 0)) {
             $this->aTransaction = ChildTransactionQuery::create()->findPk($this->transaction_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1327,7 +1327,7 @@ abstract class Breakdown implements ActiveRecordInterface
      */
     public function getCategory(ConnectionInterface $con = null)
     {
-        if ($this->aCategory === null && ($this->category_id !== null)) {
+        if ($this->aCategory === null && ($this->category_id != 0)) {
             $this->aCategory = ChildCategoryQuery::create()->findPk($this->category_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference

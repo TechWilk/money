@@ -11,11 +11,12 @@ use Psr\Http\Message\ServerRequestInterface;
 class Authentication
 {
     protected $container;
-    protected $routesWhitelist = ['login', 'login-post'];
+    protected $routesWhitelist;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, $authProvider, $routesWhitelist)
     {
         $this->container = $container;
+        $this->routesWhitelist = $routesWhitelist;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)

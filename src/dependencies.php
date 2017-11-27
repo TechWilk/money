@@ -59,3 +59,25 @@ $container['logger'] = function ($c) {
 
     return $logger;
 };
+
+$container['auth'] = function ($c) {
+    $authProvider = new AuthProvider\UsernamePassword\UsernamePasswordAuth();
+
+    $allowedRoutes = [
+        'login',
+        'login-post',
+        'login-auth',
+        'login-callback',
+        'sign-up',
+        'sign-up-post',
+        'sign-up-cancel',
+        'user-calendar',
+        'job-daily',
+        'install',
+        'install-database',
+        'install-user',
+        'install-user-post',
+    ];
+
+    return new Authentication($c, $authProvider, $allowedRoutes);
+};

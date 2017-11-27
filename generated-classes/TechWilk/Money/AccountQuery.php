@@ -2,7 +2,6 @@
 
 namespace TechWilk\Money;
 
-use Psr\Container\ContainerInterface;
 use TechWilk\Money\Base\AccountQuery as BaseAccountQuery;
 
 /**
@@ -16,10 +15,4 @@ use TechWilk\Money\Base\AccountQuery as BaseAccountQuery;
  */
 class AccountQuery extends BaseAccountQuery
 {
-    public function filterByCurrentUser(ContainerInterface $container)
-    {
-        $auth = new Authentication($container);
-
-        return $this->filterByUser($auth->currentUser());
-    }
 }

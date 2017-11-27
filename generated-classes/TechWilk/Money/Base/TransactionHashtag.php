@@ -1107,7 +1107,7 @@ abstract class TransactionHashtag implements ActiveRecordInterface
      */
     public function getTransaction(ConnectionInterface $con = null)
     {
-        if ($this->aTransaction === null && ($this->transaction_id !== null)) {
+        if ($this->aTransaction === null && ($this->transaction_id != 0)) {
             $this->aTransaction = ChildTransactionQuery::create()->findPk($this->transaction_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1158,7 +1158,7 @@ abstract class TransactionHashtag implements ActiveRecordInterface
      */
     public function getHashtag(ConnectionInterface $con = null)
     {
-        if ($this->aHashtag === null && ($this->hashtag_id !== null)) {
+        if ($this->aHashtag === null && ($this->hashtag_id != 0)) {
             $this->aHashtag = ChildHashtagQuery::create()->findPk($this->hashtag_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference

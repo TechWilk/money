@@ -6,4 +6,4 @@ namespace TechWilk\Money;
 
 // e.g: $app->add(new \Slim\Csrf\Guard);
 
-$app->add(new Authentication($app->getContainer()));
+$app->add($app->getContainer()['auth']);

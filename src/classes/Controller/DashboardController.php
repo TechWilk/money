@@ -24,9 +24,12 @@ class DashboardController extends AbstractController
                         ->limit(5);
         $newestHashtags = HashtagQuery::create()->orderById('desc')->limit(5)->find();
 
+        $recentHashtags = HashtagQuery::create()->lastUsedHashtagsForUser($this->auth->currentUser());
+
         $hashtags = [
             'top'    => $topHashtags,
             'newest' => $newestHashtags,
+            'recent' => $recentHashtags,
         ];
 
         $yearTransactions = TransactionQuery::create()->forUser($this->auth->currentUser())->filterByDate(['min' => new DateTime('first day of January this year'), 'max' => new DateTime('last day of December this year')])->orderByDate('desc')->find();

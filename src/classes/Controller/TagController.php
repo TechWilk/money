@@ -24,7 +24,14 @@ class TagController extends AbstractController
                     ->limit(5);
         $newestHashtags = HashtagQuery::create()->orderById('desc')->limit(5)->find();
 
-        return $this->view->render($response, 'tags.twig', ['tags' => $tags, 'newest' => $newestHashtags, 'top' => $topHashtags]);
+        $recentHashtags = HashtagQuery::create()->lastUsedHashtagsForUser($this->auth->currentUser());
+
+        return $this->view->render($response, 'tags.twig', [
+            'tags' => $tags,
+            'newest' => $newestHashtags,
+            'top' => $topHashtags,
+            'recent' => $recentHashtags,
+        ]);
     }
 
     public function getTagsJson(ServerRequestInterface $request, ResponseInterface $response, $args)

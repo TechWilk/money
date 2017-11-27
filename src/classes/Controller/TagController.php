@@ -27,9 +27,9 @@ class TagController extends AbstractController
         $recentHashtags = HashtagQuery::create()->lastUsedHashtagsForUser($this->auth->currentUser());
 
         return $this->view->render($response, 'tags.twig', [
-            'tags' => $tags,
+            'tags'   => $tags,
             'newest' => $newestHashtags,
-            'top' => $topHashtags,
+            'top'    => $topHashtags,
             'recent' => $recentHashtags,
         ]);
     }

@@ -2,11 +2,10 @@
 
 namespace TechWilk\Money;
 
-use TechWilk\Money\Controller\UserController;
+use TechWilk\Money\Controller\DashboardController;
 use TechWilk\Money\Controller\TagController;
 use TechWilk\Money\Controller\TransactionController;
-use TechWilk\Money\Controller\DashboardController;
-use DateTime;
+use TechWilk\Money\Controller\UserController;
 
 // Routes
 $app->get('/', DashboardController::class.':getMainDashboard')->setName('home');

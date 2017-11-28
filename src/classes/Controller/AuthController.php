@@ -32,8 +32,8 @@ class AuthController extends AbstractController
         } catch (\InvalidArgumentException $e) {
             return $this->view->render($response->withStatus(401), 'login.twig', ['message' => $message]);
         }
-        $password = filter_var($data['password'], FILTER_SANITIZE_STRING);
-
+        $password = $data['password'];
+    
         if ($email == '' || $password == '') {
             return $this->view->render($response->withStatus(401), 'login.twig', ['message' => $message]);
         }

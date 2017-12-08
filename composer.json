@@ -16,7 +16,7 @@
         "slim/slim": "^3.1",
         "monolog/monolog": "^1.17",
         "propel/propel": "~2.0@dev",
-        "slim/twig-view": "^2.2",
+        "slim/twig-view": "^2.3",
         "aptoma/twig-markdown": "^2.0",
         "michelf/php-markdown": "^1.7",
         "dpolac/twig-lambda": "^0.5.0",

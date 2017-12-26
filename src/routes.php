@@ -6,6 +6,7 @@ use TechWilk\Money\Controller\AuthController;
 use TechWilk\Money\Controller\DashboardController;
 use TechWilk\Money\Controller\TagController;
 use TechWilk\Money\Controller\TransactionController;
+use TechWilk\Money\Controller\UserController;
 use DateTime;
 
 // Routes

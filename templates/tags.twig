@@ -34,10 +34,9 @@
     </div>
     {% endfor %}
 </div>
-{#}
 <div class="tag-group">
-    <p>Reciently Viewed</p>
-    {% for hashtag in recient %}
+    <p>Recently Used</p>
+    {% for hashtag in recent %}
     <div>
         <a href="{{ path_for('tag', { 'tag': hashtag.tag } ) }}">
             <p>{{ hashtag.tag }} <small>{{ hashtag.countTransactions }}</small></p>
@@ -45,9 +44,8 @@
     </div>
     {% endfor %}
 </div>
-#}
 {% for letter, tagsWithLetter in tags | group_by(=> _.tag|first|capitalize ) %}
-<div class="letter <?= $letter ?>" id="{{ letter }}">
+<div class="letter {{ letter }}" id="{{ letter }}">
     <p>{{ letter }}</p>
     {% for tag in tagsWithLetter %}
     <div class="tag">

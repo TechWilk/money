@@ -548,7 +548,7 @@ abstract class User implements ActiveRecordInterface
      * @param \TechWilk\Money\EmailAddress $v new value
      * @return $this|\TechWilk\Money\User The current object (for fluent API support)
      */
-    public function setEmail($v)
+    public function setEmail(\TechWilk\Money\EmailAddress $v)
     {
         if ($this->email !== $v) {
             $this->email = $v;

@@ -2,7 +2,6 @@
 
 namespace TechWilk\Money;
 
-use Psr\Container\ContainerInterface;
 use TechWilk\Money\Base\TransactionQuery as BaseTransactionQuery;
 
 /**
@@ -16,10 +15,8 @@ use TechWilk\Money\Base\TransactionQuery as BaseTransactionQuery;
  */
 class TransactionQuery extends BaseTransactionQuery
 {
-    public function forCurrentUser(ContainerInterface $container)
+    public function forUser(User $user)
     {
-        $auth = new Authentication($container);
-
-        return $this->useAccountQuery()->filterByUser($auth->currentUser())->endUse();
+        return $this->useAccountQuery()->filterByUser($user)->endUse();
     }
 }

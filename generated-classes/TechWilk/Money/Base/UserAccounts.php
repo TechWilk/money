@@ -1167,7 +1167,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      */
     public function getUser(ConnectionInterface $con = null)
     {
-        if ($this->aUser === null && ($this->user_id !== null)) {
+        if ($this->aUser === null && ($this->user_id != 0)) {
             $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
@@ -1218,7 +1218,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      */
     public function getAccount(ConnectionInterface $con = null)
     {
-        if ($this->aAccount === null && ($this->account_id !== null)) {
+        if ($this->aAccount === null && ($this->account_id != 0)) {
             $this->aAccount = ChildAccountQuery::create()->findPk($this->account_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference

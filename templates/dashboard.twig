@@ -91,6 +91,17 @@
     </div>
     {% endfor %}
 </div>
+<div class="year">
+    <h3>Recent hashtags</h3>
+    {% for hashtag in hashtags.recent %}
+    <div class="tag">
+        <a href="{{ path_for('tag', { 'tag': hashtag.tag } ) }}">
+            <h3>#{{ hashtag.tag }}</h3>
+            <small>{{ hashtag.countTransactions }}</small>
+        </a>
+    </div>
+    {% endfor %}
+</div>
 
 
 <h2>This month</h2>

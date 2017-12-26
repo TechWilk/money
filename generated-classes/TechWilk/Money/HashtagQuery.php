@@ -15,4 +15,18 @@ use TechWilk\Money\Base\HashtagQuery as BaseHashtagQuery;
  */
 class HashtagQuery extends BaseHashtagQuery
 {
+    public function lastUsedHashtagsForUser($user, $limit = 5)
+    {
+        return $this
+            ->useTransactionHashtagQuery()
+                ->useTransactionQuery()
+                    ->useAccountQuery()
+                        ->filterByUser($user)
+                    ->endUse()
+                    ->orderById('desc')
+                ->endUse()
+            ->endUse()
+            ->limit($limit)
+            ->find();
+    }
 }

@@ -11,6 +11,7 @@ class HashtagsPageTest extends BaseTestCase
      */
     public function testGetHashtagsPage()
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
         $response = $this->runApp('GET', '/tags');
 
         $this->assertEquals(200, $response->getStatusCode());

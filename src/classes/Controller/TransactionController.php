@@ -86,8 +86,12 @@ class TransactionController extends AbstractController
             $account = AccountQuery::create()->filterByUser($this->auth->currentUser())->filterByName($args['account'])->findOne();
             $transactions = TransactionQuery::create()->forUser($this->auth->currentUser())->filterByAccount($account)->orderByDate('desc')->find();
 
+            $transactions = $this->groupTransactionsByMonth($transactions);
+
             return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions, 'account' => $account]);
         }
+
+        $transactions = $this->groupTransactionsByMonth($transactions);
 
         return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions]);
     }
@@ -103,6 +107,8 @@ class TransactionController extends AbstractController
         } catch (\Exception $e) {
             $transactions = [];
         }
+
+        $transactions = $this->groupTransactionsByMonth($transactions);
 
         return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions, 'date' => $args['month'].' '.$args['year']]);
     }

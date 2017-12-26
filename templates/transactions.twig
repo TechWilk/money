@@ -32,10 +32,16 @@ $net = $incomings - $outgoings;
 #}
 <p>Listed with the newest first</p>
 
-{% for month, transactionsInMonth in transactions | group_by(=> _.date|date('M Y')|capitalize) %}
+{% for month in transactions %}
 <div class="month">
-    <h2>{{ month }}</h2>
-    {% for transaction in transactionsInMonth %}
+    <h2>{{ month.transactions | first.date('M Y') | capitalize }}</h2>
+    <div class="summary">
+        <p>In: <span>£{{ month.income }}</span></p>
+        <p>Out: <span>£{{ month.outgoings }}</span></p>
+        {% set net = month.income - month.outgoings %}
+        <p>Net: <span class="{{ net < 0 ? 'negative' : '' }}">£{{ net }}</span></p>
+    </div>
+    {% for transaction in month.transactions %}
     {% include 'transaction-slim.twig' %}
     {% endfor %}
 </div>

@@ -5,6 +5,7 @@ namespace TechWilk\Money\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TechWilk\Money\HashtagQuery;
+use TechWilk\Money\TransactionQuery;
 
 class TagController extends AbstractController
 {
@@ -69,7 +70,17 @@ class TagController extends AbstractController
     {
         $this->logger->info("Fetch tag GET '/tag/".$args['tag']."'");
 
-        $transactions = TransactionQuery::create()->forCurrentUser($this)->useTransactionHashtagQuery()->useHashtagQuery()->filterByTag(strtolower($args['tag']))->endUse()->endUse()->orderByDate('desc')->find();
+        $transactions = TransactionQuery::create()
+            ->forUser($this->auth->currentUser())
+            ->useTransactionHashtagQuery()
+                ->useHashtagQuery()
+                    ->filterByTag(strtolower($args['tag']))
+                ->endUse()
+            ->endUse()
+            ->orderByDate('desc')
+            ->find();
+
+        $transactions = $this->groupTransactionsByMonth($transactions);
 
         return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions, 'tagName' => $args['tag']]);
     }

@@ -32,4 +32,32 @@ abstract class AbstractController
         $this->auth = $auth;
         $this->router = $router;
     }
+
+    public function groupTransactionsByMonth($transactions)
+    {
+        $months = [];
+
+        foreach ($transactions as $transaction) {
+            $month = $transaction->getDate('Y-m');
+
+            // fix undefined
+            if (empty($months[$month]['income'])) {
+                $months[$month]['income'] = 0;
+            }
+
+            if (empty($months[$month]['outgoings'])) {
+                $months[$month]['outgoings'] = 0;
+            }
+
+            // actual calculations
+            $months[$month]['transactions'][] = $transaction;
+            if ($transaction->getValue() > 0) {
+                $months[$month]['income'] += $transaction->getValue();
+            } else {
+                $months[$month]['outgoings'] += abs($transaction->getValue());
+            }
+        }
+
+        return $months;
+    }
 }

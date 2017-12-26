@@ -33,7 +33,7 @@ class AuthController extends AbstractController
             return $this->view->render($response->withStatus(401), 'login.twig', ['message' => $message]);
         }
         $password = $data['password'];
-    
+
         if ($email == '' || $password == '') {
             return $this->view->render($response->withStatus(401), 'login.twig', ['message' => $message]);
         }

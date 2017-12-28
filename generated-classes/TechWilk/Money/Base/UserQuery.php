@@ -27,6 +27,8 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUserQuery orderByPasswordHash($order = Criteria::ASC) Order by the password_hash column
  * @method     ChildUserQuery orderByPasswordExpire($order = Criteria::ASC) Order by the password_expire column
  * @method     ChildUserQuery orderByEnable($order = Criteria::ASC) Order by the enable column
+ * @method     ChildUserQuery orderByCreated($order = Criteria::ASC) Order by the created column
+ * @method     ChildUserQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  *
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByFirstName() Group by the first_name column
@@ -35,6 +37,8 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUserQuery groupByPasswordHash() Group by the password_hash column
  * @method     ChildUserQuery groupByPasswordExpire() Group by the password_expire column
  * @method     ChildUserQuery groupByEnable() Group by the enable column
+ * @method     ChildUserQuery groupByCreated() Group by the created column
+ * @method     ChildUserQuery groupByUpdated() Group by the updated column
  *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -43,6 +47,16 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUserQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildUserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildUserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
+ * @method     ChildUserQuery leftJoinTransaction($relationAlias = null) Adds a LEFT JOIN clause to the query using the Transaction relation
+ * @method     ChildUserQuery rightJoinTransaction($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Transaction relation
+ * @method     ChildUserQuery innerJoinTransaction($relationAlias = null) Adds a INNER JOIN clause to the query using the Transaction relation
+ *
+ * @method     ChildUserQuery joinWithTransaction($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Transaction relation
+ *
+ * @method     ChildUserQuery leftJoinWithTransaction() Adds a LEFT JOIN clause and with to the query using the Transaction relation
+ * @method     ChildUserQuery rightJoinWithTransaction() Adds a RIGHT JOIN clause and with to the query using the Transaction relation
+ * @method     ChildUserQuery innerJoinWithTransaction() Adds a INNER JOIN clause and with to the query using the Transaction relation
  *
  * @method     ChildUserQuery leftJoinUserAccounts($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserAccounts relation
  * @method     ChildUserQuery rightJoinUserAccounts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserAccounts relation
@@ -54,7 +68,7 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUserQuery rightJoinWithUserAccounts() Adds a RIGHT JOIN clause and with to the query using the UserAccounts relation
  * @method     ChildUserQuery innerJoinWithUserAccounts() Adds a INNER JOIN clause and with to the query using the UserAccounts relation
  *
- * @method     \TechWilk\Money\UserAccountsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TechWilk\Money\TransactionQuery|\TechWilk\Money\UserAccountsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
@@ -65,7 +79,9 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUser findOneByEmail(\TechWilk\Money\EmailAddress $email) Return the first ChildUser filtered by the email column
  * @method     ChildUser findOneByPasswordHash(string $password_hash) Return the first ChildUser filtered by the password_hash column
  * @method     ChildUser findOneByPasswordExpire(string $password_expire) Return the first ChildUser filtered by the password_expire column
- * @method     ChildUser findOneByEnable(boolean $enable) Return the first ChildUser filtered by the enable column *
+ * @method     ChildUser findOneByEnable(boolean $enable) Return the first ChildUser filtered by the enable column
+ * @method     ChildUser findOneByCreated(string $created) Return the first ChildUser filtered by the created column
+ * @method     ChildUser findOneByUpdated(string $updated) Return the first ChildUser filtered by the updated column *
 
  * @method     ChildUser requirePk($key, ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOne(ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -77,6 +93,8 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUser requireOneByPasswordHash(string $password_hash) Return the first ChildUser filtered by the password_hash column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPasswordExpire(string $password_expire) Return the first ChildUser filtered by the password_expire column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByEnable(boolean $enable) Return the first ChildUser filtered by the enable column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByCreated(string $created) Return the first ChildUser filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByUpdated(string $updated) Return the first ChildUser filtered by the updated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @method     ChildUser[]|ObjectCollection findById(int $id) Return ChildUser objects filtered by the id column
@@ -86,6 +104,8 @@ use TechWilk\Money\Map\UserTableMap;
  * @method     ChildUser[]|ObjectCollection findByPasswordHash(string $password_hash) Return ChildUser objects filtered by the password_hash column
  * @method     ChildUser[]|ObjectCollection findByPasswordExpire(string $password_expire) Return ChildUser objects filtered by the password_expire column
  * @method     ChildUser[]|ObjectCollection findByEnable(boolean $enable) Return ChildUser objects filtered by the enable column
+ * @method     ChildUser[]|ObjectCollection findByCreated(string $created) Return ChildUser objects filtered by the created column
+ * @method     ChildUser[]|ObjectCollection findByUpdated(string $updated) Return ChildUser objects filtered by the updated column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -184,7 +204,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, first_name, last_name, email, password_hash, password_expire, enable FROM user WHERE id = :p0';
+        $sql = 'SELECT id, first_name, last_name, email, password_hash, password_expire, enable, created, updated FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -486,6 +506,165 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreated('2011-03-14'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated('now'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated(array('max' => 'yesterday')); // WHERE created > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $created The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByCreated($created = null, $comparison = null)
+    {
+        if (is_array($created)) {
+            $useMinMax = false;
+            if (isset($created['min'])) {
+                $this->addUsingAlias(UserTableMap::COL_CREATED, $created['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($created['max'])) {
+                $this->addUsingAlias(UserTableMap::COL_CREATED, $created['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_CREATED, $created, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdated('2011-03-14'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated('now'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated(array('max' => 'yesterday')); // WHERE updated > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updated The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByUpdated($updated = null, $comparison = null)
+    {
+        if (is_array($updated)) {
+            $useMinMax = false;
+            if (isset($updated['min'])) {
+                $this->addUsingAlias(UserTableMap::COL_UPDATED, $updated['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updated['max'])) {
+                $this->addUsingAlias(UserTableMap::COL_UPDATED, $updated['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_UPDATED, $updated, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \TechWilk\Money\Transaction object
+     *
+     * @param \TechWilk\Money\Transaction|ObjectCollection $transaction the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByTransaction($transaction, $comparison = null)
+    {
+        if ($transaction instanceof \TechWilk\Money\Transaction) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_ID, $transaction->getCreatedBy(), $comparison);
+        } elseif ($transaction instanceof ObjectCollection) {
+            return $this
+                ->useTransactionQuery()
+                ->filterByPrimaryKeys($transaction->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByTransaction() only accepts arguments of type \TechWilk\Money\Transaction or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Transaction relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinTransaction($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Transaction');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Transaction');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Transaction relation Transaction object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TechWilk\Money\TransactionQuery A secondary query class using the current class as primary query
+     */
+    public function useTransactionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinTransaction($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Transaction', '\TechWilk\Money\TransactionQuery');
+    }
+
+    /**
      * Filter the query by a related \TechWilk\Money\UserAccounts object
      *
      * @param \TechWilk\Money\UserAccounts|ObjectCollection $userAccounts the related object to use as filter
@@ -650,6 +829,72 @@ abstract class UserQuery extends ModelCriteria
 
             return $affectedRows;
         });
+    }
+
+    // timestampable behavior
+
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(UserTableMap::COL_UPDATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by update date desc
+     *
+     * @return     $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(UserTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by update date asc
+     *
+     * @return     $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(UserTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by create date desc
+     *
+     * @return     $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(UserTableMap::COL_CREATED);
+    }
+
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(UserTableMap::COL_CREATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by create date asc
+     *
+     * @return     $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(UserTableMap::COL_CREATED);
     }
 
 } // UserQuery

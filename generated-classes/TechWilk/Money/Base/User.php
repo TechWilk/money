@@ -20,10 +20,13 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 use TechWilk\Money\Account as ChildAccount;
 use TechWilk\Money\AccountQuery as ChildAccountQuery;
+use TechWilk\Money\Transaction as ChildTransaction;
+use TechWilk\Money\TransactionQuery as ChildTransactionQuery;
 use TechWilk\Money\User as ChildUser;
 use TechWilk\Money\UserAccounts as ChildUserAccounts;
 use TechWilk\Money\UserAccountsQuery as ChildUserAccountsQuery;
 use TechWilk\Money\UserQuery as ChildUserQuery;
+use TechWilk\Money\Map\TransactionTableMap;
 use TechWilk\Money\Map\UserAccountsTableMap;
 use TechWilk\Money\Map\UserTableMap;
 
@@ -119,6 +122,26 @@ abstract class User implements ActiveRecordInterface
     protected $enable;
 
     /**
+     * The value for the created field.
+     *
+     * @var        DateTime
+     */
+    protected $created;
+
+    /**
+     * The value for the updated field.
+     *
+     * @var        DateTime
+     */
+    protected $updated;
+
+    /**
+     * @var        ObjectCollection|ChildTransaction[] Collection to store aggregation of ChildTransaction objects.
+     */
+    protected $collTransactions;
+    protected $collTransactionsPartial;
+
+    /**
      * @var        ObjectCollection|ChildUserAccounts[] Collection to store aggregation of ChildUserAccounts objects.
      */
     protected $collUserAccountss;
@@ -147,6 +170,12 @@ abstract class User implements ActiveRecordInterface
      * @var ObjectCollection|ChildAccount[]
      */
     protected $accountsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildTransaction[]
+     */
+    protected $transactionsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -483,6 +512,46 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created;
+        } else {
+            return $this->created instanceof \DateTimeInterface ? $this->created->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated;
+        } else {
+            return $this->updated instanceof \DateTimeInterface ? $this->updated->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -627,6 +696,46 @@ abstract class User implements ActiveRecordInterface
     } // setEnable()
 
     /**
+     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\User The current object (for fluent API support)
+     */
+    public function setCreated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created !== null || $dt !== null) {
+            if ($this->created === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created->format("Y-m-d H:i:s.u")) {
+                $this->created = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[UserTableMap::COL_CREATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreated()
+
+    /**
+     * Sets the value of [updated] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\User The current object (for fluent API support)
+     */
+    public function setUpdated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated !== null || $dt !== null) {
+            if ($this->updated === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated->format("Y-m-d H:i:s.u")) {
+                $this->updated = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[UserTableMap::COL_UPDATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setUpdated()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -689,6 +798,18 @@ abstract class User implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('Enable', TableMap::TYPE_PHPNAME, $indexType)];
             $this->enable = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : UserTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -697,7 +818,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TechWilk\\Money\\User'), 0, $e);
@@ -757,6 +878,8 @@ abstract class User implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
+
+            $this->collTransactions = null;
 
             $this->collUserAccountss = null;
 
@@ -827,8 +950,20 @@ abstract class User implements ActiveRecordInterface
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+
+                if (!$this->isColumnModified(UserTableMap::COL_CREATED)) {
+                    $this->setCreated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
+                if (!$this->isColumnModified(UserTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(UserTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -904,6 +1039,23 @@ abstract class User implements ActiveRecordInterface
             }
 
 
+            if ($this->transactionsScheduledForDeletion !== null) {
+                if (!$this->transactionsScheduledForDeletion->isEmpty()) {
+                    \TechWilk\Money\TransactionQuery::create()
+                        ->filterByPrimaryKeys($this->transactionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->transactionsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collTransactions !== null) {
+                foreach ($this->collTransactions as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             if ($this->userAccountssScheduledForDeletion !== null) {
                 if (!$this->userAccountssScheduledForDeletion->isEmpty()) {
                     \TechWilk\Money\UserAccountsQuery::create()
@@ -968,6 +1120,12 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_ENABLE)) {
             $modifiedColumns[':p' . $index++]  = 'enable';
         }
+        if ($this->isColumnModified(UserTableMap::COL_CREATED)) {
+            $modifiedColumns[':p' . $index++]  = 'created';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_UPDATED)) {
+            $modifiedColumns[':p' . $index++]  = 'updated';
+        }
 
         $sql = sprintf(
             'INSERT INTO user (%s) VALUES (%s)',
@@ -999,6 +1157,12 @@ abstract class User implements ActiveRecordInterface
                         break;
                     case 'enable':
                         $stmt->bindValue($identifier, (int) $this->enable, PDO::PARAM_INT);
+                        break;
+                    case 'created':
+                        $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'updated':
+                        $stmt->bindValue($identifier, $this->updated ? $this->updated->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1083,6 +1247,12 @@ abstract class User implements ActiveRecordInterface
             case 6:
                 return $this->getEnable();
                 break;
+            case 7:
+                return $this->getCreated();
+                break;
+            case 8:
+                return $this->getUpdated();
+                break;
             default:
                 return null;
                 break;
@@ -1120,9 +1290,19 @@ abstract class User implements ActiveRecordInterface
             $keys[4] => $this->getPasswordHash(),
             $keys[5] => $this->getPasswordExpire(),
             $keys[6] => $this->getEnable(),
+            $keys[7] => $this->getCreated(),
+            $keys[8] => $this->getUpdated(),
         );
         if ($result[$keys[5]] instanceof \DateTimeInterface) {
             $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
+        }
+
+        if ($result[$keys[8]] instanceof \DateTimeInterface) {
+            $result[$keys[8]] = $result[$keys[8]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1131,6 +1311,21 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->collTransactions) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'transactions';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'transactions';
+                        break;
+                    default:
+                        $key = 'Transactions';
+                }
+
+                $result[$key] = $this->collTransactions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collUserAccountss) {
 
                 switch ($keyType) {
@@ -1201,6 +1396,12 @@ abstract class User implements ActiveRecordInterface
             case 6:
                 $this->setEnable($value);
                 break;
+            case 7:
+                $this->setCreated($value);
+                break;
+            case 8:
+                $this->setUpdated($value);
+                break;
         } // switch()
 
         return $this;
@@ -1247,6 +1448,12 @@ abstract class User implements ActiveRecordInterface
         }
         if (array_key_exists($keys[6], $arr)) {
             $this->setEnable($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setCreated($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setUpdated($arr[$keys[8]]);
         }
     }
 
@@ -1309,6 +1516,12 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_ENABLE)) {
             $criteria->add(UserTableMap::COL_ENABLE, $this->enable);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_CREATED)) {
+            $criteria->add(UserTableMap::COL_CREATED, $this->created);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_UPDATED)) {
+            $criteria->add(UserTableMap::COL_UPDATED, $this->updated);
         }
 
         return $criteria;
@@ -1402,11 +1615,19 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setPasswordHash($this->getPasswordHash());
         $copyObj->setPasswordExpire($this->getPasswordExpire());
         $copyObj->setEnable($this->getEnable());
+        $copyObj->setCreated($this->getCreated());
+        $copyObj->setUpdated($this->getUpdated());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
+
+            foreach ($this->getTransactions() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addTransaction($relObj->copy($deepCopy));
+                }
+            }
 
             foreach ($this->getUserAccountss() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1455,10 +1676,264 @@ abstract class User implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('Transaction' == $relationName) {
+            $this->initTransactions();
+            return;
+        }
         if ('UserAccounts' == $relationName) {
             $this->initUserAccountss();
             return;
         }
+    }
+
+    /**
+     * Clears out the collTransactions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addTransactions()
+     */
+    public function clearTransactions()
+    {
+        $this->collTransactions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collTransactions collection loaded partially.
+     */
+    public function resetPartialTransactions($v = true)
+    {
+        $this->collTransactionsPartial = $v;
+    }
+
+    /**
+     * Initializes the collTransactions collection.
+     *
+     * By default this just sets the collTransactions collection to an empty array (like clearcollTransactions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initTransactions($overrideExisting = true)
+    {
+        if (null !== $this->collTransactions && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = TransactionTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collTransactions = new $collectionClassName;
+        $this->collTransactions->setModel('\TechWilk\Money\Transaction');
+    }
+
+    /**
+     * Gets an array of ChildTransaction objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUser is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
+     * @throws PropelException
+     */
+    public function getTransactions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTransactionsPartial && !$this->isNew();
+        if (null === $this->collTransactions || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collTransactions) {
+                // return empty collection
+                $this->initTransactions();
+            } else {
+                $collTransactions = ChildTransactionQuery::create(null, $criteria)
+                    ->filterByCreator($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collTransactionsPartial && count($collTransactions)) {
+                        $this->initTransactions(false);
+
+                        foreach ($collTransactions as $obj) {
+                            if (false == $this->collTransactions->contains($obj)) {
+                                $this->collTransactions->append($obj);
+                            }
+                        }
+
+                        $this->collTransactionsPartial = true;
+                    }
+
+                    return $collTransactions;
+                }
+
+                if ($partial && $this->collTransactions) {
+                    foreach ($this->collTransactions as $obj) {
+                        if ($obj->isNew()) {
+                            $collTransactions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collTransactions = $collTransactions;
+                $this->collTransactionsPartial = false;
+            }
+        }
+
+        return $this->collTransactions;
+    }
+
+    /**
+     * Sets a collection of ChildTransaction objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $transactions A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUser The current object (for fluent API support)
+     */
+    public function setTransactions(Collection $transactions, ConnectionInterface $con = null)
+    {
+        /** @var ChildTransaction[] $transactionsToDelete */
+        $transactionsToDelete = $this->getTransactions(new Criteria(), $con)->diff($transactions);
+
+
+        $this->transactionsScheduledForDeletion = $transactionsToDelete;
+
+        foreach ($transactionsToDelete as $transactionRemoved) {
+            $transactionRemoved->setCreator(null);
+        }
+
+        $this->collTransactions = null;
+        foreach ($transactions as $transaction) {
+            $this->addTransaction($transaction);
+        }
+
+        $this->collTransactions = $transactions;
+        $this->collTransactionsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Transaction objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Transaction objects.
+     * @throws PropelException
+     */
+    public function countTransactions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTransactionsPartial && !$this->isNew();
+        if (null === $this->collTransactions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTransactions) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getTransactions());
+            }
+
+            $query = ChildTransactionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCreator($this)
+                ->count($con);
+        }
+
+        return count($this->collTransactions);
+    }
+
+    /**
+     * Method called to associate a ChildTransaction object to this object
+     * through the ChildTransaction foreign key attribute.
+     *
+     * @param  ChildTransaction $l ChildTransaction
+     * @return $this|\TechWilk\Money\User The current object (for fluent API support)
+     */
+    public function addTransaction(ChildTransaction $l)
+    {
+        if ($this->collTransactions === null) {
+            $this->initTransactions();
+            $this->collTransactionsPartial = true;
+        }
+
+        if (!$this->collTransactions->contains($l)) {
+            $this->doAddTransaction($l);
+
+            if ($this->transactionsScheduledForDeletion and $this->transactionsScheduledForDeletion->contains($l)) {
+                $this->transactionsScheduledForDeletion->remove($this->transactionsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildTransaction $transaction The ChildTransaction object to add.
+     */
+    protected function doAddTransaction(ChildTransaction $transaction)
+    {
+        $this->collTransactions[]= $transaction;
+        $transaction->setCreator($this);
+    }
+
+    /**
+     * @param  ChildTransaction $transaction The ChildTransaction object to remove.
+     * @return $this|ChildUser The current object (for fluent API support)
+     */
+    public function removeTransaction(ChildTransaction $transaction)
+    {
+        if ($this->getTransactions()->contains($transaction)) {
+            $pos = $this->collTransactions->search($transaction);
+            $this->collTransactions->remove($pos);
+            if (null === $this->transactionsScheduledForDeletion) {
+                $this->transactionsScheduledForDeletion = clone $this->collTransactions;
+                $this->transactionsScheduledForDeletion->clear();
+            }
+            $this->transactionsScheduledForDeletion[]= clone $transaction;
+            $transaction->setCreator(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related Transactions from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
+     */
+    public function getTransactionsJoinAccount(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildTransactionQuery::create(null, $criteria);
+        $query->joinWith('Account', $joinBehavior);
+
+        return $this->getTransactions($query, $con);
     }
 
     /**
@@ -1971,6 +2446,8 @@ abstract class User implements ActiveRecordInterface
         $this->password_hash = null;
         $this->password_expire = null;
         $this->enable = null;
+        $this->created = null;
+        $this->updated = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1990,6 +2467,11 @@ abstract class User implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collTransactions) {
+                foreach ($this->collTransactions as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collUserAccountss) {
                 foreach ($this->collUserAccountss as $o) {
                     $o->clearAllReferences($deep);
@@ -2002,6 +2484,7 @@ abstract class User implements ActiveRecordInterface
             }
         } // if ($deep)
 
+        $this->collTransactions = null;
         $this->collUserAccountss = null;
         $this->collAccounts = null;
     }
@@ -2014,6 +2497,20 @@ abstract class User implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(UserTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     $this|ChildUser The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[UserTableMap::COL_UPDATED] = true;
+
+        return $this;
     }
 
     /**

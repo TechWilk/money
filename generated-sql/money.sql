@@ -16,11 +16,18 @@ CREATE TABLE `transaction`
     `value` FLOAT NOT NULL,
     `description` VARCHAR(100),
     `account_id` INTEGER NOT NULL,
+    `created_by` INTEGER NOT NULL,
+    `created` DATETIME,
+    `updated` DATETIME,
     PRIMARY KEY (`id`),
     INDEX `transaction_fi_474870` (`account_id`),
+    INDEX `transaction_fi_c0dfeb` (`created_by`),
     CONSTRAINT `transaction_fk_474870`
         FOREIGN KEY (`account_id`)
-        REFERENCES `account` (`id`)
+        REFERENCES `account` (`id`),
+    CONSTRAINT `transaction_fk_c0dfeb`
+        FOREIGN KEY (`created_by`)
+        REFERENCES `user` (`id`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -36,6 +43,8 @@ CREATE TABLE `breakdown`
     `description` VARCHAR(50) NOT NULL,
     `value` FLOAT NOT NULL,
     `category_id` INTEGER NOT NULL,
+    `created` DATETIME,
+    `updated` DATETIME,
     PRIMARY KEY (`id`),
     INDEX `breakdown_fi_98bea7` (`transaction_id`),
     INDEX `breakdown_fi_904832` (`category_id`),
@@ -114,6 +123,8 @@ CREATE TABLE `user`
     `password_hash` VARCHAR(80) NOT NULL,
     `password_expire` DATETIME,
     `enable` TINYINT(1) DEFAULT 1 NOT NULL,
+    `created` DATETIME,
+    `updated` DATETIME,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -148,6 +159,8 @@ CREATE TABLE `account`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
+    `created` DATETIME,
+    `updated` DATETIME,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

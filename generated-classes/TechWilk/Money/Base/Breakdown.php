@@ -2,6 +2,7 @@
 
 namespace TechWilk\Money\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Propel\Runtime\Propel;
@@ -15,6 +16,8 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
+use TechWilk\Money\Breakdown as ChildBreakdown;
 use TechWilk\Money\BreakdownQuery as ChildBreakdownQuery;
 use TechWilk\Money\Category as ChildCategory;
 use TechWilk\Money\CategoryQuery as ChildCategoryQuery;
@@ -97,6 +100,20 @@ abstract class Breakdown implements ActiveRecordInterface
      * @var        int
      */
     protected $category_id;
+
+    /**
+     * The value for the created field.
+     *
+     * @var        DateTime
+     */
+    protected $created;
+
+    /**
+     * The value for the updated field.
+     *
+     * @var        DateTime
+     */
+    protected $updated;
 
     /**
      * @var        ChildTransaction
@@ -392,6 +409,46 @@ abstract class Breakdown implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created;
+        } else {
+            return $this->created instanceof \DateTimeInterface ? $this->created->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated;
+        } else {
+            return $this->updated instanceof \DateTimeInterface ? $this->updated->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -500,6 +557,46 @@ abstract class Breakdown implements ActiveRecordInterface
     } // setCategoryId()
 
     /**
+     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\Breakdown The current object (for fluent API support)
+     */
+    public function setCreated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created !== null || $dt !== null) {
+            if ($this->created === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created->format("Y-m-d H:i:s.u")) {
+                $this->created = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[BreakdownTableMap::COL_CREATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreated()
+
+    /**
+     * Sets the value of [updated] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\Breakdown The current object (for fluent API support)
+     */
+    public function setUpdated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated !== null || $dt !== null) {
+            if ($this->updated === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated->format("Y-m-d H:i:s.u")) {
+                $this->updated = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[BreakdownTableMap::COL_UPDATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setUpdated()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -549,6 +646,18 @@ abstract class Breakdown implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BreakdownTableMap::translateFieldName('CategoryId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->category_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BreakdownTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BreakdownTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -557,7 +666,7 @@ abstract class Breakdown implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = BreakdownTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = BreakdownTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TechWilk\\Money\\Breakdown'), 0, $e);
@@ -692,8 +801,20 @@ abstract class Breakdown implements ActiveRecordInterface
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+
+                if (!$this->isColumnModified(BreakdownTableMap::COL_CREATED)) {
+                    $this->setCreated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
+                if (!$this->isColumnModified(BreakdownTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(BreakdownTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -800,6 +921,12 @@ abstract class Breakdown implements ActiveRecordInterface
         if ($this->isColumnModified(BreakdownTableMap::COL_CATEGORY_ID)) {
             $modifiedColumns[':p' . $index++]  = 'category_id';
         }
+        if ($this->isColumnModified(BreakdownTableMap::COL_CREATED)) {
+            $modifiedColumns[':p' . $index++]  = 'created';
+        }
+        if ($this->isColumnModified(BreakdownTableMap::COL_UPDATED)) {
+            $modifiedColumns[':p' . $index++]  = 'updated';
+        }
 
         $sql = sprintf(
             'INSERT INTO breakdown (%s) VALUES (%s)',
@@ -825,6 +952,12 @@ abstract class Breakdown implements ActiveRecordInterface
                         break;
                     case 'category_id':
                         $stmt->bindValue($identifier, $this->category_id, PDO::PARAM_INT);
+                        break;
+                    case 'created':
+                        $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'updated':
+                        $stmt->bindValue($identifier, $this->updated ? $this->updated->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -903,6 +1036,12 @@ abstract class Breakdown implements ActiveRecordInterface
             case 4:
                 return $this->getCategoryId();
                 break;
+            case 5:
+                return $this->getCreated();
+                break;
+            case 6:
+                return $this->getUpdated();
+                break;
             default:
                 return null;
                 break;
@@ -938,7 +1077,17 @@ abstract class Breakdown implements ActiveRecordInterface
             $keys[2] => $this->getDescription(),
             $keys[3] => $this->getValue(),
             $keys[4] => $this->getCategoryId(),
+            $keys[5] => $this->getCreated(),
+            $keys[6] => $this->getUpdated(),
         );
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -1024,6 +1173,12 @@ abstract class Breakdown implements ActiveRecordInterface
             case 4:
                 $this->setCategoryId($value);
                 break;
+            case 5:
+                $this->setCreated($value);
+                break;
+            case 6:
+                $this->setUpdated($value);
+                break;
         } // switch()
 
         return $this;
@@ -1064,6 +1219,12 @@ abstract class Breakdown implements ActiveRecordInterface
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setCategoryId($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setCreated($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setUpdated($arr[$keys[6]]);
         }
     }
 
@@ -1120,6 +1281,12 @@ abstract class Breakdown implements ActiveRecordInterface
         }
         if ($this->isColumnModified(BreakdownTableMap::COL_CATEGORY_ID)) {
             $criteria->add(BreakdownTableMap::COL_CATEGORY_ID, $this->category_id);
+        }
+        if ($this->isColumnModified(BreakdownTableMap::COL_CREATED)) {
+            $criteria->add(BreakdownTableMap::COL_CREATED, $this->created);
+        }
+        if ($this->isColumnModified(BreakdownTableMap::COL_UPDATED)) {
+            $criteria->add(BreakdownTableMap::COL_UPDATED, $this->updated);
         }
 
         return $criteria;
@@ -1211,6 +1378,8 @@ abstract class Breakdown implements ActiveRecordInterface
         $copyObj->setDescription($this->getDescription());
         $copyObj->setValue($this->getValue());
         $copyObj->setCategoryId($this->getCategoryId());
+        $copyObj->setCreated($this->getCreated());
+        $copyObj->setUpdated($this->getUpdated());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1359,6 +1528,8 @@ abstract class Breakdown implements ActiveRecordInterface
         $this->description = null;
         $this->value = null;
         $this->category_id = null;
+        $this->created = null;
+        $this->updated = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1391,6 +1562,20 @@ abstract class Breakdown implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(BreakdownTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     $this|ChildBreakdown The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[BreakdownTableMap::COL_UPDATED] = true;
+
+        return $this;
     }
 
     /**

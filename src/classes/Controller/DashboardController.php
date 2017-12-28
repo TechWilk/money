@@ -25,7 +25,7 @@ class DashboardController extends AbstractController
             ->groupByTag()
             ->orderByCount('desc')
             ->limit(5);
-        
+
         $newestHashtags = HashtagQuery::create()
             ->useTransactionHashtagQuery()
                 ->useTransactionQuery()

@@ -18,7 +18,26 @@ class PropelMigration_1514406903
 
     public function postUp(MigrationManager $manager)
     {
-        // add the post-migration code here
+      $pdo = $manager->getAdapterConnection('money');
+
+      $sql = 'UPDATE transaction t SET
+              t.created_by = (SELECT ua.user_id FROM user_accounts ua WHERE ua.account_id = t.account_id LIMIT 1),
+              t.created = t.date,
+              t.updated = t.date;';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+
+      $sql = 'UPDATE breakdown SET created = NOW(), updated = NOW();';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+
+      $sql = 'UPDATE user SET created = NOW(), updated = NOW();';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+
+      $sql = 'UPDATE account SET created = NOW(), updated = NOW();';
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
     }
 
     public function preDown(MigrationManager $manager)

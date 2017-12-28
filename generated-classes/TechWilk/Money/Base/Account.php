@@ -2,6 +2,7 @@
 
 namespace TechWilk\Money\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use Propel\Runtime\Propel;
@@ -16,6 +17,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 use TechWilk\Money\Account as ChildAccount;
 use TechWilk\Money\AccountQuery as ChildAccountQuery;
 use TechWilk\Money\Category as ChildCategory;
@@ -85,6 +87,20 @@ abstract class Account implements ActiveRecordInterface
      * @var        string
      */
     protected $name;
+
+    /**
+     * The value for the created field.
+     *
+     * @var        DateTime
+     */
+    protected $created;
+
+    /**
+     * The value for the updated field.
+     *
+     * @var        DateTime
+     */
+    protected $updated;
 
     /**
      * @var        ObjectCollection|ChildTransaction[] Collection to store aggregation of ChildTransaction objects.
@@ -392,6 +408,46 @@ abstract class Account implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created;
+        } else {
+            return $this->created instanceof \DateTimeInterface ? $this->created->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated;
+        } else {
+            return $this->updated instanceof \DateTimeInterface ? $this->updated->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -430,6 +486,46 @@ abstract class Account implements ActiveRecordInterface
 
         return $this;
     } // setName()
+
+    /**
+     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\Account The current object (for fluent API support)
+     */
+    public function setCreated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created !== null || $dt !== null) {
+            if ($this->created === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created->format("Y-m-d H:i:s.u")) {
+                $this->created = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[AccountTableMap::COL_CREATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreated()
+
+    /**
+     * Sets the value of [updated] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\Account The current object (for fluent API support)
+     */
+    public function setUpdated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated !== null || $dt !== null) {
+            if ($this->updated === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated->format("Y-m-d H:i:s.u")) {
+                $this->updated = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[AccountTableMap::COL_UPDATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setUpdated()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -472,6 +568,18 @@ abstract class Account implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AccountTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AccountTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AccountTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -480,7 +588,7 @@ abstract class Account implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = AccountTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = AccountTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TechWilk\\Money\\Account'), 0, $e);
@@ -614,8 +722,20 @@ abstract class Account implements ActiveRecordInterface
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+
+                if (!$this->isColumnModified(AccountTableMap::COL_CREATED)) {
+                    $this->setCreated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
+                if (!$this->isColumnModified(AccountTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(AccountTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -774,6 +894,12 @@ abstract class Account implements ActiveRecordInterface
         if ($this->isColumnModified(AccountTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
+        if ($this->isColumnModified(AccountTableMap::COL_CREATED)) {
+            $modifiedColumns[':p' . $index++]  = 'created';
+        }
+        if ($this->isColumnModified(AccountTableMap::COL_UPDATED)) {
+            $modifiedColumns[':p' . $index++]  = 'updated';
+        }
 
         $sql = sprintf(
             'INSERT INTO account (%s) VALUES (%s)',
@@ -790,6 +916,12 @@ abstract class Account implements ActiveRecordInterface
                         break;
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+                        break;
+                    case 'created':
+                        $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'updated':
+                        $stmt->bindValue($identifier, $this->updated ? $this->updated->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -859,6 +991,12 @@ abstract class Account implements ActiveRecordInterface
             case 1:
                 return $this->getName();
                 break;
+            case 2:
+                return $this->getCreated();
+                break;
+            case 3:
+                return $this->getUpdated();
+                break;
             default:
                 return null;
                 break;
@@ -891,7 +1029,17 @@ abstract class Account implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
+            $keys[2] => $this->getCreated(),
+            $keys[3] => $this->getUpdated(),
         );
+        if ($result[$keys[2]] instanceof \DateTimeInterface) {
+            $result[$keys[2]] = $result[$keys[2]]->format('c');
+        }
+
+        if ($result[$keys[3]] instanceof \DateTimeInterface) {
+            $result[$keys[3]] = $result[$keys[3]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -983,6 +1131,12 @@ abstract class Account implements ActiveRecordInterface
             case 1:
                 $this->setName($value);
                 break;
+            case 2:
+                $this->setCreated($value);
+                break;
+            case 3:
+                $this->setUpdated($value);
+                break;
         } // switch()
 
         return $this;
@@ -1014,6 +1168,12 @@ abstract class Account implements ActiveRecordInterface
         }
         if (array_key_exists($keys[1], $arr)) {
             $this->setName($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setCreated($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setUpdated($arr[$keys[3]]);
         }
     }
 
@@ -1061,6 +1221,12 @@ abstract class Account implements ActiveRecordInterface
         }
         if ($this->isColumnModified(AccountTableMap::COL_NAME)) {
             $criteria->add(AccountTableMap::COL_NAME, $this->name);
+        }
+        if ($this->isColumnModified(AccountTableMap::COL_CREATED)) {
+            $criteria->add(AccountTableMap::COL_CREATED, $this->created);
+        }
+        if ($this->isColumnModified(AccountTableMap::COL_UPDATED)) {
+            $criteria->add(AccountTableMap::COL_UPDATED, $this->updated);
         }
 
         return $criteria;
@@ -1149,6 +1315,8 @@ abstract class Account implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
+        $copyObj->setCreated($this->getCreated());
+        $copyObj->setUpdated($this->getUpdated());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1451,6 +1619,31 @@ abstract class Account implements ActiveRecordInterface
         }
 
         return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Account is new, it will return
+     * an empty collection; or if this Account has previously
+     * been saved, it will retrieve related Transactions from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Account.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
+     */
+    public function getTransactionsJoinCreator(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildTransactionQuery::create(null, $criteria);
+        $query->joinWith('Creator', $joinBehavior);
+
+        return $this->getTransactions($query, $con);
     }
 
     /**
@@ -2183,6 +2376,8 @@ abstract class Account implements ActiveRecordInterface
     {
         $this->id = null;
         $this->name = null;
+        $this->created = null;
+        $this->updated = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -2237,6 +2432,20 @@ abstract class Account implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(AccountTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     $this|ChildAccount The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[AccountTableMap::COL_UPDATED] = true;
+
+        return $this;
     }
 
     /**

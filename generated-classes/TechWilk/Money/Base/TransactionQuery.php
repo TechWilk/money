@@ -25,12 +25,18 @@ use TechWilk\Money\Map\TransactionTableMap;
  * @method     ChildTransactionQuery orderByValue($order = Criteria::ASC) Order by the value column
  * @method     ChildTransactionQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildTransactionQuery orderByAccountId($order = Criteria::ASC) Order by the account_id column
+ * @method     ChildTransactionQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
+ * @method     ChildTransactionQuery orderByCreated($order = Criteria::ASC) Order by the created column
+ * @method     ChildTransactionQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  *
  * @method     ChildTransactionQuery groupById() Group by the id column
  * @method     ChildTransactionQuery groupByDate() Group by the date column
  * @method     ChildTransactionQuery groupByValue() Group by the value column
  * @method     ChildTransactionQuery groupByDescription() Group by the description column
  * @method     ChildTransactionQuery groupByAccountId() Group by the account_id column
+ * @method     ChildTransactionQuery groupByCreatedBy() Group by the created_by column
+ * @method     ChildTransactionQuery groupByCreated() Group by the created column
+ * @method     ChildTransactionQuery groupByUpdated() Group by the updated column
  *
  * @method     ChildTransactionQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildTransactionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -49,6 +55,16 @@ use TechWilk\Money\Map\TransactionTableMap;
  * @method     ChildTransactionQuery leftJoinWithAccount() Adds a LEFT JOIN clause and with to the query using the Account relation
  * @method     ChildTransactionQuery rightJoinWithAccount() Adds a RIGHT JOIN clause and with to the query using the Account relation
  * @method     ChildTransactionQuery innerJoinWithAccount() Adds a INNER JOIN clause and with to the query using the Account relation
+ *
+ * @method     ChildTransactionQuery leftJoinCreator($relationAlias = null) Adds a LEFT JOIN clause to the query using the Creator relation
+ * @method     ChildTransactionQuery rightJoinCreator($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Creator relation
+ * @method     ChildTransactionQuery innerJoinCreator($relationAlias = null) Adds a INNER JOIN clause to the query using the Creator relation
+ *
+ * @method     ChildTransactionQuery joinWithCreator($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Creator relation
+ *
+ * @method     ChildTransactionQuery leftJoinWithCreator() Adds a LEFT JOIN clause and with to the query using the Creator relation
+ * @method     ChildTransactionQuery rightJoinWithCreator() Adds a RIGHT JOIN clause and with to the query using the Creator relation
+ * @method     ChildTransactionQuery innerJoinWithCreator() Adds a INNER JOIN clause and with to the query using the Creator relation
  *
  * @method     ChildTransactionQuery leftJoinBreakdown($relationAlias = null) Adds a LEFT JOIN clause to the query using the Breakdown relation
  * @method     ChildTransactionQuery rightJoinBreakdown($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Breakdown relation
@@ -70,7 +86,7 @@ use TechWilk\Money\Map\TransactionTableMap;
  * @method     ChildTransactionQuery rightJoinWithTransactionHashtag() Adds a RIGHT JOIN clause and with to the query using the TransactionHashtag relation
  * @method     ChildTransactionQuery innerJoinWithTransactionHashtag() Adds a INNER JOIN clause and with to the query using the TransactionHashtag relation
  *
- * @method     \TechWilk\Money\AccountQuery|\TechWilk\Money\BreakdownQuery|\TechWilk\Money\TransactionHashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TechWilk\Money\AccountQuery|\TechWilk\Money\UserQuery|\TechWilk\Money\BreakdownQuery|\TechWilk\Money\TransactionHashtagQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildTransaction findOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query
  * @method     ChildTransaction findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTransaction matching the query, or a new ChildTransaction object populated from the query conditions when no match is found
@@ -79,7 +95,10 @@ use TechWilk\Money\Map\TransactionTableMap;
  * @method     ChildTransaction findOneByDate(string $date) Return the first ChildTransaction filtered by the date column
  * @method     ChildTransaction findOneByValue(double $value) Return the first ChildTransaction filtered by the value column
  * @method     ChildTransaction findOneByDescription(string $description) Return the first ChildTransaction filtered by the description column
- * @method     ChildTransaction findOneByAccountId(int $account_id) Return the first ChildTransaction filtered by the account_id column *
+ * @method     ChildTransaction findOneByAccountId(int $account_id) Return the first ChildTransaction filtered by the account_id column
+ * @method     ChildTransaction findOneByCreatedBy(int $created_by) Return the first ChildTransaction filtered by the created_by column
+ * @method     ChildTransaction findOneByCreated(string $created) Return the first ChildTransaction filtered by the created column
+ * @method     ChildTransaction findOneByUpdated(string $updated) Return the first ChildTransaction filtered by the updated column *
 
  * @method     ChildTransaction requirePk($key, ConnectionInterface $con = null) Return the ChildTransaction by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -89,6 +108,9 @@ use TechWilk\Money\Map\TransactionTableMap;
  * @method     ChildTransaction requireOneByValue(double $value) Return the first ChildTransaction filtered by the value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByDescription(string $description) Return the first ChildTransaction filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByAccountId(int $account_id) Return the first ChildTransaction filtered by the account_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTransaction requireOneByCreatedBy(int $created_by) Return the first ChildTransaction filtered by the created_by column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTransaction requireOneByCreated(string $created) Return the first ChildTransaction filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTransaction requireOneByUpdated(string $updated) Return the first ChildTransaction filtered by the updated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildTransaction[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildTransaction objects based on current ModelCriteria
  * @method     ChildTransaction[]|ObjectCollection findById(int $id) Return ChildTransaction objects filtered by the id column
@@ -96,6 +118,9 @@ use TechWilk\Money\Map\TransactionTableMap;
  * @method     ChildTransaction[]|ObjectCollection findByValue(double $value) Return ChildTransaction objects filtered by the value column
  * @method     ChildTransaction[]|ObjectCollection findByDescription(string $description) Return ChildTransaction objects filtered by the description column
  * @method     ChildTransaction[]|ObjectCollection findByAccountId(int $account_id) Return ChildTransaction objects filtered by the account_id column
+ * @method     ChildTransaction[]|ObjectCollection findByCreatedBy(int $created_by) Return ChildTransaction objects filtered by the created_by column
+ * @method     ChildTransaction[]|ObjectCollection findByCreated(string $created) Return ChildTransaction objects filtered by the created column
+ * @method     ChildTransaction[]|ObjectCollection findByUpdated(string $updated) Return ChildTransaction objects filtered by the updated column
  * @method     ChildTransaction[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -194,7 +219,7 @@ abstract class TransactionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, date, value, description, account_id FROM transaction WHERE id = :p0';
+        $sql = 'SELECT id, date, value, description, account_id, created_by, created, updated FROM transaction WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -478,6 +503,135 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_by column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
+     * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
+     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
+     * </code>
+     *
+     * @see       filterByCreator()
+     *
+     * @param     mixed $createdBy The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByCreatedBy($createdBy = null, $comparison = null)
+    {
+        if (is_array($createdBy)) {
+            $useMinMax = false;
+            if (isset($createdBy['min'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_CREATED_BY, $createdBy['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdBy['max'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_CREATED_BY, $createdBy['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TransactionTableMap::COL_CREATED_BY, $createdBy, $comparison);
+    }
+
+    /**
+     * Filter the query on the created column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreated('2011-03-14'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated('now'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated(array('max' => 'yesterday')); // WHERE created > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $created The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByCreated($created = null, $comparison = null)
+    {
+        if (is_array($created)) {
+            $useMinMax = false;
+            if (isset($created['min'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_CREATED, $created['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($created['max'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_CREATED, $created['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TransactionTableMap::COL_CREATED, $created, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdated('2011-03-14'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated('now'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated(array('max' => 'yesterday')); // WHERE updated > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updated The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByUpdated($updated = null, $comparison = null)
+    {
+        if (is_array($updated)) {
+            $useMinMax = false;
+            if (isset($updated['min'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_UPDATED, $updated['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updated['max'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_UPDATED, $updated['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TransactionTableMap::COL_UPDATED, $updated, $comparison);
+    }
+
+    /**
      * Filter the query by a related \TechWilk\Money\Account object
      *
      * @param \TechWilk\Money\Account|ObjectCollection $account The related object(s) to use as filter
@@ -552,6 +706,83 @@ abstract class TransactionQuery extends ModelCriteria
         return $this
             ->joinAccount($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Account', '\TechWilk\Money\AccountQuery');
+    }
+
+    /**
+     * Filter the query by a related \TechWilk\Money\User object
+     *
+     * @param \TechWilk\Money\User|ObjectCollection $user The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByCreator($user, $comparison = null)
+    {
+        if ($user instanceof \TechWilk\Money\User) {
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_CREATED_BY, $user->getId(), $comparison);
+        } elseif ($user instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_CREATED_BY, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByCreator() only accepts arguments of type \TechWilk\Money\User or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Creator relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function joinCreator($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Creator');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Creator');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Creator relation User object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TechWilk\Money\UserQuery A secondary query class using the current class as primary query
+     */
+    public function useCreatorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinCreator($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Creator', '\TechWilk\Money\UserQuery');
     }
 
     /**
@@ -792,6 +1023,72 @@ abstract class TransactionQuery extends ModelCriteria
 
             return $affectedRows;
         });
+    }
+
+    // timestampable behavior
+
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(TransactionTableMap::COL_UPDATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by update date desc
+     *
+     * @return     $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(TransactionTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by update date asc
+     *
+     * @return     $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(TransactionTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by create date desc
+     *
+     * @return     $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(TransactionTableMap::COL_CREATED);
+    }
+
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(TransactionTableMap::COL_CREATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by create date asc
+     *
+     * @return     $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(TransactionTableMap::COL_CREATED);
     }
 
 } // TransactionQuery

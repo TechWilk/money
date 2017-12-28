@@ -4,10 +4,10 @@ use Propel\Generator\Manager\MigrationManager;
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1476460507.
- * Generated on 2016-10-14 15:55:07 by user.
+ * up to version 1514406903.
+ * Generated on 2017-12-27 21:35:03 by user
  */
-class PropelMigration_1476460507
+class PropelMigration_1514406903
 {
     public $comment = '';
 
@@ -32,54 +32,105 @@ class PropelMigration_1476460507
     }
 
     /**
-     * Get the SQL statements for the Up migration.
+     * Get the SQL statements for the Up migration
      *
      * @return array list of the SQL strings to execute for the Up migration
      *               the keys being the datasources
      */
     public function getUpSQL()
     {
-        return [
+        return array (
   'money' => '
 # This is a fix for InnoDB in MySQL >= 4.1.x
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `hashtag`
+ALTER TABLE `account`
 
-  DROP PRIMARY KEY,
+  ADD `created` DATETIME AFTER `name`,
 
-  ADD PRIMARY KEY (`tag`,`transaction_id`);
+  ADD `updated` DATETIME AFTER `created`;
+
+ALTER TABLE `breakdown`
+
+  ADD `created` DATETIME AFTER `category_id`,
+
+  ADD `updated` DATETIME AFTER `created`;
+
+ALTER TABLE `transaction`
+
+  ADD `created_by` INTEGER NOT NULL AFTER `account_id`,
+
+  ADD `created` DATETIME AFTER `created_by`,
+
+  ADD `updated` DATETIME AFTER `created`;
+
+CREATE INDEX `transaction_fi_c0dfeb` ON `transaction` (`created_by`);
+
+ALTER TABLE `transaction` ADD CONSTRAINT `transaction_fk_c0dfeb`
+    FOREIGN KEY (`created_by`)
+    REFERENCES `user` (`id`);
+
+ALTER TABLE `user`
+
+  ADD `created` DATETIME AFTER `enable`,
+
+  ADD `updated` DATETIME AFTER `created`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
-];
+);
     }
 
     /**
-     * Get the SQL statements for the Down migration.
+     * Get the SQL statements for the Down migration
      *
      * @return array list of the SQL strings to execute for the Down migration
      *               the keys being the datasources
      */
     public function getDownSQL()
     {
-        return [
+        return array (
   'money' => '
 # This is a fix for InnoDB in MySQL >= 4.1.x
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `hashtag`
+ALTER TABLE `account`
 
-  DROP PRIMARY KEY,
+  DROP `created`,
 
-  ADD PRIMARY KEY (`tag`);
+  DROP `updated`;
+
+ALTER TABLE `breakdown`
+
+  DROP `created`,
+
+  DROP `updated`;
+
+ALTER TABLE `transaction` DROP FOREIGN KEY `transaction_fk_c0dfeb`;
+
+DROP INDEX `transaction_fi_c0dfeb` ON `transaction`;
+
+ALTER TABLE `transaction`
+
+  DROP `created_by`,
+
+  DROP `created`,
+
+  DROP `updated`;
+
+ALTER TABLE `user`
+
+  DROP `created`,
+
+  DROP `updated`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
 ',
-];
+);
     }
+
 }

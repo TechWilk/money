@@ -59,7 +59,7 @@ class UserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the id field
@@ -107,6 +107,16 @@ class UserTableMap extends TableMap
     const COL_ENABLE = 'user.enable';
 
     /**
+     * the column name for the created field
+     */
+    const COL_CREATED = 'user.created';
+
+    /**
+     * the column name for the updated field
+     */
+    const COL_UPDATED = 'user.updated';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -118,11 +128,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'FirstName', 'LastName', 'Email', 'PasswordHash', 'PasswordExpire', 'Enable', ),
-        self::TYPE_CAMELNAME     => array('id', 'firstName', 'lastName', 'email', 'passwordHash', 'passwordExpire', 'enable', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_FIRST_NAME, UserTableMap::COL_LAST_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_PASSWORD_HASH, UserTableMap::COL_PASSWORD_EXPIRE, UserTableMap::COL_ENABLE, ),
-        self::TYPE_FIELDNAME     => array('id', 'first_name', 'last_name', 'email', 'password_hash', 'password_expire', 'enable', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'FirstName', 'LastName', 'Email', 'PasswordHash', 'PasswordExpire', 'Enable', 'Created', 'Updated', ),
+        self::TYPE_CAMELNAME     => array('id', 'firstName', 'lastName', 'email', 'passwordHash', 'passwordExpire', 'enable', 'created', 'updated', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_FIRST_NAME, UserTableMap::COL_LAST_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_PASSWORD_HASH, UserTableMap::COL_PASSWORD_EXPIRE, UserTableMap::COL_ENABLE, UserTableMap::COL_CREATED, UserTableMap::COL_UPDATED, ),
+        self::TYPE_FIELDNAME     => array('id', 'first_name', 'last_name', 'email', 'password_hash', 'password_expire', 'enable', 'created', 'updated', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -132,11 +142,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'FirstName' => 1, 'LastName' => 2, 'Email' => 3, 'PasswordHash' => 4, 'PasswordExpire' => 5, 'Enable' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'firstName' => 1, 'lastName' => 2, 'email' => 3, 'passwordHash' => 4, 'passwordExpire' => 5, 'enable' => 6, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_FIRST_NAME => 1, UserTableMap::COL_LAST_NAME => 2, UserTableMap::COL_EMAIL => 3, UserTableMap::COL_PASSWORD_HASH => 4, UserTableMap::COL_PASSWORD_EXPIRE => 5, UserTableMap::COL_ENABLE => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'first_name' => 1, 'last_name' => 2, 'email' => 3, 'password_hash' => 4, 'password_expire' => 5, 'enable' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'FirstName' => 1, 'LastName' => 2, 'Email' => 3, 'PasswordHash' => 4, 'PasswordExpire' => 5, 'Enable' => 6, 'Created' => 7, 'Updated' => 8, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'firstName' => 1, 'lastName' => 2, 'email' => 3, 'passwordHash' => 4, 'passwordExpire' => 5, 'enable' => 6, 'created' => 7, 'updated' => 8, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_FIRST_NAME => 1, UserTableMap::COL_LAST_NAME => 2, UserTableMap::COL_EMAIL => 3, UserTableMap::COL_PASSWORD_HASH => 4, UserTableMap::COL_PASSWORD_EXPIRE => 5, UserTableMap::COL_ENABLE => 6, UserTableMap::COL_CREATED => 7, UserTableMap::COL_UPDATED => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'first_name' => 1, 'last_name' => 2, 'email' => 3, 'password_hash' => 4, 'password_expire' => 5, 'enable' => 6, 'created' => 7, 'updated' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -163,6 +173,8 @@ class UserTableMap extends TableMap
         $this->addColumn('password_hash', 'PasswordHash', 'VARCHAR', true, 80, null);
         $this->addColumn('password_expire', 'PasswordExpire', 'TIMESTAMP', false, null, null);
         $this->addColumn('enable', 'Enable', 'BOOLEAN', true, 1, true);
+        $this->addColumn('created', 'Created', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated', 'Updated', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -170,6 +182,13 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Transaction', '\\TechWilk\\Money\\Transaction', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':created_by',
+    1 => ':id',
+  ),
+), null, null, 'Transactions', false);
         $this->addRelation('UserAccounts', '\\TechWilk\\Money\\UserAccounts', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -179,6 +198,19 @@ class UserTableMap extends TableMap
 ), null, null, 'UserAccountss', false);
         $this->addRelation('Account', '\\TechWilk\\Money\\Account', RelationMap::MANY_TO_MANY, array(), null, null, 'Accounts');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created', 'update_column' => 'updated', 'disable_created_at' => 'false', 'disable_updated_at' => 'false', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -328,6 +360,8 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_PASSWORD_HASH);
             $criteria->addSelectColumn(UserTableMap::COL_PASSWORD_EXPIRE);
             $criteria->addSelectColumn(UserTableMap::COL_ENABLE);
+            $criteria->addSelectColumn(UserTableMap::COL_CREATED);
+            $criteria->addSelectColumn(UserTableMap::COL_UPDATED);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.first_name');
@@ -336,6 +370,8 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.password_hash');
             $criteria->addSelectColumn($alias . '.password_expire');
             $criteria->addSelectColumn($alias . '.enable');
+            $criteria->addSelectColumn($alias . '.created');
+            $criteria->addSelectColumn($alias . '.updated');
         }
     }
 

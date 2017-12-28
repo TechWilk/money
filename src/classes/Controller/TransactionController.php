@@ -27,6 +27,7 @@ class TransactionController extends AbstractController
         $transaction_data['account'] = filter_var($data['account'][0], FILTER_SANITIZE_NUMBER_INT);
 
         $t = new Transaction();
+        $t->setCreator($this->auth->currentUser());
 
         if (isset($args['id'])) {
             $t = TransactionQuery::create()->forUser($this->auth->currentUser())->findPK($args['id']);

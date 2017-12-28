@@ -96,7 +96,7 @@ class TransactionController extends AbstractController
 
         $transactions = TransactionQuery::create()->forUser($this->auth->currentUser())->filterByAccount($account)->orderByDate('desc')->find();
         $transactions = $this->groupTransactionsByMonth($transactions);
-        
+
         return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions, 'account' => $account]);
     }
 

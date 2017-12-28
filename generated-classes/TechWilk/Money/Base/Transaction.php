@@ -28,6 +28,8 @@ use TechWilk\Money\Transaction as ChildTransaction;
 use TechWilk\Money\TransactionHashtag as ChildTransactionHashtag;
 use TechWilk\Money\TransactionHashtagQuery as ChildTransactionHashtagQuery;
 use TechWilk\Money\TransactionQuery as ChildTransactionQuery;
+use TechWilk\Money\User as ChildUser;
+use TechWilk\Money\UserQuery as ChildUserQuery;
 use TechWilk\Money\Map\BreakdownTableMap;
 use TechWilk\Money\Map\TransactionHashtagTableMap;
 use TechWilk\Money\Map\TransactionTableMap;
@@ -109,9 +111,35 @@ abstract class Transaction implements ActiveRecordInterface
     protected $account_id;
 
     /**
+     * The value for the created_by field.
+     *
+     * @var        int
+     */
+    protected $created_by;
+
+    /**
+     * The value for the created field.
+     *
+     * @var        DateTime
+     */
+    protected $created;
+
+    /**
+     * The value for the updated field.
+     *
+     * @var        DateTime
+     */
+    protected $updated;
+
+    /**
      * @var        ChildAccount
      */
     protected $aAccount;
+
+    /**
+     * @var        ChildUser
+     */
+    protected $aCreator;
 
     /**
      * @var        ObjectCollection|ChildBreakdown[] Collection to store aggregation of ChildBreakdown objects.
@@ -447,6 +475,56 @@ abstract class Transaction implements ActiveRecordInterface
     }
 
     /**
+     * Get the [created_by] column value.
+     *
+     * @return int
+     */
+    public function getCreatedBy()
+    {
+        return $this->created_by;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created;
+        } else {
+            return $this->created instanceof \DateTimeInterface ? $this->created->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdated($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated;
+        } else {
+            return $this->updated instanceof \DateTimeInterface ? $this->updated->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -551,6 +629,70 @@ abstract class Transaction implements ActiveRecordInterface
     } // setAccountId()
 
     /**
+     * Set the value of [created_by] column.
+     *
+     * @param int $v new value
+     * @return $this|\TechWilk\Money\Transaction The current object (for fluent API support)
+     */
+    public function setCreatedBy($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->created_by !== $v) {
+            $this->created_by = $v;
+            $this->modifiedColumns[TransactionTableMap::COL_CREATED_BY] = true;
+        }
+
+        if ($this->aCreator !== null && $this->aCreator->getId() !== $v) {
+            $this->aCreator = null;
+        }
+
+        return $this;
+    } // setCreatedBy()
+
+    /**
+     * Sets the value of [created] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\Transaction The current object (for fluent API support)
+     */
+    public function setCreated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created !== null || $dt !== null) {
+            if ($this->created === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created->format("Y-m-d H:i:s.u")) {
+                $this->created = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[TransactionTableMap::COL_CREATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreated()
+
+    /**
+     * Sets the value of [updated] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\TechWilk\Money\Transaction The current object (for fluent API support)
+     */
+    public function setUpdated($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated !== null || $dt !== null) {
+            if ($this->updated === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated->format("Y-m-d H:i:s.u")) {
+                $this->updated = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[TransactionTableMap::COL_UPDATED] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setUpdated()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -603,6 +745,21 @@ abstract class Transaction implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : TransactionTableMap::translateFieldName('AccountId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->account_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : TransactionTableMap::translateFieldName('CreatedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->created_by = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TransactionTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TransactionTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -611,7 +768,7 @@ abstract class Transaction implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = TransactionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = TransactionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\TechWilk\\Money\\Transaction'), 0, $e);
@@ -635,6 +792,9 @@ abstract class Transaction implements ActiveRecordInterface
     {
         if ($this->aAccount !== null && $this->account_id !== $this->aAccount->getId()) {
             $this->aAccount = null;
+        }
+        if ($this->aCreator !== null && $this->created_by !== $this->aCreator->getId()) {
+            $this->aCreator = null;
         }
     } // ensureConsistency
 
@@ -676,6 +836,7 @@ abstract class Transaction implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aAccount = null;
+            $this->aCreator = null;
             $this->collBreakdowns = null;
 
             $this->collTransactionHashtags = null;
@@ -747,8 +908,20 @@ abstract class Transaction implements ActiveRecordInterface
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+
+                if (!$this->isColumnModified(TransactionTableMap::COL_CREATED)) {
+                    $this->setCreated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
+                if (!$this->isColumnModified(TransactionTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(TransactionTableMap::COL_UPDATED)) {
+                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -794,6 +967,13 @@ abstract class Transaction implements ActiveRecordInterface
                     $affectedRows += $this->aAccount->save($con);
                 }
                 $this->setAccount($this->aAccount);
+            }
+
+            if ($this->aCreator !== null) {
+                if ($this->aCreator->isModified() || $this->aCreator->isNew()) {
+                    $affectedRows += $this->aCreator->save($con);
+                }
+                $this->setCreator($this->aCreator);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -911,6 +1091,15 @@ abstract class Transaction implements ActiveRecordInterface
         if ($this->isColumnModified(TransactionTableMap::COL_ACCOUNT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'account_id';
         }
+        if ($this->isColumnModified(TransactionTableMap::COL_CREATED_BY)) {
+            $modifiedColumns[':p' . $index++]  = 'created_by';
+        }
+        if ($this->isColumnModified(TransactionTableMap::COL_CREATED)) {
+            $modifiedColumns[':p' . $index++]  = 'created';
+        }
+        if ($this->isColumnModified(TransactionTableMap::COL_UPDATED)) {
+            $modifiedColumns[':p' . $index++]  = 'updated';
+        }
 
         $sql = sprintf(
             'INSERT INTO transaction (%s) VALUES (%s)',
@@ -936,6 +1125,15 @@ abstract class Transaction implements ActiveRecordInterface
                         break;
                     case 'account_id':
                         $stmt->bindValue($identifier, $this->account_id, PDO::PARAM_INT);
+                        break;
+                    case 'created_by':
+                        $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+                        break;
+                    case 'created':
+                        $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'updated':
+                        $stmt->bindValue($identifier, $this->updated ? $this->updated->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1014,6 +1212,15 @@ abstract class Transaction implements ActiveRecordInterface
             case 4:
                 return $this->getAccountId();
                 break;
+            case 5:
+                return $this->getCreatedBy();
+                break;
+            case 6:
+                return $this->getCreated();
+                break;
+            case 7:
+                return $this->getUpdated();
+                break;
             default:
                 return null;
                 break;
@@ -1049,9 +1256,20 @@ abstract class Transaction implements ActiveRecordInterface
             $keys[2] => $this->getValue(),
             $keys[3] => $this->getDescription(),
             $keys[4] => $this->getAccountId(),
+            $keys[5] => $this->getCreatedBy(),
+            $keys[6] => $this->getCreated(),
+            $keys[7] => $this->getUpdated(),
         );
         if ($result[$keys[1]] instanceof \DateTimeInterface) {
             $result[$keys[1]] = $result[$keys[1]]->format('c');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
+        }
+
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1074,6 +1292,21 @@ abstract class Transaction implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aAccount->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aCreator) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'user';
+                        break;
+                    default:
+                        $key = 'Creator';
+                }
+
+                $result[$key] = $this->aCreator->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collBreakdowns) {
 
@@ -1154,6 +1387,15 @@ abstract class Transaction implements ActiveRecordInterface
             case 4:
                 $this->setAccountId($value);
                 break;
+            case 5:
+                $this->setCreatedBy($value);
+                break;
+            case 6:
+                $this->setCreated($value);
+                break;
+            case 7:
+                $this->setUpdated($value);
+                break;
         } // switch()
 
         return $this;
@@ -1194,6 +1436,15 @@ abstract class Transaction implements ActiveRecordInterface
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setAccountId($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setCreatedBy($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setCreated($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setUpdated($arr[$keys[7]]);
         }
     }
 
@@ -1250,6 +1501,15 @@ abstract class Transaction implements ActiveRecordInterface
         }
         if ($this->isColumnModified(TransactionTableMap::COL_ACCOUNT_ID)) {
             $criteria->add(TransactionTableMap::COL_ACCOUNT_ID, $this->account_id);
+        }
+        if ($this->isColumnModified(TransactionTableMap::COL_CREATED_BY)) {
+            $criteria->add(TransactionTableMap::COL_CREATED_BY, $this->created_by);
+        }
+        if ($this->isColumnModified(TransactionTableMap::COL_CREATED)) {
+            $criteria->add(TransactionTableMap::COL_CREATED, $this->created);
+        }
+        if ($this->isColumnModified(TransactionTableMap::COL_UPDATED)) {
+            $criteria->add(TransactionTableMap::COL_UPDATED, $this->updated);
         }
 
         return $criteria;
@@ -1341,6 +1601,9 @@ abstract class Transaction implements ActiveRecordInterface
         $copyObj->setValue($this->getValue());
         $copyObj->setDescription($this->getDescription());
         $copyObj->setAccountId($this->getAccountId());
+        $copyObj->setCreatedBy($this->getCreatedBy());
+        $copyObj->setCreated($this->getCreated());
+        $copyObj->setUpdated($this->getUpdated());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1438,6 +1701,57 @@ abstract class Transaction implements ActiveRecordInterface
         }
 
         return $this->aAccount;
+    }
+
+    /**
+     * Declares an association between this object and a ChildUser object.
+     *
+     * @param  ChildUser $v
+     * @return $this|\TechWilk\Money\Transaction The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCreator(ChildUser $v = null)
+    {
+        if ($v === null) {
+            $this->setCreatedBy(NULL);
+        } else {
+            $this->setCreatedBy($v->getId());
+        }
+
+        $this->aCreator = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
+        if ($v !== null) {
+            $v->addTransaction($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUser object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
+     * @throws PropelException
+     */
+    public function getCreator(ConnectionInterface $con = null)
+    {
+        if ($this->aCreator === null && ($this->created_by != 0)) {
+            $this->aCreator = ChildUserQuery::create()->findPk($this->created_by, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCreator->addTransactions($this);
+             */
+        }
+
+        return $this->aCreator;
     }
 
 
@@ -2217,11 +2531,17 @@ abstract class Transaction implements ActiveRecordInterface
         if (null !== $this->aAccount) {
             $this->aAccount->removeTransaction($this);
         }
+        if (null !== $this->aCreator) {
+            $this->aCreator->removeTransaction($this);
+        }
         $this->id = null;
         $this->date = null;
         $this->value = null;
         $this->description = null;
         $this->account_id = null;
+        $this->created_by = null;
+        $this->created = null;
+        $this->updated = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -2261,6 +2581,7 @@ abstract class Transaction implements ActiveRecordInterface
         $this->collTransactionHashtags = null;
         $this->collHashtags = null;
         $this->aAccount = null;
+        $this->aCreator = null;
     }
 
     /**
@@ -2271,6 +2592,20 @@ abstract class Transaction implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(TransactionTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     $this|ChildTransaction The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[TransactionTableMap::COL_UPDATED] = true;
+
+        return $this;
     }
 
     /**

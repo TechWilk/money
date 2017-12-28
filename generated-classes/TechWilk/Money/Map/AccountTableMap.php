@@ -59,7 +59,7 @@ class AccountTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class AccountTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the id field
@@ -80,6 +80,16 @@ class AccountTableMap extends TableMap
      * the column name for the name field
      */
     const COL_NAME = 'account.name';
+
+    /**
+     * the column name for the created field
+     */
+    const COL_CREATED = 'account.created';
+
+    /**
+     * the column name for the updated field
+     */
+    const COL_UPDATED = 'account.updated';
 
     /**
      * The default string format for model objects of the related table
@@ -93,11 +103,11 @@ class AccountTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', ),
-        self::TYPE_COLNAME       => array(AccountTableMap::COL_ID, AccountTableMap::COL_NAME, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Created', 'Updated', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'created', 'updated', ),
+        self::TYPE_COLNAME       => array(AccountTableMap::COL_ID, AccountTableMap::COL_NAME, AccountTableMap::COL_CREATED, AccountTableMap::COL_UPDATED, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'created', 'updated', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -107,11 +117,11 @@ class AccountTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, ),
-        self::TYPE_COLNAME       => array(AccountTableMap::COL_ID => 0, AccountTableMap::COL_NAME => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Created' => 2, 'Updated' => 3, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'created' => 2, 'updated' => 3, ),
+        self::TYPE_COLNAME       => array(AccountTableMap::COL_ID => 0, AccountTableMap::COL_NAME => 1, AccountTableMap::COL_CREATED => 2, AccountTableMap::COL_UPDATED => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'created' => 2, 'updated' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -133,6 +143,8 @@ class AccountTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', true, 50, null);
+        $this->addColumn('created', 'Created', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated', 'Updated', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -163,6 +175,19 @@ class AccountTableMap extends TableMap
 ), null, null, 'UserAccountss', false);
         $this->addRelation('User', '\\TechWilk\\Money\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created', 'update_column' => 'updated', 'disable_created_at' => 'false', 'disable_updated_at' => 'false', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -307,9 +332,13 @@ class AccountTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(AccountTableMap::COL_ID);
             $criteria->addSelectColumn(AccountTableMap::COL_NAME);
+            $criteria->addSelectColumn(AccountTableMap::COL_CREATED);
+            $criteria->addSelectColumn(AccountTableMap::COL_UPDATED);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.created');
+            $criteria->addSelectColumn($alias . '.updated');
         }
     }
 

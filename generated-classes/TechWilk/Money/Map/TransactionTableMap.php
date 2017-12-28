@@ -59,7 +59,7 @@ class TransactionTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class TransactionTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -97,6 +97,21 @@ class TransactionTableMap extends TableMap
     const COL_ACCOUNT_ID = 'transaction.account_id';
 
     /**
+     * the column name for the created_by field
+     */
+    const COL_CREATED_BY = 'transaction.created_by';
+
+    /**
+     * the column name for the created field
+     */
+    const COL_CREATED = 'transaction.created';
+
+    /**
+     * the column name for the updated field
+     */
+    const COL_UPDATED = 'transaction.updated';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -108,11 +123,11 @@ class TransactionTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Date', 'Value', 'Description', 'AccountId', ),
-        self::TYPE_CAMELNAME     => array('id', 'date', 'value', 'description', 'accountId', ),
-        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID, TransactionTableMap::COL_DATE, TransactionTableMap::COL_VALUE, TransactionTableMap::COL_DESCRIPTION, TransactionTableMap::COL_ACCOUNT_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'date', 'value', 'description', 'account_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'Date', 'Value', 'Description', 'AccountId', 'CreatedBy', 'Created', 'Updated', ),
+        self::TYPE_CAMELNAME     => array('id', 'date', 'value', 'description', 'accountId', 'createdBy', 'created', 'updated', ),
+        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID, TransactionTableMap::COL_DATE, TransactionTableMap::COL_VALUE, TransactionTableMap::COL_DESCRIPTION, TransactionTableMap::COL_ACCOUNT_ID, TransactionTableMap::COL_CREATED_BY, TransactionTableMap::COL_CREATED, TransactionTableMap::COL_UPDATED, ),
+        self::TYPE_FIELDNAME     => array('id', 'date', 'value', 'description', 'account_id', 'created_by', 'created', 'updated', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -122,11 +137,11 @@ class TransactionTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Date' => 1, 'Value' => 2, 'Description' => 3, 'AccountId' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'date' => 1, 'value' => 2, 'description' => 3, 'accountId' => 4, ),
-        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID => 0, TransactionTableMap::COL_DATE => 1, TransactionTableMap::COL_VALUE => 2, TransactionTableMap::COL_DESCRIPTION => 3, TransactionTableMap::COL_ACCOUNT_ID => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'date' => 1, 'value' => 2, 'description' => 3, 'account_id' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Date' => 1, 'Value' => 2, 'Description' => 3, 'AccountId' => 4, 'CreatedBy' => 5, 'Created' => 6, 'Updated' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'date' => 1, 'value' => 2, 'description' => 3, 'accountId' => 4, 'createdBy' => 5, 'created' => 6, 'updated' => 7, ),
+        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID => 0, TransactionTableMap::COL_DATE => 1, TransactionTableMap::COL_VALUE => 2, TransactionTableMap::COL_DESCRIPTION => 3, TransactionTableMap::COL_ACCOUNT_ID => 4, TransactionTableMap::COL_CREATED_BY => 5, TransactionTableMap::COL_CREATED => 6, TransactionTableMap::COL_UPDATED => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'date' => 1, 'value' => 2, 'description' => 3, 'account_id' => 4, 'created_by' => 5, 'created' => 6, 'updated' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -151,6 +166,9 @@ class TransactionTableMap extends TableMap
         $this->addColumn('value', 'Value', 'FLOAT', true, null, null);
         $this->addColumn('description', 'Description', 'VARCHAR', false, 100, null);
         $this->addForeignKey('account_id', 'AccountId', 'INTEGER', 'account', 'id', true, null, null);
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'user', 'id', true, null, null);
+        $this->addColumn('created', 'Created', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated', 'Updated', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -162,6 +180,13 @@ class TransactionTableMap extends TableMap
   0 =>
   array (
     0 => ':account_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Creator', '\\TechWilk\\Money\\User', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':created_by',
     1 => ':id',
   ),
 ), null, null, null, false);
@@ -181,6 +206,19 @@ class TransactionTableMap extends TableMap
 ), null, null, 'TransactionHashtags', false);
         $this->addRelation('Hashtag', '\\TechWilk\\Money\\Hashtag', RelationMap::MANY_TO_MANY, array(), null, null, 'Hashtags');
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created', 'update_column' => 'updated', 'disable_created_at' => 'false', 'disable_updated_at' => 'false', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -328,12 +366,18 @@ class TransactionTableMap extends TableMap
             $criteria->addSelectColumn(TransactionTableMap::COL_VALUE);
             $criteria->addSelectColumn(TransactionTableMap::COL_DESCRIPTION);
             $criteria->addSelectColumn(TransactionTableMap::COL_ACCOUNT_ID);
+            $criteria->addSelectColumn(TransactionTableMap::COL_CREATED_BY);
+            $criteria->addSelectColumn(TransactionTableMap::COL_CREATED);
+            $criteria->addSelectColumn(TransactionTableMap::COL_UPDATED);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.date');
             $criteria->addSelectColumn($alias . '.value');
             $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.account_id');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.created');
+            $criteria->addSelectColumn($alias . '.updated');
         }
     }
 

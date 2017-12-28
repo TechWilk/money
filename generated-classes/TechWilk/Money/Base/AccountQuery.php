@@ -22,9 +22,13 @@ use TechWilk\Money\Map\AccountTableMap;
  *
  * @method     ChildAccountQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildAccountQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildAccountQuery orderByCreated($order = Criteria::ASC) Order by the created column
+ * @method     ChildAccountQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  *
  * @method     ChildAccountQuery groupById() Group by the id column
  * @method     ChildAccountQuery groupByName() Group by the name column
+ * @method     ChildAccountQuery groupByCreated() Group by the created column
+ * @method     ChildAccountQuery groupByUpdated() Group by the updated column
  *
  * @method     ChildAccountQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildAccountQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -70,17 +74,23 @@ use TechWilk\Money\Map\AccountTableMap;
  * @method     ChildAccount findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAccount matching the query, or a new ChildAccount object populated from the query conditions when no match is found
  *
  * @method     ChildAccount findOneById(int $id) Return the first ChildAccount filtered by the id column
- * @method     ChildAccount findOneByName(string $name) Return the first ChildAccount filtered by the name column *
+ * @method     ChildAccount findOneByName(string $name) Return the first ChildAccount filtered by the name column
+ * @method     ChildAccount findOneByCreated(string $created) Return the first ChildAccount filtered by the created column
+ * @method     ChildAccount findOneByUpdated(string $updated) Return the first ChildAccount filtered by the updated column *
 
  * @method     ChildAccount requirePk($key, ConnectionInterface $con = null) Return the ChildAccount by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAccount requireOne(ConnectionInterface $con = null) Return the first ChildAccount matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAccount requireOneById(int $id) Return the first ChildAccount filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAccount requireOneByName(string $name) Return the first ChildAccount filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildAccount requireOneByCreated(string $created) Return the first ChildAccount filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildAccount requireOneByUpdated(string $updated) Return the first ChildAccount filtered by the updated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAccount[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildAccount objects based on current ModelCriteria
  * @method     ChildAccount[]|ObjectCollection findById(int $id) Return ChildAccount objects filtered by the id column
  * @method     ChildAccount[]|ObjectCollection findByName(string $name) Return ChildAccount objects filtered by the name column
+ * @method     ChildAccount[]|ObjectCollection findByCreated(string $created) Return ChildAccount objects filtered by the created column
+ * @method     ChildAccount[]|ObjectCollection findByUpdated(string $updated) Return ChildAccount objects filtered by the updated column
  * @method     ChildAccount[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -179,7 +189,7 @@ abstract class AccountQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name FROM account WHERE id = :p0';
+        $sql = 'SELECT id, name, created, updated FROM account WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -333,6 +343,92 @@ abstract class AccountQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AccountTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the created column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreated('2011-03-14'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated('now'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated(array('max' => 'yesterday')); // WHERE created > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $created The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function filterByCreated($created = null, $comparison = null)
+    {
+        if (is_array($created)) {
+            $useMinMax = false;
+            if (isset($created['min'])) {
+                $this->addUsingAlias(AccountTableMap::COL_CREATED, $created['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($created['max'])) {
+                $this->addUsingAlias(AccountTableMap::COL_CREATED, $created['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AccountTableMap::COL_CREATED, $created, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdated('2011-03-14'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated('now'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated(array('max' => 'yesterday')); // WHERE updated > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updated The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function filterByUpdated($updated = null, $comparison = null)
+    {
+        if (is_array($updated)) {
+            $useMinMax = false;
+            if (isset($updated['min'])) {
+                $this->addUsingAlias(AccountTableMap::COL_UPDATED, $updated['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updated['max'])) {
+                $this->addUsingAlias(AccountTableMap::COL_UPDATED, $updated['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AccountTableMap::COL_UPDATED, $updated, $comparison);
     }
 
     /**
@@ -646,6 +742,72 @@ abstract class AccountQuery extends ModelCriteria
 
             return $affectedRows;
         });
+    }
+
+    // timestampable behavior
+
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(AccountTableMap::COL_UPDATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by update date desc
+     *
+     * @return     $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(AccountTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by update date asc
+     *
+     * @return     $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(AccountTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by create date desc
+     *
+     * @return     $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(AccountTableMap::COL_CREATED);
+    }
+
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(AccountTableMap::COL_CREATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by create date asc
+     *
+     * @return     $this|ChildAccountQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(AccountTableMap::COL_CREATED);
     }
 
 } // AccountQuery

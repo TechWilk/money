@@ -25,12 +25,16 @@ use TechWilk\Money\Map\BreakdownTableMap;
  * @method     ChildBreakdownQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildBreakdownQuery orderByValue($order = Criteria::ASC) Order by the value column
  * @method     ChildBreakdownQuery orderByCategoryId($order = Criteria::ASC) Order by the category_id column
+ * @method     ChildBreakdownQuery orderByCreated($order = Criteria::ASC) Order by the created column
+ * @method     ChildBreakdownQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  *
  * @method     ChildBreakdownQuery groupById() Group by the id column
  * @method     ChildBreakdownQuery groupByTransactionId() Group by the transaction_id column
  * @method     ChildBreakdownQuery groupByDescription() Group by the description column
  * @method     ChildBreakdownQuery groupByValue() Group by the value column
  * @method     ChildBreakdownQuery groupByCategoryId() Group by the category_id column
+ * @method     ChildBreakdownQuery groupByCreated() Group by the created column
+ * @method     ChildBreakdownQuery groupByUpdated() Group by the updated column
  *
  * @method     ChildBreakdownQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildBreakdownQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -69,7 +73,9 @@ use TechWilk\Money\Map\BreakdownTableMap;
  * @method     ChildBreakdown findOneByTransactionId(int $transaction_id) Return the first ChildBreakdown filtered by the transaction_id column
  * @method     ChildBreakdown findOneByDescription(string $description) Return the first ChildBreakdown filtered by the description column
  * @method     ChildBreakdown findOneByValue(double $value) Return the first ChildBreakdown filtered by the value column
- * @method     ChildBreakdown findOneByCategoryId(int $category_id) Return the first ChildBreakdown filtered by the category_id column *
+ * @method     ChildBreakdown findOneByCategoryId(int $category_id) Return the first ChildBreakdown filtered by the category_id column
+ * @method     ChildBreakdown findOneByCreated(string $created) Return the first ChildBreakdown filtered by the created column
+ * @method     ChildBreakdown findOneByUpdated(string $updated) Return the first ChildBreakdown filtered by the updated column *
 
  * @method     ChildBreakdown requirePk($key, ConnectionInterface $con = null) Return the ChildBreakdown by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOne(ConnectionInterface $con = null) Return the first ChildBreakdown matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -79,6 +85,8 @@ use TechWilk\Money\Map\BreakdownTableMap;
  * @method     ChildBreakdown requireOneByDescription(string $description) Return the first ChildBreakdown filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOneByValue(double $value) Return the first ChildBreakdown filtered by the value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildBreakdown requireOneByCategoryId(int $category_id) Return the first ChildBreakdown filtered by the category_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBreakdown requireOneByCreated(string $created) Return the first ChildBreakdown filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildBreakdown requireOneByUpdated(string $updated) Return the first ChildBreakdown filtered by the updated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildBreakdown[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildBreakdown objects based on current ModelCriteria
  * @method     ChildBreakdown[]|ObjectCollection findById(int $id) Return ChildBreakdown objects filtered by the id column
@@ -86,6 +94,8 @@ use TechWilk\Money\Map\BreakdownTableMap;
  * @method     ChildBreakdown[]|ObjectCollection findByDescription(string $description) Return ChildBreakdown objects filtered by the description column
  * @method     ChildBreakdown[]|ObjectCollection findByValue(double $value) Return ChildBreakdown objects filtered by the value column
  * @method     ChildBreakdown[]|ObjectCollection findByCategoryId(int $category_id) Return ChildBreakdown objects filtered by the category_id column
+ * @method     ChildBreakdown[]|ObjectCollection findByCreated(string $created) Return ChildBreakdown objects filtered by the created column
+ * @method     ChildBreakdown[]|ObjectCollection findByUpdated(string $updated) Return ChildBreakdown objects filtered by the updated column
  * @method     ChildBreakdown[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -184,7 +194,7 @@ abstract class BreakdownQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, transaction_id, description, value, category_id FROM breakdown WHERE id = :p0';
+        $sql = 'SELECT id, transaction_id, description, value, category_id, created, updated FROM breakdown WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -468,6 +478,92 @@ abstract class BreakdownQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreated('2011-03-14'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated('now'); // WHERE created = '2011-03-14'
+     * $query->filterByCreated(array('max' => 'yesterday')); // WHERE created > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $created The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function filterByCreated($created = null, $comparison = null)
+    {
+        if (is_array($created)) {
+            $useMinMax = false;
+            if (isset($created['min'])) {
+                $this->addUsingAlias(BreakdownTableMap::COL_CREATED, $created['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($created['max'])) {
+                $this->addUsingAlias(BreakdownTableMap::COL_CREATED, $created['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BreakdownTableMap::COL_CREATED, $created, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdated('2011-03-14'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated('now'); // WHERE updated = '2011-03-14'
+     * $query->filterByUpdated(array('max' => 'yesterday')); // WHERE updated > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updated The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function filterByUpdated($updated = null, $comparison = null)
+    {
+        if (is_array($updated)) {
+            $useMinMax = false;
+            if (isset($updated['min'])) {
+                $this->addUsingAlias(BreakdownTableMap::COL_UPDATED, $updated['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updated['max'])) {
+                $this->addUsingAlias(BreakdownTableMap::COL_UPDATED, $updated['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BreakdownTableMap::COL_UPDATED, $updated, $comparison);
+    }
+
+    /**
      * Filter the query by a related \TechWilk\Money\Transaction object
      *
      * @param \TechWilk\Money\Transaction|ObjectCollection $transaction The related object(s) to use as filter
@@ -696,6 +792,72 @@ abstract class BreakdownQuery extends ModelCriteria
 
             return $affectedRows;
         });
+    }
+
+    // timestampable behavior
+
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(BreakdownTableMap::COL_UPDATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by update date desc
+     *
+     * @return     $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(BreakdownTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by update date asc
+     *
+     * @return     $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(BreakdownTableMap::COL_UPDATED);
+    }
+
+    /**
+     * Order by create date desc
+     *
+     * @return     $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(BreakdownTableMap::COL_CREATED);
+    }
+
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(BreakdownTableMap::COL_CREATED, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by create date asc
+     *
+     * @return     $this|ChildBreakdownQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(BreakdownTableMap::COL_CREATED);
     }
 
 } // BreakdownQuery

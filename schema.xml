@@ -7,9 +7,19 @@
     <column name="value" type="float" required="true" />
     <column name="description" type="varchar" size="100" />
     <column name="account_id" type="integer" required="true"/>
+    <column name="created_by" type="integer" required="true"/>
+
+    <behavior name="timestampable">
+      <parameter name="create_column" value="created" />
+      <parameter name="update_column" value="updated" />
+    </behavior>
     
     <foreign-key foreignTable="account">
       <reference local="account_id" foreign="id" />
+    </foreign-key>
+
+    <foreign-key foreignTable="user" phpName="Creator">
+      <reference local="created_by" foreign="id" />
     </foreign-key>
   </table>
 
@@ -20,6 +30,11 @@
     <column name="description" type="varchar" size="50" required="true" />
     <column name="value" type="float" required="true"/>
     <column name="category_id" type="integer" required="true"/>
+
+    <behavior name="timestampable">
+      <parameter name="create_column" value="created" />
+      <parameter name="update_column" value="updated" />
+    </behavior>
     
     <foreign-key foreignTable="transaction">
       <reference local="transaction_id" foreign="id" />
@@ -69,6 +84,11 @@
     <column name="password_hash" type="varchar" size="80" required="true" />
     <column name="password_expire" type="timestamp" />
     <column name="enable" type="boolean" required="true" defaultValue="1" />
+
+    <behavior name="timestampable">
+      <parameter name="create_column" value="created" />
+      <parameter name="update_column" value="updated" />
+    </behavior>
   </table>
 
 
@@ -88,6 +108,11 @@
   <table name="account" phpName="Account">
     <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
     <column name="name" type="varchar" size="50" required="true" />
+
+    <behavior name="timestampable">
+      <parameter name="create_column" value="created" />
+      <parameter name="update_column" value="updated" />
+    </behavior>
   </table>
 
   <table name="loginFailure" idMethod="native" phpName="LoginFailure">

@@ -57,7 +57,7 @@ class TestData
         $transaction->setAccount($account);
         $transaction->setDescription('a futher #test description');
         $transaction->addHashtag($hashtagTest);
-        $transaction->setCreator($user);        
+        $transaction->setCreator($user);
         $transaction->save();
 
         $transaction = new Transaction();
@@ -66,7 +66,7 @@ class TestData
         $transaction->setAccount($account);
         $transaction->setDescription('#different description');
         $transaction->addHashtag($hashtagDifferent);
-        $transaction->setCreator($user);        
+        $transaction->setCreator($user);
         $transaction->save();
 
         $transaction = new Transaction();
@@ -75,7 +75,7 @@ class TestData
         $transaction->setAccount($account);
         $transaction->setDescription('another #different description');
         $transaction->addHashtag($hashtagDifferent);
-        $transaction->setCreator($user);        
+        $transaction->setCreator($user);
         $transaction->save();
 
         $transaction = new Transaction();
@@ -84,7 +84,7 @@ class TestData
         $transaction->setAccount($account);
         $transaction->setDescription('this is #something expensive');
         $transaction->addHashtag($hashtagSomething);
-        $transaction->setCreator($user);        
+        $transaction->setCreator($user);
         $transaction->save();
 
         $transaction = new Transaction();
@@ -93,7 +93,7 @@ class TestData
         $transaction->setAccount($account);
         $transaction->setDescription('more #different descriptions');
         $transaction->addHashtag($hashtagDifferent);
-        $transaction->setCreator($user);        
+        $transaction->setCreator($user);
         $transaction->save();
 
         $transaction = new Transaction();
@@ -102,7 +102,7 @@ class TestData
         $transaction->setAccount($account);
         $transaction->setDescription('yet another #different description');
         $transaction->addHashtag($hashtagDifferent);
-        $transaction->setCreator($user);        
+        $transaction->setCreator($user);
         $transaction->save();
     }
 }

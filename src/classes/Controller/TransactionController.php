@@ -83,18 +83,21 @@ class TransactionController extends AbstractController
         $this->logger->info("Fetch transactions GET '/transactions");
 
         $transactions = TransactionQuery::create()->forUser($this->auth->currentUser())->orderByDate('desc')->find();
+
         if (isset($args['account'])) {
             $account = AccountQuery::create()->filterByUser($this->auth->currentUser())->filterByName($args['account'])->findOne();
-            $transactions = TransactionQuery::create()->forUser($this->auth->currentUser())->filterByAccount($account)->orderByDate('desc')->find();
-
-            $transactions = $this->groupTransactionsByMonth($transactions);
-
-            return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions, 'account' => $account]);
         }
 
-        $transactions = $this->groupTransactionsByMonth($transactions);
+        if (empty($account)) {
+            $transactions = $this->groupTransactionsByMonth($transactions);
 
-        return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions]);
+            return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions]);
+        }
+
+        $transactions = TransactionQuery::create()->forUser($this->auth->currentUser())->filterByAccount($account)->orderByDate('desc')->find();
+        $transactions = $this->groupTransactionsByMonth($transactions);
+        
+        return $this->view->render($response, 'transactions.twig', ['transactions' => $transactions, 'account' => $account]);
     }
 
     public function getTransactionsForMonth(ServerRequestInterface $request, ResponseInterface $response, $args)

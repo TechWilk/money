@@ -35,6 +35,7 @@ class HashtagsPageTest extends BaseTestCase
      */
     public function testGetHashtagsJsonAll()
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
         $response = $this->runApp('GET', '/tags.json');
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -63,6 +64,7 @@ class HashtagsPageTest extends BaseTestCase
      */
     public function testGetHashtagsJsonWithQueryParameter($q, $expected)
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
         $response = $this->runApp('GET', '/tags.json', ['q' => $q]);
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -76,6 +78,7 @@ class HashtagsPageTest extends BaseTestCase
 
     public function testGetHashtagsJsonWithInvalidQueryParameter()
     {
+        $response = $this->runApp('POST', '/login', ['username' => 'bob@example.com', 'password' => 'really-secure']);
         $response = $this->runApp('GET', '/tags.json', ['q' => 'ubadfuip32hafnidfo']);
 
         $this->assertEquals(200, $response->getStatusCode());

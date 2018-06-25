@@ -19,7 +19,7 @@
         "slim/twig-view": "^2.3",
         "aptoma/twig-markdown": "^2.0",
         "michelf/php-markdown": "^1.7",
-        "dpolac/twig-lambda": "^0.5.0",
+        "dpolac/twig-lambda": "^1.0.0",
         "twig/extensions": "^1.5",
         "techwilk/twig-hashtagify": "^1.0",
         "aboyadzhiev/php-math-parser": "dev-master"

@@ -24,6 +24,11 @@ class LoginLogoutTest extends BaseTestCase
         $user->save();
     }
 
+    public function setUp()
+    {
+        unset($_SESSION['userId']);
+    }
+
     public function providerTestLoginInvalidCredentials()
     {
         return [

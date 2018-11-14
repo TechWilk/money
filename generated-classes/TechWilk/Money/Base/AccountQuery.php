@@ -58,17 +58,17 @@ use TechWilk\Money\Map\AccountTableMap;
  * @method     ChildAccountQuery rightJoinWithCategory() Adds a RIGHT JOIN clause and with to the query using the Category relation
  * @method     ChildAccountQuery innerJoinWithCategory() Adds a INNER JOIN clause and with to the query using the Category relation
  *
- * @method     ChildAccountQuery leftJoinUserAccounts($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserAccounts relation
- * @method     ChildAccountQuery rightJoinUserAccounts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserAccounts relation
- * @method     ChildAccountQuery innerJoinUserAccounts($relationAlias = null) Adds a INNER JOIN clause to the query using the UserAccounts relation
+ * @method     ChildAccountQuery leftJoinUserAccount($relationAlias = null) Adds a LEFT JOIN clause to the query using the UserAccount relation
+ * @method     ChildAccountQuery rightJoinUserAccount($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UserAccount relation
+ * @method     ChildAccountQuery innerJoinUserAccount($relationAlias = null) Adds a INNER JOIN clause to the query using the UserAccount relation
  *
- * @method     ChildAccountQuery joinWithUserAccounts($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserAccounts relation
+ * @method     ChildAccountQuery joinWithUserAccount($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UserAccount relation
  *
- * @method     ChildAccountQuery leftJoinWithUserAccounts() Adds a LEFT JOIN clause and with to the query using the UserAccounts relation
- * @method     ChildAccountQuery rightJoinWithUserAccounts() Adds a RIGHT JOIN clause and with to the query using the UserAccounts relation
- * @method     ChildAccountQuery innerJoinWithUserAccounts() Adds a INNER JOIN clause and with to the query using the UserAccounts relation
+ * @method     ChildAccountQuery leftJoinWithUserAccount() Adds a LEFT JOIN clause and with to the query using the UserAccount relation
+ * @method     ChildAccountQuery rightJoinWithUserAccount() Adds a RIGHT JOIN clause and with to the query using the UserAccount relation
+ * @method     ChildAccountQuery innerJoinWithUserAccount() Adds a INNER JOIN clause and with to the query using the UserAccount relation
  *
- * @method     \TechWilk\Money\TransactionQuery|\TechWilk\Money\CategoryQuery|\TechWilk\Money\UserAccountsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \TechWilk\Money\TransactionQuery|\TechWilk\Money\CategoryQuery|\TechWilk\Money\UserAccountQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildAccount findOne(ConnectionInterface $con = null) Return the first ChildAccount matching the query
  * @method     ChildAccount findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAccount matching the query, or a new ChildAccount object populated from the query conditions when no match is found
@@ -578,40 +578,40 @@ abstract class AccountQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \TechWilk\Money\UserAccounts object
+     * Filter the query by a related \TechWilk\Money\UserAccount object
      *
-     * @param \TechWilk\Money\UserAccounts|ObjectCollection $userAccounts the related object to use as filter
+     * @param \TechWilk\Money\UserAccount|ObjectCollection $userAccount the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildAccountQuery The current query, for fluid interface
      */
-    public function filterByUserAccounts($userAccounts, $comparison = null)
+    public function filterByUserAccount($userAccount, $comparison = null)
     {
-        if ($userAccounts instanceof \TechWilk\Money\UserAccounts) {
+        if ($userAccount instanceof \TechWilk\Money\UserAccount) {
             return $this
-                ->addUsingAlias(AccountTableMap::COL_ID, $userAccounts->getAccountId(), $comparison);
-        } elseif ($userAccounts instanceof ObjectCollection) {
+                ->addUsingAlias(AccountTableMap::COL_ID, $userAccount->getAccountId(), $comparison);
+        } elseif ($userAccount instanceof ObjectCollection) {
             return $this
-                ->useUserAccountsQuery()
-                ->filterByPrimaryKeys($userAccounts->getPrimaryKeys())
+                ->useUserAccountQuery()
+                ->filterByPrimaryKeys($userAccount->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByUserAccounts() only accepts arguments of type \TechWilk\Money\UserAccounts or Collection');
+            throw new PropelException('filterByUserAccount() only accepts arguments of type \TechWilk\Money\UserAccount or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the UserAccounts relation
+     * Adds a JOIN clause to the query using the UserAccount relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildAccountQuery The current query, for fluid interface
      */
-    public function joinUserAccounts($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinUserAccount($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('UserAccounts');
+        $relationMap = $tableMap->getRelation('UserAccount');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -626,14 +626,14 @@ abstract class AccountQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'UserAccounts');
+            $this->addJoinObject($join, 'UserAccount');
         }
 
         return $this;
     }
 
     /**
-     * Use the UserAccounts relation UserAccounts object
+     * Use the UserAccount relation UserAccount object
      *
      * @see useQuery()
      *
@@ -641,13 +641,13 @@ abstract class AccountQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \TechWilk\Money\UserAccountsQuery A secondary query class using the current class as primary query
+     * @return \TechWilk\Money\UserAccountQuery A secondary query class using the current class as primary query
      */
-    public function useUserAccountsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useUserAccountQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinUserAccounts($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'UserAccounts', '\TechWilk\Money\UserAccountsQuery');
+            ->joinUserAccount($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UserAccount', '\TechWilk\Money\UserAccountQuery');
     }
 
     /**
@@ -662,7 +662,7 @@ abstract class AccountQuery extends ModelCriteria
     public function filterByUser($user, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->useUserAccountsQuery()
+            ->useUserAccountQuery()
             ->filterByUser($user, $comparison)
             ->endUse();
     }

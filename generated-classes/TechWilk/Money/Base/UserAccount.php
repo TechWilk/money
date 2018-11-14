@@ -18,9 +18,9 @@ use Propel\Runtime\Parser\AbstractParser;
 use TechWilk\Money\Account as ChildAccount;
 use TechWilk\Money\AccountQuery as ChildAccountQuery;
 use TechWilk\Money\User as ChildUser;
-use TechWilk\Money\UserAccountsQuery as ChildUserAccountsQuery;
+use TechWilk\Money\UserAccountQuery as ChildUserAccountQuery;
 use TechWilk\Money\UserQuery as ChildUserQuery;
-use TechWilk\Money\Map\UserAccountsTableMap;
+use TechWilk\Money\Map\UserAccountTableMap;
 
 /**
  * Base class that represents a row from the 'user_accounts' table.
@@ -29,12 +29,12 @@ use TechWilk\Money\Map\UserAccountsTableMap;
  *
  * @package    propel.generator.TechWilk.Money.Base
  */
-abstract class UserAccounts implements ActiveRecordInterface
+abstract class UserAccount implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\TechWilk\\Money\\Map\\UserAccountsTableMap';
+    const TABLE_MAP = '\\TechWilk\\Money\\Map\\UserAccountTableMap';
 
 
     /**
@@ -103,7 +103,7 @@ abstract class UserAccounts implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of TechWilk\Money\Base\UserAccounts object.
+     * Initializes internal state of TechWilk\Money\Base\UserAccount object.
      */
     public function __construct()
     {
@@ -198,9 +198,9 @@ abstract class UserAccounts implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>UserAccounts</code> instance.  If
-     * <code>obj</code> is an instance of <code>UserAccounts</code>, delegates to
-     * <code>equals(UserAccounts)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>UserAccount</code> instance.  If
+     * <code>obj</code> is an instance of <code>UserAccount</code>, delegates to
+     * <code>equals(UserAccount)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -266,7 +266,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|UserAccounts The current object, for fluid interface
+     * @return $this|UserAccount The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -361,7 +361,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * Set the value of [user_id] column.
      *
      * @param int $v new value
-     * @return $this|\TechWilk\Money\UserAccounts The current object (for fluent API support)
+     * @return $this|\TechWilk\Money\UserAccount The current object (for fluent API support)
      */
     public function setUserId($v)
     {
@@ -371,7 +371,7 @@ abstract class UserAccounts implements ActiveRecordInterface
 
         if ($this->user_id !== $v) {
             $this->user_id = $v;
-            $this->modifiedColumns[UserAccountsTableMap::COL_USER_ID] = true;
+            $this->modifiedColumns[UserAccountTableMap::COL_USER_ID] = true;
         }
 
         if ($this->aUser !== null && $this->aUser->getId() !== $v) {
@@ -385,7 +385,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * Set the value of [account_id] column.
      *
      * @param int $v new value
-     * @return $this|\TechWilk\Money\UserAccounts The current object (for fluent API support)
+     * @return $this|\TechWilk\Money\UserAccount The current object (for fluent API support)
      */
     public function setAccountId($v)
     {
@@ -395,7 +395,7 @@ abstract class UserAccounts implements ActiveRecordInterface
 
         if ($this->account_id !== $v) {
             $this->account_id = $v;
-            $this->modifiedColumns[UserAccountsTableMap::COL_ACCOUNT_ID] = true;
+            $this->modifiedColumns[UserAccountTableMap::COL_ACCOUNT_ID] = true;
         }
 
         if ($this->aAccount !== null && $this->aAccount->getId() !== $v) {
@@ -409,7 +409,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * Set the value of [alias] column.
      *
      * @param string $v new value
-     * @return $this|\TechWilk\Money\UserAccounts The current object (for fluent API support)
+     * @return $this|\TechWilk\Money\UserAccount The current object (for fluent API support)
      */
     public function setAlias($v)
     {
@@ -419,7 +419,7 @@ abstract class UserAccounts implements ActiveRecordInterface
 
         if ($this->alias !== $v) {
             $this->alias = $v;
-            $this->modifiedColumns[UserAccountsTableMap::COL_ALIAS] = true;
+            $this->modifiedColumns[UserAccountTableMap::COL_ALIAS] = true;
         }
 
         return $this;
@@ -461,13 +461,13 @@ abstract class UserAccounts implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserAccountsTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserAccountTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->user_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UserAccountsTableMap::translateFieldName('AccountId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UserAccountTableMap::translateFieldName('AccountId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->account_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserAccountsTableMap::translateFieldName('Alias', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserAccountTableMap::translateFieldName('Alias', TableMap::TYPE_PHPNAME, $indexType)];
             $this->alias = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -477,10 +477,10 @@ abstract class UserAccounts implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = UserAccountsTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = UserAccountTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\TechWilk\\Money\\UserAccounts'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\TechWilk\\Money\\UserAccount'), 0, $e);
         }
     }
 
@@ -528,13 +528,13 @@ abstract class UserAccounts implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(UserAccountsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UserAccountTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildUserAccountsQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildUserAccountQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -555,8 +555,8 @@ abstract class UserAccounts implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see UserAccounts::setDeleted()
-     * @see UserAccounts::isDeleted()
+     * @see UserAccount::setDeleted()
+     * @see UserAccount::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -565,11 +565,11 @@ abstract class UserAccounts implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildUserAccountsQuery::create()
+            $deleteQuery = ChildUserAccountQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -604,7 +604,7 @@ abstract class UserAccounts implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -623,7 +623,7 @@ abstract class UserAccounts implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                UserAccountsTableMap::addInstanceToPool($this);
+                UserAccountTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -701,13 +701,13 @@ abstract class UserAccounts implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(UserAccountsTableMap::COL_USER_ID)) {
+        if ($this->isColumnModified(UserAccountTableMap::COL_USER_ID)) {
             $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(UserAccountsTableMap::COL_ACCOUNT_ID)) {
+        if ($this->isColumnModified(UserAccountTableMap::COL_ACCOUNT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'account_id';
         }
-        if ($this->isColumnModified(UserAccountsTableMap::COL_ALIAS)) {
+        if ($this->isColumnModified(UserAccountTableMap::COL_ALIAS)) {
             $modifiedColumns[':p' . $index++]  = 'alias';
         }
 
@@ -769,7 +769,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserAccountsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UserAccountTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -818,11 +818,11 @@ abstract class UserAccounts implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['UserAccounts'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['UserAccount'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['UserAccounts'][$this->hashCode()] = true;
-        $keys = UserAccountsTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['UserAccount'][$this->hashCode()] = true;
+        $keys = UserAccountTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getUserId(),
             $keys[1] => $this->getAccountId(),
@@ -878,11 +878,11 @@ abstract class UserAccounts implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\TechWilk\Money\UserAccounts
+     * @return $this|\TechWilk\Money\UserAccount
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserAccountsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = UserAccountTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -893,7 +893,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\TechWilk\Money\UserAccounts
+     * @return $this|\TechWilk\Money\UserAccount
      */
     public function setByPosition($pos, $value)
     {
@@ -931,7 +931,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = UserAccountsTableMap::getFieldNames($keyType);
+        $keys = UserAccountTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setUserId($arr[$keys[0]]);
@@ -961,7 +961,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\TechWilk\Money\UserAccounts The current object, for fluid interface
+     * @return $this|\TechWilk\Money\UserAccount The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -981,16 +981,16 @@ abstract class UserAccounts implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(UserAccountsTableMap::DATABASE_NAME);
+        $criteria = new Criteria(UserAccountTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(UserAccountsTableMap::COL_USER_ID)) {
-            $criteria->add(UserAccountsTableMap::COL_USER_ID, $this->user_id);
+        if ($this->isColumnModified(UserAccountTableMap::COL_USER_ID)) {
+            $criteria->add(UserAccountTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(UserAccountsTableMap::COL_ACCOUNT_ID)) {
-            $criteria->add(UserAccountsTableMap::COL_ACCOUNT_ID, $this->account_id);
+        if ($this->isColumnModified(UserAccountTableMap::COL_ACCOUNT_ID)) {
+            $criteria->add(UserAccountTableMap::COL_ACCOUNT_ID, $this->account_id);
         }
-        if ($this->isColumnModified(UserAccountsTableMap::COL_ALIAS)) {
-            $criteria->add(UserAccountsTableMap::COL_ALIAS, $this->alias);
+        if ($this->isColumnModified(UserAccountTableMap::COL_ALIAS)) {
+            $criteria->add(UserAccountTableMap::COL_ALIAS, $this->alias);
         }
 
         return $criteria;
@@ -1008,9 +1008,9 @@ abstract class UserAccounts implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildUserAccountsQuery::create();
-        $criteria->add(UserAccountsTableMap::COL_USER_ID, $this->user_id);
-        $criteria->add(UserAccountsTableMap::COL_ACCOUNT_ID, $this->account_id);
+        $criteria = ChildUserAccountQuery::create();
+        $criteria->add(UserAccountTableMap::COL_USER_ID, $this->user_id);
+        $criteria->add(UserAccountTableMap::COL_ACCOUNT_ID, $this->account_id);
 
         return $criteria;
     }
@@ -1093,7 +1093,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \TechWilk\Money\UserAccounts (or compatible) type.
+     * @param      object $copyObj An object of \TechWilk\Money\UserAccount (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1117,7 +1117,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \TechWilk\Money\UserAccounts Clone of current object.
+     * @return \TechWilk\Money\UserAccount Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1134,7 +1134,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * Declares an association between this object and a ChildUser object.
      *
      * @param  ChildUser $v
-     * @return $this|\TechWilk\Money\UserAccounts The current object (for fluent API support)
+     * @return $this|\TechWilk\Money\UserAccount The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUser(ChildUser $v = null)
@@ -1150,7 +1150,7 @@ abstract class UserAccounts implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildUser object, it will not be re-added.
         if ($v !== null) {
-            $v->addUserAccounts($this);
+            $v->addUserAccount($this);
         }
 
 
@@ -1174,7 +1174,7 @@ abstract class UserAccounts implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aUser->addUserAccountss($this);
+                $this->aUser->addUserAccounts($this);
              */
         }
 
@@ -1185,7 +1185,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      * Declares an association between this object and a ChildAccount object.
      *
      * @param  ChildAccount $v
-     * @return $this|\TechWilk\Money\UserAccounts The current object (for fluent API support)
+     * @return $this|\TechWilk\Money\UserAccount The current object (for fluent API support)
      * @throws PropelException
      */
     public function setAccount(ChildAccount $v = null)
@@ -1201,7 +1201,7 @@ abstract class UserAccounts implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildAccount object, it will not be re-added.
         if ($v !== null) {
-            $v->addUserAccounts($this);
+            $v->addUserAccount($this);
         }
 
 
@@ -1225,7 +1225,7 @@ abstract class UserAccounts implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAccount->addUserAccountss($this);
+                $this->aAccount->addUserAccounts($this);
              */
         }
 
@@ -1240,10 +1240,10 @@ abstract class UserAccounts implements ActiveRecordInterface
     public function clear()
     {
         if (null !== $this->aUser) {
-            $this->aUser->removeUserAccounts($this);
+            $this->aUser->removeUserAccount($this);
         }
         if (null !== $this->aAccount) {
-            $this->aAccount->removeUserAccounts($this);
+            $this->aAccount->removeUserAccount($this);
         }
         $this->user_id = null;
         $this->account_id = null;
@@ -1279,7 +1279,7 @@ abstract class UserAccounts implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(UserAccountsTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(UserAccountTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

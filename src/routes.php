@@ -2,6 +2,7 @@
 
 namespace TechWilk\Money;
 
+use TechWilk\Money\Controller\AccountController;
 use TechWilk\Money\Controller\AuthController;
 use TechWilk\Money\Controller\DashboardController;
 use TechWilk\Money\Controller\TagController;
@@ -31,6 +32,11 @@ $app->group('/transaction', function () {
     $this->get('/{id}', TransactionController::class.':getTransaction')->setName('transaction');
     $this->get('s[/{account}]', TransactionController::class.':getTransactionsForAccount')->setName('transactions');
     $this->get('s/{year}/{month}', TransactionController::class.':getTransactionsForMonth')->setName('month');
+});
+
+$app->group('/account', function () {
+    $this->post('', AccountController::class.':postAccount')->setName('account-post');
+    $this->get('', AccountController::class.':getAccountNew')->setName('account-new');
 });
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -166,13 +166,13 @@ class AccountTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Categories', false);
-        $this->addRelation('UserAccounts', '\\TechWilk\\Money\\UserAccounts', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('UserAccount', '\\TechWilk\\Money\\UserAccount', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':account_id',
     1 => ':id',
   ),
-), null, null, 'UserAccountss', false);
+), null, null, 'UserAccounts', false);
         $this->addRelation('User', '\\TechWilk\\Money\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
 

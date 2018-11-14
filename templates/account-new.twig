@@ -1,0 +1,17 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<h1>New Account</h1>
+<p>Create a new account</p>
+
+<form class="create-account" action="{{ path_for('account-post') }}" method="post">
+    <label for="name">Account name:</label>
+    <input type="text" name="name" id="name">
+
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+
+    <button type="submit">Create account</button>
+</form>
+{% endblock %}

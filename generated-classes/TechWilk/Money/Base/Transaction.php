@@ -428,7 +428,7 @@ abstract class Transaction implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [date] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
@@ -488,7 +488,7 @@ abstract class Transaction implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [created] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
@@ -508,7 +508,7 @@ abstract class Transaction implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [updated] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
@@ -909,12 +909,13 @@ abstract class Transaction implements ActiveRecordInterface
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
                 // timestampable behavior
-
+                $time = time();
+                $highPrecision = \Propel\Runtime\Util\PropelDateTime::createHighPrecision();
                 if (!$this->isColumnModified(TransactionTableMap::COL_CREATED)) {
-                    $this->setCreated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                    $this->setCreated($highPrecision);
                 }
                 if (!$this->isColumnModified(TransactionTableMap::COL_UPDATED)) {
-                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                    $this->setUpdated($highPrecision);
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);

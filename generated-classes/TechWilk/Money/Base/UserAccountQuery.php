@@ -11,104 +11,104 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use TechWilk\Money\UserAccounts as ChildUserAccounts;
-use TechWilk\Money\UserAccountsQuery as ChildUserAccountsQuery;
-use TechWilk\Money\Map\UserAccountsTableMap;
+use TechWilk\Money\UserAccount as ChildUserAccount;
+use TechWilk\Money\UserAccountQuery as ChildUserAccountQuery;
+use TechWilk\Money\Map\UserAccountTableMap;
 
 /**
  * Base class that represents a query for the 'user_accounts' table.
  *
  *
  *
- * @method     ChildUserAccountsQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
- * @method     ChildUserAccountsQuery orderByAccountId($order = Criteria::ASC) Order by the account_id column
- * @method     ChildUserAccountsQuery orderByAlias($order = Criteria::ASC) Order by the alias column
+ * @method     ChildUserAccountQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
+ * @method     ChildUserAccountQuery orderByAccountId($order = Criteria::ASC) Order by the account_id column
+ * @method     ChildUserAccountQuery orderByAlias($order = Criteria::ASC) Order by the alias column
  *
- * @method     ChildUserAccountsQuery groupByUserId() Group by the user_id column
- * @method     ChildUserAccountsQuery groupByAccountId() Group by the account_id column
- * @method     ChildUserAccountsQuery groupByAlias() Group by the alias column
+ * @method     ChildUserAccountQuery groupByUserId() Group by the user_id column
+ * @method     ChildUserAccountQuery groupByAccountId() Group by the account_id column
+ * @method     ChildUserAccountQuery groupByAlias() Group by the alias column
  *
- * @method     ChildUserAccountsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildUserAccountsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildUserAccountsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildUserAccountQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildUserAccountQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildUserAccountQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildUserAccountsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildUserAccountsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildUserAccountsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildUserAccountQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildUserAccountQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildUserAccountQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildUserAccountsQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
- * @method     ChildUserAccountsQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
- * @method     ChildUserAccountsQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ * @method     ChildUserAccountQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildUserAccountQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildUserAccountQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
  *
- * @method     ChildUserAccountsQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
+ * @method     ChildUserAccountQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
  *
- * @method     ChildUserAccountsQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
- * @method     ChildUserAccountsQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
- * @method     ChildUserAccountsQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
+ * @method     ChildUserAccountQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildUserAccountQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildUserAccountQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     ChildUserAccountsQuery leftJoinAccount($relationAlias = null) Adds a LEFT JOIN clause to the query using the Account relation
- * @method     ChildUserAccountsQuery rightJoinAccount($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Account relation
- * @method     ChildUserAccountsQuery innerJoinAccount($relationAlias = null) Adds a INNER JOIN clause to the query using the Account relation
+ * @method     ChildUserAccountQuery leftJoinAccount($relationAlias = null) Adds a LEFT JOIN clause to the query using the Account relation
+ * @method     ChildUserAccountQuery rightJoinAccount($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Account relation
+ * @method     ChildUserAccountQuery innerJoinAccount($relationAlias = null) Adds a INNER JOIN clause to the query using the Account relation
  *
- * @method     ChildUserAccountsQuery joinWithAccount($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Account relation
+ * @method     ChildUserAccountQuery joinWithAccount($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Account relation
  *
- * @method     ChildUserAccountsQuery leftJoinWithAccount() Adds a LEFT JOIN clause and with to the query using the Account relation
- * @method     ChildUserAccountsQuery rightJoinWithAccount() Adds a RIGHT JOIN clause and with to the query using the Account relation
- * @method     ChildUserAccountsQuery innerJoinWithAccount() Adds a INNER JOIN clause and with to the query using the Account relation
+ * @method     ChildUserAccountQuery leftJoinWithAccount() Adds a LEFT JOIN clause and with to the query using the Account relation
+ * @method     ChildUserAccountQuery rightJoinWithAccount() Adds a RIGHT JOIN clause and with to the query using the Account relation
+ * @method     ChildUserAccountQuery innerJoinWithAccount() Adds a INNER JOIN clause and with to the query using the Account relation
  *
  * @method     \TechWilk\Money\UserQuery|\TechWilk\Money\AccountQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildUserAccounts findOne(ConnectionInterface $con = null) Return the first ChildUserAccounts matching the query
- * @method     ChildUserAccounts findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserAccounts matching the query, or a new ChildUserAccounts object populated from the query conditions when no match is found
+ * @method     ChildUserAccount findOne(ConnectionInterface $con = null) Return the first ChildUserAccount matching the query
+ * @method     ChildUserAccount findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserAccount matching the query, or a new ChildUserAccount object populated from the query conditions when no match is found
  *
- * @method     ChildUserAccounts findOneByUserId(int $user_id) Return the first ChildUserAccounts filtered by the user_id column
- * @method     ChildUserAccounts findOneByAccountId(int $account_id) Return the first ChildUserAccounts filtered by the account_id column
- * @method     ChildUserAccounts findOneByAlias(string $alias) Return the first ChildUserAccounts filtered by the alias column *
+ * @method     ChildUserAccount findOneByUserId(int $user_id) Return the first ChildUserAccount filtered by the user_id column
+ * @method     ChildUserAccount findOneByAccountId(int $account_id) Return the first ChildUserAccount filtered by the account_id column
+ * @method     ChildUserAccount findOneByAlias(string $alias) Return the first ChildUserAccount filtered by the alias column *
 
- * @method     ChildUserAccounts requirePk($key, ConnectionInterface $con = null) Return the ChildUserAccounts by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUserAccounts requireOne(ConnectionInterface $con = null) Return the first ChildUserAccounts matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUserAccount requirePk($key, ConnectionInterface $con = null) Return the ChildUserAccount by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUserAccount requireOne(ConnectionInterface $con = null) Return the first ChildUserAccount matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildUserAccounts requireOneByUserId(int $user_id) Return the first ChildUserAccounts filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUserAccounts requireOneByAccountId(int $account_id) Return the first ChildUserAccounts filtered by the account_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUserAccounts requireOneByAlias(string $alias) Return the first ChildUserAccounts filtered by the alias column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUserAccount requireOneByUserId(int $user_id) Return the first ChildUserAccount filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUserAccount requireOneByAccountId(int $account_id) Return the first ChildUserAccount filtered by the account_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUserAccount requireOneByAlias(string $alias) Return the first ChildUserAccount filtered by the alias column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildUserAccounts[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUserAccounts objects based on current ModelCriteria
- * @method     ChildUserAccounts[]|ObjectCollection findByUserId(int $user_id) Return ChildUserAccounts objects filtered by the user_id column
- * @method     ChildUserAccounts[]|ObjectCollection findByAccountId(int $account_id) Return ChildUserAccounts objects filtered by the account_id column
- * @method     ChildUserAccounts[]|ObjectCollection findByAlias(string $alias) Return ChildUserAccounts objects filtered by the alias column
- * @method     ChildUserAccounts[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildUserAccount[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUserAccount objects based on current ModelCriteria
+ * @method     ChildUserAccount[]|ObjectCollection findByUserId(int $user_id) Return ChildUserAccount objects filtered by the user_id column
+ * @method     ChildUserAccount[]|ObjectCollection findByAccountId(int $account_id) Return ChildUserAccount objects filtered by the account_id column
+ * @method     ChildUserAccount[]|ObjectCollection findByAlias(string $alias) Return ChildUserAccount objects filtered by the alias column
+ * @method     ChildUserAccount[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class UserAccountsQuery extends ModelCriteria
+abstract class UserAccountQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \TechWilk\Money\Base\UserAccountsQuery object.
+     * Initializes internal state of \TechWilk\Money\Base\UserAccountQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'money', $modelName = '\\TechWilk\\Money\\UserAccounts', $modelAlias = null)
+    public function __construct($dbName = 'money', $modelName = '\\TechWilk\\Money\\UserAccount', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildUserAccountsQuery object.
+     * Returns a new ChildUserAccountQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildUserAccountsQuery
+     * @return ChildUserAccountQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildUserAccountsQuery) {
+        if ($criteria instanceof ChildUserAccountQuery) {
             return $criteria;
         }
-        $query = new ChildUserAccountsQuery();
+        $query = new ChildUserAccountQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -131,7 +131,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      * @param array[$user_id, $account_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildUserAccounts|array|mixed the result, formatted by the current formatter
+     * @return ChildUserAccount|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
@@ -140,7 +140,7 @@ abstract class UserAccountsQuery extends ModelCriteria
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(UserAccountsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(UserAccountTableMap::DATABASE_NAME);
         }
 
         $this->basePreSelect($con);
@@ -153,7 +153,7 @@ abstract class UserAccountsQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = UserAccountsTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
+        if ((null !== ($obj = UserAccountTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]))))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -170,7 +170,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildUserAccounts A model object, or null if the key is not found
+     * @return ChildUserAccount A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -186,10 +186,10 @@ abstract class UserAccountsQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildUserAccounts $obj */
-            $obj = new ChildUserAccounts();
+            /** @var ChildUserAccount $obj */
+            $obj = new ChildUserAccount();
             $obj->hydrate($row);
-            UserAccountsTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
+            UserAccountTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -202,7 +202,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildUserAccounts|array|mixed the result, formatted by the current formatter
+     * @return ChildUserAccount|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -244,12 +244,12 @@ abstract class UserAccountsQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(UserAccountsTableMap::COL_USER_ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(UserAccountsTableMap::COL_ACCOUNT_ID, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(UserAccountTableMap::COL_USER_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(UserAccountTableMap::COL_ACCOUNT_ID, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -259,7 +259,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
@@ -267,8 +267,8 @@ abstract class UserAccountsQuery extends ModelCriteria
             return $this->add(null, '1<>1', Criteria::CUSTOM);
         }
         foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(UserAccountsTableMap::COL_USER_ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(UserAccountsTableMap::COL_ACCOUNT_ID, $key[1], Criteria::EQUAL);
+            $cton0 = $this->getNewCriterion(UserAccountTableMap::COL_USER_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(UserAccountTableMap::COL_ACCOUNT_ID, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -294,18 +294,18 @@ abstract class UserAccountsQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
     public function filterByUserId($userId = null, $comparison = null)
     {
         if (is_array($userId)) {
             $useMinMax = false;
             if (isset($userId['min'])) {
-                $this->addUsingAlias(UserAccountsTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UserAccountTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($userId['max'])) {
-                $this->addUsingAlias(UserAccountsTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UserAccountTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -316,7 +316,7 @@ abstract class UserAccountsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(UserAccountsTableMap::COL_USER_ID, $userId, $comparison);
+        return $this->addUsingAlias(UserAccountTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -337,18 +337,18 @@ abstract class UserAccountsQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
     public function filterByAccountId($accountId = null, $comparison = null)
     {
         if (is_array($accountId)) {
             $useMinMax = false;
             if (isset($accountId['min'])) {
-                $this->addUsingAlias(UserAccountsTableMap::COL_ACCOUNT_ID, $accountId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(UserAccountTableMap::COL_ACCOUNT_ID, $accountId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($accountId['max'])) {
-                $this->addUsingAlias(UserAccountsTableMap::COL_ACCOUNT_ID, $accountId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(UserAccountTableMap::COL_ACCOUNT_ID, $accountId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -359,7 +359,7 @@ abstract class UserAccountsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(UserAccountsTableMap::COL_ACCOUNT_ID, $accountId, $comparison);
+        return $this->addUsingAlias(UserAccountTableMap::COL_ACCOUNT_ID, $accountId, $comparison);
     }
 
     /**
@@ -374,7 +374,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      * @param     string $alias The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
     public function filterByAlias($alias = null, $comparison = null)
     {
@@ -384,7 +384,7 @@ abstract class UserAccountsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(UserAccountsTableMap::COL_ALIAS, $alias, $comparison);
+        return $this->addUsingAlias(UserAccountTableMap::COL_ALIAS, $alias, $comparison);
     }
 
     /**
@@ -395,20 +395,20 @@ abstract class UserAccountsQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildUserAccountsQuery The current query, for fluid interface
+     * @return ChildUserAccountQuery The current query, for fluid interface
      */
     public function filterByUser($user, $comparison = null)
     {
         if ($user instanceof \TechWilk\Money\User) {
             return $this
-                ->addUsingAlias(UserAccountsTableMap::COL_USER_ID, $user->getId(), $comparison);
+                ->addUsingAlias(UserAccountTableMap::COL_USER_ID, $user->getId(), $comparison);
         } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(UserAccountsTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(UserAccountTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByUser() only accepts arguments of type \TechWilk\Money\User or Collection');
         }
@@ -420,7 +420,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
     public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -472,20 +472,20 @@ abstract class UserAccountsQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildUserAccountsQuery The current query, for fluid interface
+     * @return ChildUserAccountQuery The current query, for fluid interface
      */
     public function filterByAccount($account, $comparison = null)
     {
         if ($account instanceof \TechWilk\Money\Account) {
             return $this
-                ->addUsingAlias(UserAccountsTableMap::COL_ACCOUNT_ID, $account->getId(), $comparison);
+                ->addUsingAlias(UserAccountTableMap::COL_ACCOUNT_ID, $account->getId(), $comparison);
         } elseif ($account instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(UserAccountsTableMap::COL_ACCOUNT_ID, $account->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(UserAccountTableMap::COL_ACCOUNT_ID, $account->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByAccount() only accepts arguments of type \TechWilk\Money\Account or Collection');
         }
@@ -497,7 +497,7 @@ abstract class UserAccountsQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
     public function joinAccount($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -544,15 +544,15 @@ abstract class UserAccountsQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param   ChildUserAccounts $userAccounts Object to remove from the list of results
+     * @param   ChildUserAccount $userAccount Object to remove from the list of results
      *
-     * @return $this|ChildUserAccountsQuery The current query, for fluid interface
+     * @return $this|ChildUserAccountQuery The current query, for fluid interface
      */
-    public function prune($userAccounts = null)
+    public function prune($userAccount = null)
     {
-        if ($userAccounts) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(UserAccountsTableMap::COL_USER_ID), $userAccounts->getUserId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(UserAccountsTableMap::COL_ACCOUNT_ID), $userAccounts->getAccountId(), Criteria::NOT_EQUAL);
+        if ($userAccount) {
+            $this->addCond('pruneCond0', $this->getAliasedColName(UserAccountTableMap::COL_USER_ID), $userAccount->getUserId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(UserAccountTableMap::COL_ACCOUNT_ID), $userAccount->getAccountId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
@@ -568,7 +568,7 @@ abstract class UserAccountsQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -579,8 +579,8 @@ abstract class UserAccountsQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            UserAccountsTableMap::clearInstancePool();
-            UserAccountsTableMap::clearRelatedInstancePool();
+            UserAccountTableMap::clearInstancePool();
+            UserAccountTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -598,26 +598,26 @@ abstract class UserAccountsQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(UserAccountTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(UserAccountsTableMap::DATABASE_NAME);
+        $criteria->setDbName(UserAccountTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            UserAccountsTableMap::removeInstanceFromPool($criteria);
+            UserAccountTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            UserAccountsTableMap::clearRelatedInstancePool();
+            UserAccountTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // UserAccountsQuery
+} // UserAccountQuery

@@ -19,6 +19,7 @@
     {% else %}
     <p>No accounts.</p>
     {% endfor %}
+    <a href="{{ path_for('account-new') }}">Create new account</a>
 </div>
 
 <form class="reset-password" action="{{ path_for('user-password-post', { 'id': user.id } ) }}" method="post">

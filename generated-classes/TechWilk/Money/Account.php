@@ -15,4 +15,9 @@ use TechWilk\Money\Base\Account as BaseAccount;
  */
 class Account extends BaseAccount
 {
+    public function setName($v)
+    {
+        $v = trim($v);
+        parent::setName($v);
+    }
 }

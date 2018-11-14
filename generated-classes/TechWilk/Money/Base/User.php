@@ -23,11 +23,11 @@ use TechWilk\Money\AccountQuery as ChildAccountQuery;
 use TechWilk\Money\Transaction as ChildTransaction;
 use TechWilk\Money\TransactionQuery as ChildTransactionQuery;
 use TechWilk\Money\User as ChildUser;
-use TechWilk\Money\UserAccounts as ChildUserAccounts;
-use TechWilk\Money\UserAccountsQuery as ChildUserAccountsQuery;
+use TechWilk\Money\UserAccount as ChildUserAccount;
+use TechWilk\Money\UserAccountQuery as ChildUserAccountQuery;
 use TechWilk\Money\UserQuery as ChildUserQuery;
 use TechWilk\Money\Map\TransactionTableMap;
-use TechWilk\Money\Map\UserAccountsTableMap;
+use TechWilk\Money\Map\UserAccountTableMap;
 use TechWilk\Money\Map\UserTableMap;
 
 /**
@@ -142,10 +142,10 @@ abstract class User implements ActiveRecordInterface
     protected $collTransactionsPartial;
 
     /**
-     * @var        ObjectCollection|ChildUserAccounts[] Collection to store aggregation of ChildUserAccounts objects.
+     * @var        ObjectCollection|ChildUserAccount[] Collection to store aggregation of ChildUserAccount objects.
      */
-    protected $collUserAccountss;
-    protected $collUserAccountssPartial;
+    protected $collUserAccounts;
+    protected $collUserAccountsPartial;
 
     /**
      * @var        ObjectCollection|ChildAccount[] Cross Collection to store aggregation of ChildAccount objects.
@@ -179,9 +179,9 @@ abstract class User implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildUserAccounts[]
+     * @var ObjectCollection|ChildUserAccount[]
      */
-    protected $userAccountssScheduledForDeletion = null;
+    protected $userAccountsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -475,7 +475,7 @@ abstract class User implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [password_expire] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
@@ -515,7 +515,7 @@ abstract class User implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [created] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
@@ -535,7 +535,7 @@ abstract class User implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [updated] column value.
      *
      *
-     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
@@ -617,7 +617,7 @@ abstract class User implements ActiveRecordInterface
      * @param \TechWilk\Money\EmailAddress $v new value
      * @return $this|\TechWilk\Money\User The current object (for fluent API support)
      */
-    public function setEmail(\TechWilk\Money\EmailAddress $v)
+    public function setEmail($v)
     {
         if ($this->email !== $v) {
             $this->email = $v;
@@ -881,7 +881,7 @@ abstract class User implements ActiveRecordInterface
 
             $this->collTransactions = null;
 
-            $this->collUserAccountss = null;
+            $this->collUserAccounts = null;
 
             $this->collAccounts = null;
         } // if (deep)
@@ -951,12 +951,13 @@ abstract class User implements ActiveRecordInterface
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
                 // timestampable behavior
-
+                $time = time();
+                $highPrecision = \Propel\Runtime\Util\PropelDateTime::createHighPrecision();
                 if (!$this->isColumnModified(UserTableMap::COL_CREATED)) {
-                    $this->setCreated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                    $this->setCreated($highPrecision);
                 }
                 if (!$this->isColumnModified(UserTableMap::COL_UPDATED)) {
-                    $this->setUpdated(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
+                    $this->setUpdated($highPrecision);
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
@@ -1021,7 +1022,7 @@ abstract class User implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \TechWilk\Money\UserAccountsQuery::create()
+                    \TechWilk\Money\UserAccountQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -1056,17 +1057,17 @@ abstract class User implements ActiveRecordInterface
                 }
             }
 
-            if ($this->userAccountssScheduledForDeletion !== null) {
-                if (!$this->userAccountssScheduledForDeletion->isEmpty()) {
-                    \TechWilk\Money\UserAccountsQuery::create()
-                        ->filterByPrimaryKeys($this->userAccountssScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->userAccountsScheduledForDeletion !== null) {
+                if (!$this->userAccountsScheduledForDeletion->isEmpty()) {
+                    \TechWilk\Money\UserAccountQuery::create()
+                        ->filterByPrimaryKeys($this->userAccountsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->userAccountssScheduledForDeletion = null;
+                    $this->userAccountsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collUserAccountss !== null) {
-                foreach ($this->collUserAccountss as $referrerFK) {
+            if ($this->collUserAccounts !== null) {
+                foreach ($this->collUserAccounts as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1326,20 +1327,20 @@ abstract class User implements ActiveRecordInterface
 
                 $result[$key] = $this->collTransactions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collUserAccountss) {
+            if (null !== $this->collUserAccounts) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'userAccountss';
+                        $key = 'userAccounts';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'user_accountss';
                         break;
                     default:
-                        $key = 'UserAccountss';
+                        $key = 'UserAccounts';
                 }
 
-                $result[$key] = $this->collUserAccountss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collUserAccounts->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1629,9 +1630,9 @@ abstract class User implements ActiveRecordInterface
                 }
             }
 
-            foreach ($this->getUserAccountss() as $relObj) {
+            foreach ($this->getUserAccounts() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addUserAccounts($relObj->copy($deepCopy));
+                    $copyObj->addUserAccount($relObj->copy($deepCopy));
                 }
             }
 
@@ -1680,8 +1681,8 @@ abstract class User implements ActiveRecordInterface
             $this->initTransactions();
             return;
         }
-        if ('UserAccounts' == $relationName) {
-            $this->initUserAccountss();
+        if ('UserAccount' == $relationName) {
+            $this->initUserAccounts();
             return;
         }
     }
@@ -1937,31 +1938,31 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Clears out the collUserAccountss collection
+     * Clears out the collUserAccounts collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addUserAccountss()
+     * @see        addUserAccounts()
      */
-    public function clearUserAccountss()
+    public function clearUserAccounts()
     {
-        $this->collUserAccountss = null; // important to set this to NULL since that means it is uninitialized
+        $this->collUserAccounts = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collUserAccountss collection loaded partially.
+     * Reset is the collUserAccounts collection loaded partially.
      */
-    public function resetPartialUserAccountss($v = true)
+    public function resetPartialUserAccounts($v = true)
     {
-        $this->collUserAccountssPartial = $v;
+        $this->collUserAccountsPartial = $v;
     }
 
     /**
-     * Initializes the collUserAccountss collection.
+     * Initializes the collUserAccounts collection.
      *
-     * By default this just sets the collUserAccountss collection to an empty array (like clearcollUserAccountss());
+     * By default this just sets the collUserAccounts collection to an empty array (like clearcollUserAccounts());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1970,20 +1971,20 @@ abstract class User implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initUserAccountss($overrideExisting = true)
+    public function initUserAccounts($overrideExisting = true)
     {
-        if (null !== $this->collUserAccountss && !$overrideExisting) {
+        if (null !== $this->collUserAccounts && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = UserAccountsTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = UserAccountTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collUserAccountss = new $collectionClassName;
-        $this->collUserAccountss->setModel('\TechWilk\Money\UserAccounts');
+        $this->collUserAccounts = new $collectionClassName;
+        $this->collUserAccounts->setModel('\TechWilk\Money\UserAccount');
     }
 
     /**
-     * Gets an array of ChildUserAccounts objects which contain a foreign key that references this object.
+     * Gets an array of ChildUserAccount objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1993,111 +1994,111 @@ abstract class User implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildUserAccounts[] List of ChildUserAccounts objects
+     * @return ObjectCollection|ChildUserAccount[] List of ChildUserAccount objects
      * @throws PropelException
      */
-    public function getUserAccountss(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getUserAccounts(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserAccountssPartial && !$this->isNew();
-        if (null === $this->collUserAccountss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collUserAccountss) {
+        $partial = $this->collUserAccountsPartial && !$this->isNew();
+        if (null === $this->collUserAccounts || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUserAccounts) {
                 // return empty collection
-                $this->initUserAccountss();
+                $this->initUserAccounts();
             } else {
-                $collUserAccountss = ChildUserAccountsQuery::create(null, $criteria)
+                $collUserAccounts = ChildUserAccountQuery::create(null, $criteria)
                     ->filterByUser($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collUserAccountssPartial && count($collUserAccountss)) {
-                        $this->initUserAccountss(false);
+                    if (false !== $this->collUserAccountsPartial && count($collUserAccounts)) {
+                        $this->initUserAccounts(false);
 
-                        foreach ($collUserAccountss as $obj) {
-                            if (false == $this->collUserAccountss->contains($obj)) {
-                                $this->collUserAccountss->append($obj);
+                        foreach ($collUserAccounts as $obj) {
+                            if (false == $this->collUserAccounts->contains($obj)) {
+                                $this->collUserAccounts->append($obj);
                             }
                         }
 
-                        $this->collUserAccountssPartial = true;
+                        $this->collUserAccountsPartial = true;
                     }
 
-                    return $collUserAccountss;
+                    return $collUserAccounts;
                 }
 
-                if ($partial && $this->collUserAccountss) {
-                    foreach ($this->collUserAccountss as $obj) {
+                if ($partial && $this->collUserAccounts) {
+                    foreach ($this->collUserAccounts as $obj) {
                         if ($obj->isNew()) {
-                            $collUserAccountss[] = $obj;
+                            $collUserAccounts[] = $obj;
                         }
                     }
                 }
 
-                $this->collUserAccountss = $collUserAccountss;
-                $this->collUserAccountssPartial = false;
+                $this->collUserAccounts = $collUserAccounts;
+                $this->collUserAccountsPartial = false;
             }
         }
 
-        return $this->collUserAccountss;
+        return $this->collUserAccounts;
     }
 
     /**
-     * Sets a collection of ChildUserAccounts objects related by a one-to-many relationship
+     * Sets a collection of ChildUserAccount objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $userAccountss A Propel collection.
+     * @param      Collection $userAccounts A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildUser The current object (for fluent API support)
      */
-    public function setUserAccountss(Collection $userAccountss, ConnectionInterface $con = null)
+    public function setUserAccounts(Collection $userAccounts, ConnectionInterface $con = null)
     {
-        /** @var ChildUserAccounts[] $userAccountssToDelete */
-        $userAccountssToDelete = $this->getUserAccountss(new Criteria(), $con)->diff($userAccountss);
+        /** @var ChildUserAccount[] $userAccountsToDelete */
+        $userAccountsToDelete = $this->getUserAccounts(new Criteria(), $con)->diff($userAccounts);
 
 
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->userAccountssScheduledForDeletion = clone $userAccountssToDelete;
+        $this->userAccountsScheduledForDeletion = clone $userAccountsToDelete;
 
-        foreach ($userAccountssToDelete as $userAccountsRemoved) {
-            $userAccountsRemoved->setUser(null);
+        foreach ($userAccountsToDelete as $userAccountRemoved) {
+            $userAccountRemoved->setUser(null);
         }
 
-        $this->collUserAccountss = null;
-        foreach ($userAccountss as $userAccounts) {
-            $this->addUserAccounts($userAccounts);
+        $this->collUserAccounts = null;
+        foreach ($userAccounts as $userAccount) {
+            $this->addUserAccount($userAccount);
         }
 
-        $this->collUserAccountss = $userAccountss;
-        $this->collUserAccountssPartial = false;
+        $this->collUserAccounts = $userAccounts;
+        $this->collUserAccountsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related UserAccounts objects.
+     * Returns the number of related UserAccount objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related UserAccounts objects.
+     * @return int             Count of related UserAccount objects.
      * @throws PropelException
      */
-    public function countUserAccountss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countUserAccounts(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collUserAccountssPartial && !$this->isNew();
-        if (null === $this->collUserAccountss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collUserAccountss) {
+        $partial = $this->collUserAccountsPartial && !$this->isNew();
+        if (null === $this->collUserAccounts || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUserAccounts) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getUserAccountss());
+                return count($this->getUserAccounts());
             }
 
-            $query = ChildUserAccountsQuery::create(null, $criteria);
+            $query = ChildUserAccountQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -2107,28 +2108,28 @@ abstract class User implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collUserAccountss);
+        return count($this->collUserAccounts);
     }
 
     /**
-     * Method called to associate a ChildUserAccounts object to this object
-     * through the ChildUserAccounts foreign key attribute.
+     * Method called to associate a ChildUserAccount object to this object
+     * through the ChildUserAccount foreign key attribute.
      *
-     * @param  ChildUserAccounts $l ChildUserAccounts
+     * @param  ChildUserAccount $l ChildUserAccount
      * @return $this|\TechWilk\Money\User The current object (for fluent API support)
      */
-    public function addUserAccounts(ChildUserAccounts $l)
+    public function addUserAccount(ChildUserAccount $l)
     {
-        if ($this->collUserAccountss === null) {
-            $this->initUserAccountss();
-            $this->collUserAccountssPartial = true;
+        if ($this->collUserAccounts === null) {
+            $this->initUserAccounts();
+            $this->collUserAccountsPartial = true;
         }
 
-        if (!$this->collUserAccountss->contains($l)) {
-            $this->doAddUserAccounts($l);
+        if (!$this->collUserAccounts->contains($l)) {
+            $this->doAddUserAccount($l);
 
-            if ($this->userAccountssScheduledForDeletion and $this->userAccountssScheduledForDeletion->contains($l)) {
-                $this->userAccountssScheduledForDeletion->remove($this->userAccountssScheduledForDeletion->search($l));
+            if ($this->userAccountsScheduledForDeletion and $this->userAccountsScheduledForDeletion->contains($l)) {
+                $this->userAccountsScheduledForDeletion->remove($this->userAccountsScheduledForDeletion->search($l));
             }
         }
 
@@ -2136,29 +2137,29 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildUserAccounts $userAccounts The ChildUserAccounts object to add.
+     * @param ChildUserAccount $userAccount The ChildUserAccount object to add.
      */
-    protected function doAddUserAccounts(ChildUserAccounts $userAccounts)
+    protected function doAddUserAccount(ChildUserAccount $userAccount)
     {
-        $this->collUserAccountss[]= $userAccounts;
-        $userAccounts->setUser($this);
+        $this->collUserAccounts[]= $userAccount;
+        $userAccount->setUser($this);
     }
 
     /**
-     * @param  ChildUserAccounts $userAccounts The ChildUserAccounts object to remove.
+     * @param  ChildUserAccount $userAccount The ChildUserAccount object to remove.
      * @return $this|ChildUser The current object (for fluent API support)
      */
-    public function removeUserAccounts(ChildUserAccounts $userAccounts)
+    public function removeUserAccount(ChildUserAccount $userAccount)
     {
-        if ($this->getUserAccountss()->contains($userAccounts)) {
-            $pos = $this->collUserAccountss->search($userAccounts);
-            $this->collUserAccountss->remove($pos);
-            if (null === $this->userAccountssScheduledForDeletion) {
-                $this->userAccountssScheduledForDeletion = clone $this->collUserAccountss;
-                $this->userAccountssScheduledForDeletion->clear();
+        if ($this->getUserAccounts()->contains($userAccount)) {
+            $pos = $this->collUserAccounts->search($userAccount);
+            $this->collUserAccounts->remove($pos);
+            if (null === $this->userAccountsScheduledForDeletion) {
+                $this->userAccountsScheduledForDeletion = clone $this->collUserAccounts;
+                $this->userAccountsScheduledForDeletion->clear();
             }
-            $this->userAccountssScheduledForDeletion[]= clone $userAccounts;
-            $userAccounts->setUser(null);
+            $this->userAccountsScheduledForDeletion[]= clone $userAccount;
+            $userAccount->setUser(null);
         }
 
         return $this;
@@ -2170,7 +2171,7 @@ abstract class User implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this User is new, it will return
      * an empty collection; or if this User has previously
-     * been saved, it will retrieve related UserAccountss from storage.
+     * been saved, it will retrieve related UserAccounts from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -2179,14 +2180,14 @@ abstract class User implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildUserAccounts[] List of ChildUserAccounts objects
+     * @return ObjectCollection|ChildUserAccount[] List of ChildUserAccount objects
      */
-    public function getUserAccountssJoinAccount(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUserAccountsJoinAccount(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildUserAccountsQuery::create(null, $criteria);
+        $query = ChildUserAccountQuery::create(null, $criteria);
         $query->joinWith('Account', $joinBehavior);
 
-        return $this->getUserAccountss($query, $con);
+        return $this->getUserAccounts($query, $con);
     }
 
     /**
@@ -2214,7 +2215,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function initAccounts()
     {
-        $collectionClassName = UserAccountsTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = UserAccountTableMap::getTableMap()->getCollectionClassName();
 
         $this->collAccounts = new $collectionClassName;
         $this->collAccountsPartial = true;
@@ -2378,13 +2379,13 @@ abstract class User implements ActiveRecordInterface
      */
     protected function doAddAccount(ChildAccount $account)
     {
-        $userAccounts = new ChildUserAccounts();
+        $userAccount = new ChildUserAccount();
 
-        $userAccounts->setAccount($account);
+        $userAccount->setAccount($account);
 
-        $userAccounts->setUser($this);
+        $userAccount->setUser($this);
 
-        $this->addUserAccounts($userAccounts);
+        $this->addUserAccount($userAccount);
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
@@ -2407,16 +2408,16 @@ abstract class User implements ActiveRecordInterface
     public function removeAccount(ChildAccount $account)
     {
         if ($this->getAccounts()->contains($account)) {
-            $userAccounts = new ChildUserAccounts();
-            $userAccounts->setAccount($account);
+            $userAccount = new ChildUserAccount();
+            $userAccount->setAccount($account);
             if ($account->isUsersLoaded()) {
                 //remove the back reference if available
                 $account->getUsers()->removeObject($this);
             }
 
-            $userAccounts->setUser($this);
-            $this->removeUserAccounts(clone $userAccounts);
-            $userAccounts->clear();
+            $userAccount->setUser($this);
+            $this->removeUserAccount(clone $userAccount);
+            $userAccount->clear();
 
             $this->collAccounts->remove($this->collAccounts->search($account));
 
@@ -2472,8 +2473,8 @@ abstract class User implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collUserAccountss) {
-                foreach ($this->collUserAccountss as $o) {
+            if ($this->collUserAccounts) {
+                foreach ($this->collUserAccounts as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -2485,7 +2486,7 @@ abstract class User implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collTransactions = null;
-        $this->collUserAccountss = null;
+        $this->collUserAccounts = null;
         $this->collAccounts = null;
     }
 

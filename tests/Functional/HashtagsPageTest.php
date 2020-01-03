@@ -49,9 +49,9 @@ class HashtagsPageTest extends BaseTestCase
     public function providerTestGetHashtagsJsonWithQueryParameter()
     {
         return [
-        ['test', [['test', 2]]],
-        ['te', [['test', 2]]],
-        ['t', [['test', 2], ['something', 1], ['different', 4]]],
+            ['test', [['test', 2]]],
+            ['te', [['test', 2]]],
+            ['t', [['test', 2], ['something', 1], ['different', 4]]],
         ];
     }
 

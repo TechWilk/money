@@ -50,8 +50,8 @@ jobs:
         environment:
           MYSQL_RANDOM_ROOT_PASSWORD: true
           MYSQL_DATABASE: money
-          MYSQL_USER: username
-          MYSQL_PASSWORD: password
+          MYSQL_USER: travis
+          MYSQL_PASSWORD: really-secret
 
     <<: *shared
   php7.3:
@@ -63,8 +63,8 @@ jobs:
           MYSQL_RANDOM_ROOT_PASSWORD: true
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: money
-          MYSQL_USER: username
-          MYSQL_PASSWORD: password
+          MYSQL_USER: travis
+          MYSQL_PASSWORD: really-secret
     <<: *shared
   php7.4:
     docker:
@@ -75,8 +75,8 @@ jobs:
           MYSQL_RANDOM_ROOT_PASSWORD: true
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: money
-          MYSQL_USER: username
-          MYSQL_PASSWORD: password
+          MYSQL_USER: travis
+          MYSQL_PASSWORD: really-secret
     <<: *shared
 
 workflows:

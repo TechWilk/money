@@ -8,7 +8,7 @@ class Database
     private $adaptor = 'mysql';
     private $dsn = 'mysql:host=127.0.0.1;dbname=money_test';
     private $user = 'travis';
-    private $password = '';
+    private $password = 'really-secret';
 
     public function __construct(TestData $testData = null)
     {

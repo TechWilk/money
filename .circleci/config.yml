@@ -5,7 +5,7 @@ shared: &shared
     - run:
         command: |
           sudo apt update
-          sudo apt install -y libsqlite3-dev zlib1g-dev mysql-client
+          sudo apt install -y libsqlite3-dev zlib1g-dev default-mysql-client
           sudo docker-php-ext-install zip
     - run: sudo composer self-update
     - restore_cache:

@@ -48,6 +48,7 @@ jobs:
       - image: mysql:5.7
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
         environment:
+          MYSQL_RANDOM_ROOT_PASSWORD: true
           MYSQL_DATABASE: money
           MYSQL_USER: username
           MYSQL_PASSWORD: password
@@ -59,6 +60,7 @@ jobs:
       - image: mysql:5.7
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
         environment:
+          MYSQL_RANDOM_ROOT_PASSWORD: true
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: money
           MYSQL_USER: username
@@ -70,6 +72,7 @@ jobs:
       - image: mysql:5.7
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
         environment:
+          MYSQL_RANDOM_ROOT_PASSWORD: true
           MYSQL_ROOT_PASSWORD: rootpw
           MYSQL_DATABASE: money
           MYSQL_USER: username

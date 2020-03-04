@@ -15,16 +15,29 @@ class DashboardController extends AbstractController
         $this->logger->info("GET dashboard '/' route");
 
         $topHashtags = HashtagQuery::create()
-                        ->useTransactionHashtagQuery()
-                            ->withColumn('COUNT(*)', 'Count')
-                            ->select(['Transaction', 'Count'])
-                        ->endUse()
-                        ->groupByTag()
-                        ->orderByCount('desc')
-                        ->limit(5);
-        $newestHashtags = HashtagQuery::create()->orderById('desc')->limit(5)->find();
+            ->useTransactionHashtagQuery()
+                ->withColumn('COUNT(*)', 'Count')
+                ->select(['Transaction', 'Count'])
+                ->useTransactionQuery()
+                    ->forUser($this->auth->currentUser())
+                ->endUse()
+            ->endUse()
+            ->groupByTag()
+            ->orderByCount('desc')
+            ->limit(5);
 
-        $recentHashtags = HashtagQuery::create()->lastUsedHashtagsForUser($this->auth->currentUser());
+        $newestHashtags = HashtagQuery::create()
+            ->useTransactionHashtagQuery()
+                ->useTransactionQuery()
+                    ->forUser($this->auth->currentUser())
+                ->endUse()
+            ->endUse()
+            ->orderById('desc')
+            ->limit(5)
+            ->find();
+
+        $recentHashtags = HashtagQuery::create()
+            ->lastUsedHashtagsForUser($this->auth->currentUser());
 
         $hashtags = [
             'top'    => $topHashtags,

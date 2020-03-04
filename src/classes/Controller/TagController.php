@@ -13,19 +13,39 @@ class TagController extends AbstractController
     {
         $this->logger->info("Fetch tags GET '/tags'");
 
-        $tags = HashtagQuery::create()->orderByTag()->find();
+        $tags = HashtagQuery::create()
+            ->useTransactionHashtagQuery()
+                ->useTransactionQuery()
+                    ->forUser($this->auth->currentUser())
+                ->endUse()
+            ->endUse()
+            ->orderByTag()
+            ->find();
 
         $topHashtags = HashtagQuery::create()
-                    ->useTransactionHashtagQuery()
-                        ->withColumn('COUNT(*)', 'Count')
-                        ->select(['Transaction', 'Count'])
-                    ->endUse()
-                    ->groupByTag()
-                    ->orderByCount('desc')
-                    ->limit(5);
-        $newestHashtags = HashtagQuery::create()->orderById('desc')->limit(5)->find();
+            ->useTransactionHashtagQuery()
+                ->withColumn('COUNT(*)', 'Count')
+                ->select(['Transaction', 'Count'])
+                ->useTransactionQuery()
+                    ->forUser($this->auth->currentUser())
+                ->endUse()
+            ->endUse()
+            ->groupByTag()
+            ->orderByCount('desc')
+            ->limit(5);
 
-        $recentHashtags = HashtagQuery::create()->lastUsedHashtagsForUser($this->auth->currentUser());
+        $newestHashtags = HashtagQuery::create()
+            ->useTransactionHashtagQuery()
+                ->useTransactionQuery()
+                    ->forUser($this->auth->currentUser())
+                ->endUse()
+            ->endUse()
+            ->orderById('desc')
+            ->limit(5)
+            ->find();
+
+        $recentHashtags = HashtagQuery::create()
+            ->lastUsedHashtagsForUser($this->auth->currentUser());
 
         return $this->view->render($response, 'tags.twig', [
             'tags'   => $tags,
@@ -42,7 +62,14 @@ class TagController extends AbstractController
         $query = $request->getQueryParams('q');
         //$query = strtolower($query['q']);
 
-        $tags = HashtagQuery::create()->orderByTag()->find();
+        $tags = HashtagQuery::create()
+            ->useTransactionHashtagQuery()
+                ->useTransactionQuery()
+                    ->forUser($this->auth->currentUser())
+                ->endUse()
+            ->endUse()
+            ->orderByTag()
+            ->find();
 
         // if (isset($query))
         // {

@@ -32,12 +32,12 @@ class LoginLogoutTest extends BaseTestCase
     public function providerTestLoginInvalidCredentials()
     {
         return [
-      ['test@example.com', 'wrong-password'],
-      ['not-an-email', 'this-is-correct'],
-      ['another-not-an-email', 'wrong'],
-      ['', ''],
-      ['no-password@email.com', ''],
-    ];
+            ['test@example.com', 'wrong-password'],
+            ['not-an-email', 'this-is-correct'],
+            ['another-not-an-email', 'wrong'],
+            ['', ''],
+            ['no-password@email.com', ''],
+        ];
     }
 
     /**

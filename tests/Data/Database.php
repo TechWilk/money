@@ -2,8 +2,6 @@
 
 namespace TechWilk\Money\Tests\Data;
 
-use TechWilk\Money;
-
 class Database
 {
     private $connectionName = 'money';
@@ -22,19 +20,19 @@ class Database
         $serviceContainer->setAdapterClass($this->connectionName, $this->adaptor);
         $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
         $manager->setConfiguration([
-      'classname'  => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
-      'dsn'        => $this->dsn,
-      'user'       => $this->user,
-      'password'   => $this->password,
-      'attributes' => [
-        'ATTR_EMULATE_PREPARES' => false,
-        'ATTR_TIMEOUT'          => 30,
-      ],
-      'model_paths' => [
-        0 => 'src',
-        1 => 'vendor',
-      ],
-    ]);
+            'classname'  => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
+            'dsn'        => $this->dsn,
+            'user'       => $this->user,
+            'password'   => $this->password,
+            'attributes' => [
+                'ATTR_EMULATE_PREPARES' => false,
+                'ATTR_TIMEOUT'          => 30,
+            ],
+            'model_paths' => [
+                0 => 'src',
+                1 => 'vendor',
+            ],
+        ]);
         $manager->setName('money');
         $serviceContainer->setConnectionManager('money', $manager);
         $serviceContainer->setDefaultDatasource('money');
@@ -50,14 +48,14 @@ class Database
     {
         $sqlManager = new \Propel\Generator\Manager\SqlManager();
         $sqlManager->setConnections(
-        [$this->connectionName => [
+            [$this->connectionName => [
                 'dsn'      => $this->dsn,
                 'user'     => $this->user,
                 'password' => $this->password,
                 'adapter'  => $this->adaptor,
             ],
-        ]
-    );
+            ]
+        );
         $sqlManager->setWorkingDirectory(__DIR__.'/../../generated-sql');
         $sqlManager->insertSql();
     }

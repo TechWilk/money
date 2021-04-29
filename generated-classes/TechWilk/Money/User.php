@@ -50,8 +50,8 @@ class User extends BaseUser
 
         if (!password_verify($v, $this->password_hash)) {
             $bcrypt_options = [
-        'cost' => 12,
-      ];
+                'cost' => 12,
+            ];
             $this->password_hash = password_hash($v, PASSWORD_BCRYPT, $bcrypt_options);
             $this->modifiedColumns[UserTableMap::COL_PASSWORD_HASH] = true;
         }

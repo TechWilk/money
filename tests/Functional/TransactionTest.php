@@ -22,11 +22,11 @@ class TransactionTest extends BaseTestCase
     public function providerTestPostTransaction()
     {
         return [
-      [(new \DateTime())->format('Y-m-d'), 1.05, 'income', '#something with some #hashtags', 1],
-      [(new \DateTime('-1 week'))->format('Y-m-d'), 5.89, 'outgoings', '#other #hashtags', 1],
-      [(new \DateTime('+2 months'))->format('Y-m-d'), '5.89 + 4.98', 'outgoings', 'I\'ve done some #shopping', 1],
-      [(new \DateTime('-10 months'))->format('Y-m-d'), '5*4.99 + 3.97 - 3.1', 'income', 'please do not #error', 1],
-    ];
+            [(new \DateTime())->format('Y-m-d'), 1.05, 'income', '#something with some #hashtags', 1],
+            [(new \DateTime('-1 week'))->format('Y-m-d'), 5.89, 'outgoings', '#other #hashtags', 1],
+            [(new \DateTime('+2 months'))->format('Y-m-d'), '5.89 + 4.98', 'outgoings', 'I\'ve done some #shopping', 1],
+            [(new \DateTime('-10 months'))->format('Y-m-d'), '5*4.99 + 3.97 - 3.1', 'income', 'please do not #error', 1],
+        ];
     }
 
     /**

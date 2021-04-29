@@ -9,12 +9,12 @@ class MathsTest extends BaseTestCase
     public function providerTestValidCalculations()
     {
         return [
-      ['1 + 1', 2],
-      ['5 / 5', 1],
-      ['5.89 + 4.98', 10.87],
-      ['36.34-5.28', 31.06],
-      ['5+2-3/4', 6.25],
-    ];
+            ['1 + 1', 2],
+            ['5 / 5', 1],
+            ['5.89 + 4.98', 10.87],
+            ['36.34-5.28', 31.06],
+            ['5+2-3/4', 6.25],
+        ];
     }
 
     /**
@@ -33,10 +33,10 @@ class MathsTest extends BaseTestCase
     public function providerTestInvalidCalculations()
     {
         return [
-      ['not-an-calculation'],
-      ['another-not-an-email'],
-      [''],
-    ];
+            ['not-an-calculation'],
+            ['another-not-an-email'],
+            [''],
+        ];
     }
 
     /**
